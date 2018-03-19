@@ -1,0 +1,90 @@
+﻿using System;
+using System.Linq;
+using System.Linq.Custom;
+using System.Threading.Tasks;
+using Mailr.Helpers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.Extensions.Configuration;
+using Reusable;
+using Reusable.Extensions;
+
+namespace Mailr.TagHelpers
+{
+    [HtmlTargetElement(Attributes = "class")]
+    public class InlineClassTagHelper : TagHelper
+    {
+        private readonly ICssProvider _cssProvider;
+        private readonly IUrlHelperFactory _urlHelperFactory;
+        private readonly IConfiguration _configuration;
+
+        public InlineClassTagHelper(ICssProvider cssProvider, IUrlHelperFactory urlHelperFactoryHelperFactory, IConfiguration configuration)
+        {
+            _cssProvider = cssProvider;
+            _urlHelperFactory = urlHelperFactoryHelperFactory;
+            _configuration = configuration;
+        }
+
+        [HtmlAttributeNotBound, ViewContext]
+        public ViewContext ViewContext { get; set; }
+
+        public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
+        {
+            var classNames =
+                output
+                    .Attributes["class"]
+                    ?.Value
+                    .ToString()
+                    .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (classNames is null)
+            {
+                return;
+            }
+
+            var classPrefix = _configuration["inlinerClassPrefix"] ?? throw new InvalidOperationException("You need to define 'inlinerClassPrefix' in the 'appSettings.json' file.");
+
+            var inlineableClassNames =
+                (from className in classNames
+                 where className?.StartsWith(classPrefix) ?? false
+                 select SoftString.Create(className)).ToList();
+
+            if (inlineableClassNames.None())
+            {
+                return;
+            }
+
+            var url = _urlHelperFactory.GetUrlHelper(ViewContext);
+
+            var theme = ViewContext.HttpContext.Items["theme"] ?? "default";
+
+            var themeCssFileName = url.RouteUrl(RouteNames.Themes, new { name = theme });
+            var groupCssFileName = url.RouteUrl(RouteNames.Emails);
+
+            var themeCss = await _cssProvider.GetCss(themeCssFileName);
+            var groupCss = await _cssProvider.GetCss(groupCssFileName);
+
+            var declarations =
+                from ruleset in themeCss.Concat(groupCss)
+                from selector in ruleset.Selectors
+                join className in inlineableClassNames on selector equals className
+                select ruleset.Declarations.TrimEnd(';');
+
+            var style = declarations.Join("; ");
+
+            if (style.IsNullOrEmpty())
+            {
+                // Make debugging of missing styles easier by highlighting the element with a red border.
+                output.Attributes.SetAttribute("style", _configuration["inlinerClassNotFoundStyle"]);
+            }
+            else
+            {
+                output.Attributes.SetAttribute("style", style);
+                output.Attributes.RemoveAll("class");
+            }
+        }
+    }
+}

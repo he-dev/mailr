@@ -1,0 +1,15 @@
+﻿@using Mailr.Models.Test
+@model Mailr.Models.Test.TestBody
+@addTagHelper *, Mailr
+@{
+    ViewData["Title"] = "About";
+}
+
+<h2 class="m-title">@ViewData["Title"]</h2>
+<h3>@ViewData["Message"]</h3>
+
+<p class="m-greeting">@Model.Greeting</p>
+<hr/>
+@{
+    Html.RenderPartial("~/src/Views/Shared/Footer.cshtml");
+}
