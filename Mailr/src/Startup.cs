@@ -33,16 +33,14 @@ namespace Mailr
 {
     public class Startup
     {
-        private const string PluginsDirectoryName = "ext";
+        private IConfiguration Configuration { get; }
 
-        private readonly IConfiguration _configuration;
-
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private IHostingEnvironment HostingEnvironment { get; }
 
         public Startup(IConfiguration configuration, IHostingEnvironment hostingEnvironment)
         {
-            _configuration = configuration;
-            _hostingEnvironment = hostingEnvironment;
+            Configuration = configuration;
+            HostingEnvironment = hostingEnvironment;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -50,100 +48,21 @@ namespace Mailr
         {
             SmartPropertiesLayoutRenderer.Register();
 
-            var loggerFactory = LoggerFactorySetup.SetupLoggerFactory(_hostingEnvironment.EnvironmentName, "MailrAPI", new[] { NLogRx.Create() });
-            var logger = loggerFactory.CreateLogger<Startup>();
-
-            AppDomain.CurrentDomain.AssemblyResolve += (sender, e) =>
-            {
-                var pluginName = e.RequestingAssembly.GetName().Name;
-
-                // Extract dependency name from the full assembly name:
-                // PluginTest.HalloWorldHelper, Version = 1.0.0.0, Culture = neutral, PublicKeyToken = null
-                var pluginDependencyName = e.Name.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).First();
-
-                var pluginDependencyFullName =
-                    Path.Combine(
-                        _hostingEnvironment.ContentRootPath,
-                        PluginsDirectoryName,
-                        pluginDependencyName,
-                        $"{pluginDependencyName}.dll"
-                    );
-
-                logger.Log(Abstraction.Layer.Infrastructure().Data().Variable(new { pluginDependencyFullName }));
-
-                return
-                    File.Exists(pluginDependencyFullName)
-                        ? Assembly.LoadFile(pluginDependencyFullName)
-                        : null;
-            };
-
-            services.AddSingleton(loggerFactory);
-
-
-            var pluginAssemblies =
-                GetPluginAssemblies(_hostingEnvironment)
-                    .ToList();
-
-            logger.Log(Abstraction.Layer.Infrastructure().Data().Variable(new { pluginAssemblies = pluginAssemblies.Select(x => x.FullName) }));
+            //services.AddSingleton(Configuration);
+            services.AddSingleton(LoggerFactorySetup.SetupLoggerFactory(HostingEnvironment.EnvironmentName, "MailrAPI", new[] { NLogRx.Create() }));
 
             services
                 .AddMvc()
-                .ConfigureApplicationPartManager(apm =>
-                {
-                    foreach (var pluginAssembly in pluginAssemblies)
-                    {
-                        logger.Log(Abstraction.Layer.Infrastructure().Data().Object(new { pluginAssembly = new { pluginAssembly.FullName } }));
-                        apm.ApplicationParts.Add(new AssemblyPart(pluginAssembly));
-                    }
-                });
+                .AddPlugins();
 
-            //Add the file provider to the Razor view engine
-            services.Configure<RazorViewEngineOptions>(options =>
-            {
-                //foreach (var pluginAssembly in pluginAssemblies)
-                //{
-                //    //options
-                //    //    .FileProviders
-                //    //    .Add(new EmbeddedFileProvider(pluginAssembly));
-
-                //    var extensionDirectory =
-                //        Path.Combine(
-                //            _hostingEnvironment.ContentRootPath,
-                //            PluginsDirectoryName,
-                //            pluginAssembly.GetName().Name
-                //        );
-
-                //    options
-                //        .FileProviders
-                //        .Add(new PhysicalFileProvider(extensionDirectory));
-
-                //}
-
-                // Extension development does not use plugins so we have to look for it in the current directory parent.
-                if (_hostingEnvironment.IsDevelopment("Extension"))
-                {
-                    // ContentRootPath is the path of the *.csproj, we have to go back two levels to reach the extension directory.
-                    var extensionDirectory = new DirectoryInfo(_hostingEnvironment.ContentRootPath).Parent?.Parent;
-
-                    if (extensionDirectory is null)
-                    {
-                        throw new DirectoryNotFoundException("Could not find extension directory.");
-                    }
-
-                    options
-                        .FileProviders
-                        .Add(new PhysicalFileProvider(Path.Combine(extensionDirectory.FullName, extensionDirectory.Name)));
-                }
-            });
-
-            services.AddSingleton(_hostingEnvironment.ContentRootFileProvider);
+            services.AddSingleton(HostingEnvironment.ContentRootFileProvider);
             services.AddScoped<ICssProvider, CssProvider>();
             services.Configure<RazorViewEngineOptions>(options =>
             {
                 options.ViewLocationExpanders.Add(new RelativeViewLocationExpander());
             });
 
-            var emailClient = _configuration["emailClient"];
+            var emailClient = Configuration["emailClient"];
             switch (emailClient)
             {
                 case nameof(SmtpClient):
@@ -157,8 +76,6 @@ namespace Mailr
                 default:
                     throw new ArgumentOutOfRangeException($"Invalid EmailClient: {emailClient}. Expected {nameof(SmtpClient)} or {nameof(OutlookClient)}.");
             }
-
-
 
             services.AddSingleton<IHostedService, WorkItemQueueService>();
             services.AddSingleton<IWorkItemQueue, WorkItemQueue>();
@@ -208,32 +125,6 @@ namespace Mailr
                 app.UseHeaderValidator("X-Product", "X-Profile");
             };
         }
-
-        private static IEnumerable<Assembly> GetPluginAssemblies(IHostingEnvironment hostingEnvironment)
-        {
-            var pluginDirectoryName = Path.Combine(hostingEnvironment.ContentRootPath, PluginsDirectoryName);
-
-            if (!Directory.Exists(pluginDirectoryName))
-            {
-                yield break;
-            }
-
-            var pluginDirectories = Directory.GetDirectories(pluginDirectoryName);
-            foreach (var pluginDirectory in pluginDirectories)
-            {
-                var pluginFullName =
-                    Path.Combine(
-                        hostingEnvironment.ContentRootPath,
-                        pluginDirectory,
-                        $"{Path.GetFileName(pluginDirectory)}.dll"
-                    );
-
-                if (File.Exists(pluginFullName))
-                {
-                    yield return Assembly.LoadFile(pluginFullName);
-                }
-            }
-        }
     }
 
     internal class RouteNames
@@ -253,12 +144,134 @@ namespace Mailr
         {
             foreach (var viewLocation in viewLocations)
             {
-                //yield return viewLocation;
                 yield return $"/src{viewLocation}";
             }
 
-            //yield return $"/Views/Emails/{{1}}/{{0}}{RazorViewEngine.ViewExtension}";
             yield return $"/src/Views/Emails/{{1}}/{{0}}{RazorViewEngine.ViewExtension}";
+        }
+    }
+
+    public static class MvcBuilderPluginExtensions
+    {
+        // Adds plugins located in \{Root}\Plugin\{Binary}\Plugin.dll
+        // Example: \ext\Plugin\bin\Plugin.dll    
+        public static IMvcBuilder AddPlugins(this IMvcBuilder mvc)
+        {
+            var serviceProvider = mvc.Services.BuildServiceProvider();
+            var configuration = serviceProvider.GetService<IConfiguration>();
+            var hostingEnvironment = serviceProvider.GetService<IHostingEnvironment>();
+            var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Startup>();
+
+            var pluginsRootPath = Path.Combine(hostingEnvironment.ContentRootPath, configuration["PluginDirectory:Root"]);
+            var pluginAssemblies = GetPluginAssemblies(pluginsRootPath, configuration["PluginDirectory:Binary"]).ToList();
+
+            logger.Log(Abstraction.Layer.Infrastructure().Data().Variable(new { pluginAssemblies = pluginAssemblies.Select(x => x.FullName) }));
+
+            mvc
+                .ConfigureApplicationPartManager(apm =>
+                {
+                    foreach (var pluginAssembly in pluginAssemblies)
+                    {
+                        logger.Log(Abstraction.Layer.Infrastructure().Data().Object(new { pluginAssembly = new { pluginAssembly.FullName } }));
+                        apm.ApplicationParts.Add(new AssemblyPart(pluginAssembly));
+                    }
+                });
+
+            mvc
+                .Services
+                .ConfigureRazorViewEngine(hostingEnvironment, pluginAssemblies, pluginsRootPath);
+
+            ConfigureAssemblyResolve(logger, pluginsRootPath, configuration["PluginDirectory:Binary"]);
+
+            return mvc;
+        }
+
+        private static IEnumerable<Assembly> GetPluginAssemblies(string pluginsRootPath, string binDirectoryName)
+        {
+            if (!Directory.Exists(pluginsRootPath))
+            {
+                yield break;
+            }
+
+            var pluginDirectories = Directory.GetDirectories(pluginsRootPath);
+            foreach (var pluginDirectory in pluginDirectories)
+            {
+                // C:\..\ext\Plugin\bin\Plugin.dll
+                var pluginFullName =
+                    Path.Combine(
+                        pluginDirectory,
+                        binDirectoryName,
+                        $"{Path.GetFileName(pluginDirectory)}.dll"
+                    );
+
+                if (File.Exists(pluginFullName))
+                {
+                    yield return Assembly.LoadFile(pluginFullName);
+                }
+            }
+        }
+
+        private static void ConfigureAssemblyResolve(ILogger logger, string pluginsRootPath, string binDirectoryName)
+        {
+            AppDomain.CurrentDomain.AssemblyResolve += (sender, e) =>
+            {
+                // Extract dependency name from the full assembly name:
+                // FooPlugin.FooClass, Version = 1.0.0.0, Culture = neutral, PublicKeyToken = null
+                var pluginDependencyName = e.Name.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).First();
+
+                // C:\..\ext\Plugin\bin\PluginDependency.dll
+                var pluginDependencyFullName =
+                    Path.Combine(
+                        pluginsRootPath,
+                        pluginDependencyName,
+                        binDirectoryName,
+                        $"{pluginDependencyName}.dll"
+                    );
+
+                logger.Log(Abstraction.Layer.Infrastructure().Data().Variable(new { pluginDependencyFullName }));
+
+                return
+                    File.Exists(pluginDependencyFullName)
+                        ? Assembly.LoadFile(pluginDependencyFullName)
+                        : null;
+            };
+        }
+
+        // Adds plugin directory to Razor view engine so that it can resolve plugin's views e.g. \ext\Plugin
+        private static void ConfigureRazorViewEngine(this IServiceCollection services, IHostingEnvironment hostingEnvironment, IEnumerable<Assembly> pluginAssemblies, string pluginsRootPath)
+        {
+            services.Configure<RazorViewEngineOptions>(options =>
+            {
+                foreach (var pluginAssembly in pluginAssemblies)
+                {
+                    var pluginRootPath =
+                        Path.Combine(
+                            pluginsRootPath,
+                            pluginAssembly.GetName().Name
+                        );
+
+                    options
+                        .FileProviders
+                        .Add(new PhysicalFileProvider(pluginRootPath));
+                }
+
+                // Extension development does not use plugins so we have to look for it in the current directory parent 
+                // because the service is "installed" as a submodule which is a subdirectory.
+                if (hostingEnvironment.IsDevelopment("Extension"))
+                {
+                    // ContentRootPath is the path of the *.csproj, we have to go back two levels to reach the extension directory.
+                    var extensionDirectory = new DirectoryInfo(hostingEnvironment.ContentRootPath).Parent?.Parent;
+
+                    if (extensionDirectory is null)
+                    {
+                        throw new DirectoryNotFoundException("Could not find extension directory.");
+                    }
+
+                    options
+                        .FileProviders
+                        .Add(new PhysicalFileProvider(Path.Combine(extensionDirectory.FullName, extensionDirectory.Name)));
+                }
+            });
         }
     }
 }
