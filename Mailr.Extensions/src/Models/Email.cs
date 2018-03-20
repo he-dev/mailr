@@ -1,4 +1,4 @@
-﻿namespace Mailr.Models
+﻿namespace Mailr.Extensions.Models
 {
     public class Email<TBody>
     {
