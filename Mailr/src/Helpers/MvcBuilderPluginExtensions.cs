@@ -11,7 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Reusable.OmniLog;
 using Reusable.OmniLog.SemanticExtensions;
-using Reusable.Utilities.AspNetCore;
 
 namespace Mailr.Helpers
 {
@@ -22,12 +21,13 @@ namespace Mailr.Helpers
         public static IMvcBuilder AddPlugins(this IMvcBuilder mvc)
         {
             var serviceProvider = mvc.Services.BuildServiceProvider();
+
             var configuration = serviceProvider.GetService<IConfiguration>();
             var hostingEnvironment = serviceProvider.GetService<IHostingEnvironment>();
             var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Startup>();
 
-            var pluginsRootPath = Path.Combine(hostingEnvironment.ContentRootPath, configuration["PluginDirectory:Root"]);
-            var pluginAssemblies = GetPluginAssemblies(pluginsRootPath, configuration["PluginDirectory:Binary"]).ToList();
+            var pluginsRootPath = Path.Combine(hostingEnvironment.ContentRootPath, configuration["ExtensionDirectory:Root"]);
+            var pluginAssemblies = GetPluginAssemblies(pluginsRootPath, configuration["ExtensionDirectory:Binary"]).ToList();
 
             logger.Log(Abstraction.Layer.Infrastructure().Data().Variable(new { pluginAssemblies = pluginAssemblies.Select(x => x.FullName) }));
 
@@ -57,7 +57,7 @@ namespace Mailr.Helpers
                     )
                 );
 
-            ConfigureAssemblyResolve(logger, pluginsRootPath, configuration["PluginDirectory:Binary"]);
+            ConfigureAssemblyResolve(logger, pluginsRootPath, configuration["ExtensionDirectory:Binary"]);
 
             return mvc;
         }

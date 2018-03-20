@@ -61,7 +61,10 @@ namespace Mailr.Middleware
                                 {
                                     To = email.To,
                                     Subject = new PlainTextSubject(email.Subject),
-                                    Body = new ParialViewEmailBody(body),
+                                    Body =
+                                        email.IsHtml.HasValue && email.IsHtml.Value
+                                            ? (EmailBody)new ParialViewEmailBody(body)
+                                            : (EmailBody)new PlainTextBody(body),
                                 });
                             }
                             catch (Exception ex)
@@ -106,5 +109,5 @@ namespace Mailr.Middleware
         {
             return builder.UseMiddleware<MailerMiddleware>();
         }
-    }    
+    }
 }

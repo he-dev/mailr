@@ -28,6 +28,7 @@ namespace Mailr.Helpers
             return _cache.GetOrAdd(fileName, async (cssFilename) =>
             {
                 var cssFile = _fileProvider.GetFileInfo(fileName);
+
                 if (cssFile.Exists)
                 {
                     using (var reader = new StreamReader(cssFile.CreateReadStream()))
