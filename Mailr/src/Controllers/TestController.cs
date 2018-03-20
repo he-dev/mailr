@@ -1,4 +1,5 @@
 ﻿using Mailr.Extensions;
+using Mailr.Extensions.Models;
 using Mailr.Middleware;
 using Mailr.Models;
 using Mailr.Models.Test;
