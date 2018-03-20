@@ -9,12 +9,6 @@ m-text {
     color: #46466e;
 }
 
-m-record-locator {
-    font-size: 1em;
-    font-family: Consolas, monospace;
-    color: #383838;
-}
-
 m-footer {
     font-family: Arial, sans-serif;
     font-size: 12px;

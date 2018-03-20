@@ -45,7 +45,7 @@ namespace Mailr.TagHelpers
                 return;
             }
 
-            var classPrefix = _configuration["inlinerClassPrefix"] ?? throw new InvalidOperationException("You need to define 'inlinerClassPrefix' in the 'appSettings.json' file.");
+            var classPrefix = _configuration["CssInliner:ClassPrefix"] ?? throw new InvalidOperationException("You need to define 'inlinerClassPrefix' in the 'appSettings.json' file.");
 
             var inlineableClassNames =
                 (from className in classNames
@@ -62,13 +62,13 @@ namespace Mailr.TagHelpers
             var theme = ViewContext.HttpContext.Items["theme"] ?? "default";
 
             var themeCssFileName = url.RouteUrl(RouteNames.Themes, new { name = theme });
-            var groupCssFileName = url.RouteUrl(RouteNames.Emails);
+            var pluginCssFileName = url.RouteUrl(RouteNames.Emails);
 
             var themeCss = await _cssProvider.GetCss(themeCssFileName);
-            var groupCss = await _cssProvider.GetCss(groupCssFileName);
+            var pluginCss = await _cssProvider.GetCss(pluginCssFileName);
 
             var declarations =
-                from ruleset in themeCss.Concat(groupCss)
+                from ruleset in themeCss.Concat(pluginCss)
                 from selector in ruleset.Selectors
                 join className in inlineableClassNames on selector equals className
                 select ruleset.Declarations.TrimEnd(';');
@@ -78,7 +78,7 @@ namespace Mailr.TagHelpers
             if (style.IsNullOrEmpty())
             {
                 // Make debugging of missing styles easier by highlighting the element with a red border.
-                output.Attributes.SetAttribute("style", _configuration["inlinerClassNotFoundStyle"]);
+                output.Attributes.SetAttribute("style", _configuration["CssInliner:ClassNotFoundStyle"]);
             }
             else
             {

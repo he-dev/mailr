@@ -23,11 +23,11 @@
       },
       "applicationUrl": "http://localhost:49471/"
     },
-    "Mailr.Extension": {
+    "Mailr.Submodule": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "DevelopmentExtension"
+        "ASPNETCORE_ENVIRONMENT": "Submodule"
       },
       "applicationUrl": "http://localhost:49471/"
     },
