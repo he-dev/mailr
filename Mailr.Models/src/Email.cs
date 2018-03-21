@@ -1,14 +1,7 @@
-﻿namespace Mailr.Models
+﻿using Mailr.Models.Abstractions;
+
+namespace Mailr.Models
 {
-    public interface IEmailMetadata
-    {
-        string To { get; }
-
-        string Subject { get; }
-
-        bool IsHtml { get; }
-    }
-
     public class Email<TBody> : IEmailMetadata
     {
         public string To { get; set; }
