@@ -33,7 +33,7 @@ namespace Mailr.Mvc.TagHelpers
 
         private string ClassPrefix => _configuration["CssInliner:ClassPrefix"] ?? throw new InvalidOperationException("You need to define 'CssInliner:ClassPrefix' in the 'appSettings.json' file.");
 
-        private string ClassNotFoundStyle => _configuration["CssInliner:ClassNotFoundStyle"] ?? throw new InvalidOperationException("You need to define 'CssInliner:ClassNotFoundStyle' in the 'appSettings.json' file.");;
+        private string ClassNotFoundStyle => _configuration["CssInliner:ClassNotFoundStyle"] ?? throw new InvalidOperationException("You need to define 'CssInliner:ClassNotFoundStyle' in the 'appSettings.json' file.");
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
