@@ -59,11 +59,7 @@ namespace Mailr
 
                 options
                     .ViewLocationExpanders
-                    .Add(new RelativeViewLocationExpander(prefix));
-
-                //options
-                //    .ViewLocationExpanders
-                //    .Add(new ExtensionViewLocationExpander(prefix));
+                    .Add(new RelativeViewLocationExpander(prefix));                
             });
 
             var emailClient = Configuration["emailClient"];
