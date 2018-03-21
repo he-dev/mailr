@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Mailr.Models;
+using Mailr.Models.Abstractions;
 using Mailr.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;

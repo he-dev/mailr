@@ -19,7 +19,7 @@ namespace Mailr.Controllers
         
         [HttpPost("[action]")]
         [LogResponseBody]
-        [SendsEmail]
+        [SendEmail]
         public IActionResult Test([FromBody] Email<TestBody> email)
         {
             return PartialView("~/src/Views/Emails/Test/Test.cshtml", email.Body);

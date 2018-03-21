@@ -21,6 +21,7 @@ namespace Mailr.Mvc.Razor.ViewLocationExpanders
         {
             foreach (var viewLocation in viewLocations)
             {
+                yield return viewLocation;
                 yield return $"/{_prefix}{viewLocation}";
             }
         }

@@ -66,7 +66,7 @@ namespace Mailr.Mvc.TagHelpers
             var theme = ViewContext.HttpContext.Items["theme"] ?? "default";
 
             var themeCssFileName = url.RouteUrl(RouteNames.Themes, new { name = theme });
-            var pluginCssFileName = url.RouteUrl(RouteNames.Emails);
+            var pluginCssFileName = url.RouteUrl(RouteNames.Extension, new { extension = ViewContext.HttpContext.Items["Extension"] });
 
             var themeCss = await _cssProvider.GetCss(themeCssFileName);
             var pluginCss = await _cssProvider.GetCss(pluginCssFileName);

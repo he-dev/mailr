@@ -24,11 +24,10 @@ namespace Mailr.Mvc.Razor.ViewLocationExpanders
             foreach (var viewLocation in viewLocations)
             {
                 yield return viewLocation;
-            }
-
-            foreach (var extensionName in _extensionNames)
-            {
-                yield return $"/{extensionName}/src/Views/{{1}}/{{0}}{RazorViewEngine.ViewExtension}";
+                foreach (var extensionName in _extensionNames)
+                {
+                    yield return $"/{extensionName}{viewLocation}";
+                }
             }
         }
     }

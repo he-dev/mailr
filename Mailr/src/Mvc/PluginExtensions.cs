@@ -41,23 +41,28 @@ namespace Mailr.Mvc
                         logger.Log(Abstraction.Layer.Infrastructure().Data().Object(new { pluginAssembly = new { pluginAssembly.FullName } }));
                         apm.ApplicationParts.Add(new AssemblyPart(pluginAssembly));
                     }
+                });            
+
+            var fileProvider = new CompositeFileProvider(
+                CreateExtensionFileProviders(
+                    hostingEnvironment,
+                    pluginAssemblies,
+                    pluginsRootPath
+                )
+            );
+
+            mvc
+                .Services
+                .AddSingleton<IFileProvider>(fileProvider);
+
+            mvc
+                .Services
+                .Configure<RazorViewEngineOptions>(options =>
+                {
+                    options
+                        .FileProviders
+                        .Add(fileProvider);
                 });
-
-            mvc
-                .Services
-                .ConfigureRazorViewEngine(hostingEnvironment, pluginAssemblies, pluginsRootPath);
-
-            mvc
-                .Services
-                .AddSingleton<IFileProvider>(
-                    new CompositeFileProvider(
-                        CreateExtensionFileProviders(
-                            hostingEnvironment,
-                            pluginAssemblies,
-                            pluginsRootPath
-                        )
-                    )
-                );
 
             ConfigureAssemblyResolve(logger, pluginsRootPath, configuration["ExtensionDirectory:Binary"]);
 
@@ -113,44 +118,7 @@ namespace Mailr.Mvc
                         ? Assembly.LoadFile(pluginDependencyFullName)
                         : null;
             };
-        }
-
-        // Configures Razor view engine so that it can correctly resolve plugins views.
-        private static void ConfigureRazorViewEngine(this IServiceCollection services, IHostingEnvironment hostingEnvironment, IEnumerable<Assembly> pluginAssemblies, string pluginsRootPath)
-        {
-            services.Configure<RazorViewEngineOptions>(options =>
-            {
-                var extensionPaths = new List<string>();
-                foreach (var extensionFileProvider in CreateExtensionFileProviders(hostingEnvironment, pluginAssemblies, pluginsRootPath))
-                {
-                    if (extensionFileProvider is PhysicalFileProvider physicalFileProvider)
-                    {
-                        extensionPaths.Add(physicalFileProvider.Root);
-                    }
-                    options
-                        .FileProviders
-                        .Add(extensionFileProvider);
-                }
-
-                var mailrRootPath = extensionPaths.First();
-
-                //var extensionNames =
-                //    extensionPaths
-                //        .Skip(1)
-                //        .Select(path => Regex.Replace(path, $"^{Regex.Escape(mailrRootPath)}", string.Empty))
-                //        .Select(path => path.Split(Path.DirectorySeparatorChar).Skip(1).Take(1));
-
-                var extensionNames =
-                    extensionPaths
-                        .Skip(1)
-                        .Select(path => path.Split(new[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries).Last())
-                        .ToList();
-
-                options
-                    .ViewLocationExpanders
-                    .Add(new ExtensionViewLocationExpander(extensionNames));
-            });
-        }
+        }        
 
         private static IEnumerable<IFileProvider> CreateExtensionFileProviders(IHostingEnvironment hostingEnvironment, IEnumerable<Assembly> pluginAssemblies, string pluginsRootPath)
         {
@@ -168,6 +136,9 @@ namespace Mailr.Mvc
 
                 yield return new PhysicalFileProvider(pluginRootPath);
             }
+
+            // Razor view engine requires this path too.
+            yield return new PhysicalFileProvider(pluginsRootPath);
 
             // These paths are available when running as a submodule with plugins in the parent folder.
             foreach (var directory in GetExtensionDirectories(hostingEnvironment))
@@ -188,7 +159,11 @@ namespace Mailr.Mvc
                     new DirectoryInfo(hostingEnvironment.ContentRootPath).Parent?.Parent
                     ?? throw new DirectoryNotFoundException("Could not find extension directory.");
 
-                foreach (var directory in Directory.EnumerateDirectories(extensionsRootDirectory.FullName, "Mailr.Extensions.*"))
+                // This path is required to find static files by css-provider.
+                yield return extensionsRootDirectory.FullName;
+
+                //return extensionsRootDirectory.FullName;
+                foreach (var directory in Directory.EnumerateDirectories(extensionsRootDirectory.FullName, "*Extension"))
                 {
                     yield return directory;
                 }

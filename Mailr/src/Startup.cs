@@ -113,11 +113,8 @@ namespace Mailr
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
-                //routes.MapRoute(
-                //    name: RouteNames.Emails,
-                //    template: "wwwroot/css/emails/{controller}/{action}.css");
                 routes.MapRoute(
-                    name: RouteNames.ExtensionCss,
+                    name: RouteNames.Extension,
                     template: "{extension}/wwwroot/css/{controller}/{action}.css");
                 routes.MapRoute(
                     name: RouteNames.Themes,
@@ -136,8 +133,7 @@ namespace Mailr
 
     internal class RouteNames
     {
-        public const string Emails = nameof(Emails);
-        public const string ExtensionCss = nameof(ExtensionCss);
+        public const string Extension = nameof(Extension);
         public static string Themes = nameof(Themes);
     }
 }
