@@ -14,7 +14,7 @@ using Reusable.OmniLog.SemanticExtensions;
 
 namespace Mailr.Helpers
 {
-    public static class MvcBuilderPluginExtensions
+    public static class PluginExtensions
     {
         // Adds plugins located in \{Root}\Plugin\{Binary}\Plugin.dll
         // Example: \ext\Plugin\bin\Plugin.dll    
@@ -72,7 +72,7 @@ namespace Mailr.Helpers
             var pluginDirectories = Directory.GetDirectories(pluginsRootPath);
             foreach (var pluginDirectory in pluginDirectories)
             {
-                // C:\..\ext\Plugin\bin\Plugin.dll
+                // Plugin assemblies are located in the {Extensions:RootDirectory}: C:\..\ext\Plugin\bin\Plugin.dll
                 var pluginFullName =
                     Path.Combine(
                         pluginDirectory,
@@ -113,37 +113,38 @@ namespace Mailr.Helpers
             };
         }
 
-        // Adds plugin directory to Razor view engine so that it can resolve plugin's views e.g. \ext\Plugin
+        // Configures Razor view engine so that it can correctly resolve plugins views.
         private static void ConfigureRazorViewEngine(this IServiceCollection services, IHostingEnvironment hostingEnvironment, IEnumerable<Assembly> pluginAssemblies, string pluginsRootPath)
         {
             services.Configure<RazorViewEngineOptions>(options =>
             {
-                foreach (var pluginAssembly in pluginAssemblies)
-                {
-                    var pluginRootPath =
-                        Path.Combine(
-                            pluginsRootPath,
-                            pluginAssembly.GetName().Name
-                        );
-
-                    options
-                        .FileProviders
-                        .Add(new PhysicalFileProvider(pluginRootPath));
-                }
-                
-                foreach (var directory in GetExtensionDirectories(hostingEnvironment))
+                foreach (var extensionFileProvider in CreateExtensionFileProviders(hostingEnvironment, pluginAssemblies, pluginsRootPath))
                 {
                     options
                         .FileProviders
-                        .Add(new PhysicalFileProvider(directory));
+                        .Add(extensionFileProvider);
                 }
             });
         }
 
         private static IEnumerable<IFileProvider> CreateExtensionFileProviders(IHostingEnvironment hostingEnvironment, IEnumerable<Assembly> pluginAssemblies, string pluginsRootPath)
         {
+            // This is the default and is always available.
             yield return hostingEnvironment.ContentRootFileProvider;
 
+            // These paths are available when running as a service with installed plugins.
+            foreach (var pluginAssembly in pluginAssemblies)
+            {
+                var pluginRootPath =
+                    Path.Combine(
+                        pluginsRootPath,
+                        pluginAssembly.GetName().Name
+                    );
+
+                yield return new PhysicalFileProvider(pluginRootPath);
+            }
+
+            // These paths are available when running as a submodule with plugins in the parent folder.
             foreach (var directory in GetExtensionDirectories(hostingEnvironment))
             {
                 yield return new PhysicalFileProvider(directory);

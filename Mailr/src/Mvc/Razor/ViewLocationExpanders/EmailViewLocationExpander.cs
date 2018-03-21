@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Razor;
 
-namespace Mailr.ViewLocationExpanders
+namespace Mailr.Mvc.Razor.ViewLocationExpanders
 {
     public class EmailViewLocationExpander : IViewLocationExpander
     {

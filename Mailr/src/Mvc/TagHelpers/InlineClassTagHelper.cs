@@ -12,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Reusable;
 using Reusable.Extensions;
 
-namespace Mailr.TagHelpers
+namespace Mailr.Mvc.TagHelpers
 {
     [HtmlTargetElement(Attributes = "class")]
     public class InlineClassTagHelper : TagHelper
@@ -31,6 +31,10 @@ namespace Mailr.TagHelpers
         [HtmlAttributeNotBound, ViewContext]
         public ViewContext ViewContext { get; set; }
 
+        private string ClassPrefix => _configuration["CssInliner:ClassPrefix"] ?? throw new InvalidOperationException("You need to define 'CssInliner:ClassPrefix' in the 'appSettings.json' file.");
+
+        private string ClassNotFoundStyle => _configuration["CssInliner:ClassNotFoundStyle"] ?? throw new InvalidOperationException("You need to define 'CssInliner:ClassNotFoundStyle' in the 'appSettings.json' file.");;
+
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             var classNames =
@@ -45,7 +49,7 @@ namespace Mailr.TagHelpers
                 return;
             }
 
-            var classPrefix = _configuration["CssInliner:ClassPrefix"] ?? throw new InvalidOperationException("You need to define 'inlinerClassPrefix' in the 'appSettings.json' file.");
+            var classPrefix = ClassPrefix;
 
             var inlineableClassNames =
                 (from className in classNames
@@ -78,7 +82,7 @@ namespace Mailr.TagHelpers
             if (style.IsNullOrEmpty())
             {
                 // Make debugging of missing styles easier by highlighting the element with a red border.
-                output.Attributes.SetAttribute("style", _configuration["CssInliner:ClassNotFoundStyle"]);
+                output.Attributes.SetAttribute("style", ClassNotFoundStyle);
             }
             else
             {
