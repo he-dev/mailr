@@ -1,10 +1,7 @@
-﻿using Mailr.Extensions;
-using Mailr.Extensions.Models;
-using Mailr.Middleware;
-using Mailr.Models;
+﻿using Mailr.Models;
 using Mailr.Models.Test;
+using Mailr.Utilities.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
-using Reusable.AspNetCore.Middleware;
 
 namespace Mailr.Controllers
 {
@@ -19,12 +16,12 @@ namespace Mailr.Controllers
         {
             return View("~/src/Views/Emails/Test/Test.cshtml", new TestBody { Greeting = "Hallo preview!" });
         }
-
+        
         [HttpPost("[action]")]
+        [LogResponseBody]
+        [SendsEmail]
         public IActionResult Test([FromBody] Email<TestBody> email)
         {
-            HttpContext.Email(email.To, email.Subject);
-            HttpContext.EnableResponseBodyLogging();
             return PartialView("~/src/Views/Emails/Test/Test.cshtml", email.Body);
         }
     }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
+using Mailr.Mvc.Razor.ViewLocationExpanders;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -12,7 +14,7 @@ using Microsoft.Extensions.FileProviders;
 using Reusable.OmniLog;
 using Reusable.OmniLog.SemanticExtensions;
 
-namespace Mailr.Helpers
+namespace Mailr.Mvc
 {
     public static class PluginExtensions
     {
@@ -118,12 +120,35 @@ namespace Mailr.Helpers
         {
             services.Configure<RazorViewEngineOptions>(options =>
             {
+                var extensionPaths = new List<string>();
                 foreach (var extensionFileProvider in CreateExtensionFileProviders(hostingEnvironment, pluginAssemblies, pluginsRootPath))
                 {
+                    if (extensionFileProvider is PhysicalFileProvider physicalFileProvider)
+                    {
+                        extensionPaths.Add(physicalFileProvider.Root);
+                    }
                     options
                         .FileProviders
                         .Add(extensionFileProvider);
                 }
+
+                var mailrRootPath = extensionPaths.First();
+
+                //var extensionNames =
+                //    extensionPaths
+                //        .Skip(1)
+                //        .Select(path => Regex.Replace(path, $"^{Regex.Escape(mailrRootPath)}", string.Empty))
+                //        .Select(path => path.Split(Path.DirectorySeparatorChar).Skip(1).Take(1));
+
+                var extensionNames =
+                    extensionPaths
+                        .Skip(1)
+                        .Select(path => path.Split(new[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries).Last())
+                        .ToList();
+
+                options
+                    .ViewLocationExpanders
+                    .Add(new ExtensionViewLocationExpander(extensionNames));
             });
         }
 

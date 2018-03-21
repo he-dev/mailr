@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Mailr.Extensions;
+using Mailr.Models;
 using Mailr.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -47,9 +47,7 @@ namespace Mailr.Middleware
                 {
                     var body = await reader.ReadToEndAsync();
 
-                    var email = context.Email();
-
-                    if (!(email.To is null || email.Subject is null))
+                    if (context.Items["EmailMetadata"] is IEmailMetadata email)
                     {
                         _workItemQueue.Enqueue(async cancellationToken =>
                         {
@@ -62,7 +60,7 @@ namespace Mailr.Middleware
                                     To = email.To,
                                     Subject = new PlainTextSubject(email.Subject),
                                     Body =
-                                        email.IsHtml.HasValue && email.IsHtml.Value
+                                        email.IsHtml
                                             ? (EmailBody)new ParialViewEmailBody(body)
                                             : (EmailBody)new PlainTextBody(body),
                                 });

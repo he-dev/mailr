@@ -3,18 +3,19 @@ using Microsoft.AspNetCore.Mvc.Razor;
 
 namespace Mailr.Mvc.Razor.ViewLocationExpanders
 {
-    public class EmailViewLocationExpander : IViewLocationExpander
+    public class ExtensionViewLocationExpander : IViewLocationExpander
     {
-        private readonly string _prefix;
+        private readonly IEnumerable<string> _extensionNames;
 
-        public EmailViewLocationExpander(string prefix)
+        public ExtensionViewLocationExpander(IEnumerable<string> extensionNames)
         {
-            _prefix = prefix;
+            _extensionNames = extensionNames;
         }
+
 
         public void PopulateValues(ViewLocationExpanderContext context)
         {
-            context.Values[nameof(EmailViewLocationExpander)] = nameof(EmailViewLocationExpander);
+            context.Values[nameof(ExtensionViewLocationExpander)] = nameof(ExtensionViewLocationExpander);
         }
 
         public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context, IEnumerable<string> viewLocations)
@@ -25,7 +26,10 @@ namespace Mailr.Mvc.Razor.ViewLocationExpanders
                 yield return viewLocation;
             }
 
-            yield return $"/{_prefix}/Views/Emails/{{1}}/{{0}}{RazorViewEngine.ViewExtension}";
+            foreach (var extensionName in _extensionNames)
+            {
+                yield return $"/{extensionName}/src/Views/{{1}}/{{0}}{RazorViewEngine.ViewExtension}";
+            }
         }
     }
 }

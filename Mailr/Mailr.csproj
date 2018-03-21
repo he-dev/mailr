@@ -41,6 +41,12 @@
 
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Mailr.Models.Abstractions\Mailr.Models.Abstractions.csproj" />
+    <ProjectReference Include="..\Mailr.Models\Mailr.Models.csproj" />
+    <ProjectReference Include="..\Mailr.Utilities\Mailr.Utilities.csproj" />
   </ItemGroup>  
 
   <ItemGroup>
@@ -61,10 +67,6 @@
       <DependentUpon>NLog.tt</DependentUpon>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Mailr.Extensions\Mailr.Extensions.csproj" />
   </ItemGroup>
 
 </Project>

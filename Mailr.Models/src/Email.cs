@@ -1,6 +1,15 @@
-﻿namespace Mailr.Extensions.Models
+﻿namespace Mailr.Models
 {
-    public class Email<TBody>
+    public interface IEmailMetadata
+    {
+        string To { get; }
+
+        string Subject { get; }
+
+        bool IsHtml { get; }
+    }
+
+    public class Email<TBody> : IEmailMetadata
     {
         public string To { get; set; }
 

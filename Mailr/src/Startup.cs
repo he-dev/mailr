@@ -5,6 +5,7 @@ using System.Linq.Custom;
 using JetBrains.Annotations;
 using Mailr.Helpers;
 using Mailr.Middleware;
+using Mailr.Mvc;
 using Mailr.Mvc.Razor.ViewLocationExpanders;
 using Mailr.Services;
 using Microsoft.AspNetCore.Builder;
@@ -60,9 +61,9 @@ namespace Mailr
                     .ViewLocationExpanders
                     .Add(new RelativeViewLocationExpander(prefix));
 
-                options
-                    .ViewLocationExpanders
-                    .Add(new EmailViewLocationExpander(prefix));
+                //options
+                //    .ViewLocationExpanders
+                //    .Add(new ExtensionViewLocationExpander(prefix));
             });
 
             var emailClient = Configuration["emailClient"];
@@ -112,9 +113,12 @@ namespace Mailr
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+                //routes.MapRoute(
+                //    name: RouteNames.Emails,
+                //    template: "wwwroot/css/emails/{controller}/{action}.css");
                 routes.MapRoute(
-                    name: RouteNames.Emails,
-                    template: "wwwroot/css/emails/{controller}/{action}.css");
+                    name: RouteNames.ExtensionCss,
+                    template: "{extension}/wwwroot/css/{controller}/{action}.css");
                 routes.MapRoute(
                     name: RouteNames.Themes,
                     template: "wwwroot/css/themes/{name}.css");
@@ -133,6 +137,7 @@ namespace Mailr
     internal class RouteNames
     {
         public const string Emails = nameof(Emails);
+        public const string ExtensionCss = nameof(ExtensionCss);
         public static string Themes = nameof(Themes);
     }
 }
