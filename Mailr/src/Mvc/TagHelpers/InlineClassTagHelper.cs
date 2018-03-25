@@ -61,6 +61,11 @@ namespace Mailr.Mvc.TagHelpers
                 return;
             }
 
+            inlineableClassNames =
+                inlineableClassNames
+                    .Select(className => $".{className.ToString()}".ToSoftString())
+                    .ToList();
+
             var url = _urlHelperFactory.GetUrlHelper(ViewContext);
 
             var theme = ViewContext.HttpContext.Items["theme"] ?? "default";
