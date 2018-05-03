@@ -1,13 +1,13 @@
-﻿m-title {
+﻿.m-title {
     color: blueviolet;
 }
-m-flight-number {
+.m-flight-number {
     font-family: consolas;
 }
-m-footer {
+.m-footer {
     font-family: sans-serif;
     font-size: 0.8em;
 }
-m-greeting {
+.m-greeting {
     color: steelblue;
 }

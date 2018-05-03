@@ -1,11 +1,13 @@
 ﻿using Mailr.Models;
 using Mailr.Models.Test;
+using Mailr.Utilities;
 using Mailr.Utilities.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Mailr.Controllers
 {
-    [Route("api/emails/[controller]")]
+    [Route("api/mailr/[controller]")]
+    [ExtensionId("mailr")]
     public class TestController : Controller
     {
         //private const string Action
@@ -14,7 +16,7 @@ namespace Mailr.Controllers
         [HttpGet("[action]")]
         public IActionResult Test()
         {
-            return View("~/src/Views/Emails/Test/Test.cshtml", new TestBody { Greeting = "Hallo preview!" });
+            return View("~/src/Views/Mailr/Test/Test.cshtml", new TestBody { Greeting = "Hallo preview!" });
         }
         
         [HttpPost("[action]")]
@@ -22,7 +24,7 @@ namespace Mailr.Controllers
         [SendEmail]
         public IActionResult Test([FromBody] Email<TestBody> email)
         {
-            return PartialView("~/src/Views/Emails/Test/Test.cshtml", email.Body);
+            return PartialView("~/src/Views/Mailr/Test/Test.cshtml", email.Body);
         }
     }
 }

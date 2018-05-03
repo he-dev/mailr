@@ -27,16 +27,17 @@
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="2.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.0.2" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.3" />
-    <PackageReference Include="NLog" Version="4.4.13" />
-    <PackageReference Include="Reusable.AspNetCore.Middleware.HeaderValidator" Version="4.9.2" />
-    <PackageReference Include="Reusable.AspNetCore.Middleware.SemanticLogger" Version="4.9.2" />
-    <PackageReference Include="Reusable.Net.Mail" Version="4.9.2" />
-    <PackageReference Include="Reusable.Net.Mail.OutlookClient" Version="4.9.2" />
-    <PackageReference Include="Reusable.Net.Mail.SmtpClient" Version="4.9.2" />
-    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="4.9.2" />
-    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="4.9.2" />
-    <PackageReference Include="Reusable.Utilities.SqlClient" Version="4.9.2" />
-    <PackageReference Include="Reusable.Utilities.ThirdParty.NLog" Version="4.9.2" />
+    <PackageReference Include="NLog" Version="4.5.3" />
+    <PackageReference Include="Reusable.AspNetCore.Http.HeaderValidator" Version="5.0.0" />
+    <PackageReference Include="Reusable.AspNetCore.Http.SemanticLogger" Version="5.0.0" />
+    <PackageReference Include="Reusable.Net.Mail" Version="5.0.0" />
+    <PackageReference Include="Reusable.Net.Mail.OutlookClient" Version="5.0.0" />
+    <PackageReference Include="Reusable.Net.Mail.SmtpClient" Version="5.0.0" />
+    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="5.0.0" />
+    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="5.0.0" />
+    <PackageReference Include="Reusable.Utilities.JsonNet" Version="5.0.0" />
+    <PackageReference Include="Reusable.Utilities.NLog" Version="5.0.0" />
+    <PackageReference Include="Reusable.Utilities.SqlClient" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>

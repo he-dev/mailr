@@ -12,16 +12,18 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Razor.Language.Intermediate;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
-using Reusable.AspNetCore.Middleware;
+using Newtonsoft.Json;
+using Reusable.AspNetCore.Http;
 using Reusable.Net.Mail;
 using Reusable.OmniLog;
 using Reusable.OmniLog.SemanticExtensions;
-using Reusable.Utilities.ThirdParty.NLog.LayoutRenderers;
+using Reusable.Utilities.NLog.LayoutRenderers;
 
 [assembly: AspMvcViewLocationFormat("/src/Views/{1}/{0}.cshtml")]
 [assembly: AspMvcViewLocationFormat("/src/Views/Emails/{1}/{0}.cshtml")]
@@ -46,11 +48,19 @@ namespace Mailr
         {
             SmartPropertiesLayoutRenderer.Register();
 
-            services.AddSingleton(LoggerFactorySetup.SetupLoggerFactory(HostingEnvironment.EnvironmentName, "MailrAPI", new[] { NLogRx.Create() }));
+            services.AddSingleton<ILoggerFactory>(
+                new LoggerFactoryBuilder()
+                    .Environment(HostingEnvironment.EnvironmentName)
+                    .Product("Mailr")
+                    .WithRx(NLogRx.Create())
+                    .ScopeSerializer(serializer => serializer.Formatting = Formatting.None)
+                    .SnapshotSerializer(serializer => serializer.Formatting = Formatting.None)
+                    .Build()
+            );
 
             services
                 .AddMvc()
-                .AddPlugins();           
+                .AddPlugins();
 
             services.AddScoped<ICssProvider, CssProvider>();
             services.Configure<RazorViewEngineOptions>(options =>
@@ -59,7 +69,7 @@ namespace Mailr
 
                 options
                     .ViewLocationExpanders
-                    .Add(new RelativeViewLocationExpander(prefix));                
+                    .Add(new RelativeViewLocationExpander(prefix));
             });
 
             var emailClient = Configuration["emailClient"];
@@ -84,9 +94,14 @@ namespace Mailr
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            const string headerPrefix = "X-Mailr-";
+            //const string headerPrefix = "X-Mailr-";
 
-            app.UseSemanticLogger(headerPrefix, product => product is null ? "Unknown" : $"{product}_SemLog3");
+            //app.UseSemanticLogger(headerPrefix, product => product is null ? "Unknown" : $"{product}_SemLog3");
+
+            app.UseSemanticLogger(config =>
+            {
+                config.MapProduct = _ => "Master_SemLog3";
+            });
 
             if (env.IsDevelopment())
             {
@@ -110,8 +125,11 @@ namespace Mailr
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
                 routes.MapRoute(
-                    name: RouteNames.Extension,
+                    name: RouteNames.Extensions.External,
                     template: "{extension}/wwwroot/css/{controller}/{action}.css");
+                routes.MapRoute(
+                    name: RouteNames.Extensions.Internal,
+                    template: "wwwroot/css/{extension}/{controller}/{action}.css");
                 routes.MapRoute(
                     name: RouteNames.Themes,
                     template: "wwwroot/css/themes/{name}.css");
@@ -129,7 +147,11 @@ namespace Mailr
 
     internal class RouteNames
     {
-        public const string Extension = nameof(Extension);
+        public class Extensions
+        {
+            public const string External = nameof(External);
+            public const string Internal = nameof(Internal);
+        }
         public static string Themes = nameof(Themes);
     }
 }

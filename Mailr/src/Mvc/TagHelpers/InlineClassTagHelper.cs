@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Custom;
 using System.Threading.Tasks;
 using Mailr.Helpers;
+using Mailr.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -71,13 +73,18 @@ namespace Mailr.Mvc.TagHelpers
             var theme = ViewContext.HttpContext.Items["theme"] ?? "default";
 
             var themeCssFileName = url.RouteUrl(RouteNames.Themes, new { name = theme });
-            var pluginCssFileName = url.RouteUrl(RouteNames.Extension, new { extension = ViewContext.HttpContext.Items["Extension"] });
+
+            var route =
+                ViewContext.HttpContext.IsInternalExtension()
+                    ? RouteNames.Extensions.Internal
+                    : RouteNames.Extensions.External;
+            var extensionCssFileName = url.RouteUrl(route, new { extension = ViewContext.HttpContext.ExtensionId() });
 
             var themeCss = await _cssProvider.GetCss(themeCssFileName);
-            var pluginCss = await _cssProvider.GetCss(pluginCssFileName);
+            var extensionCss = extensionCssFileName is null ? new List<CssRuleset>() : await _cssProvider.GetCss(extensionCssFileName);
 
             var declarations =
-                from ruleset in themeCss.Concat(pluginCss)
+                from ruleset in themeCss.Concat(extensionCss)
                 from selector in ruleset.Selectors
                 join className in inlineableClassNames on selector equals className
                 select ruleset.Declarations.TrimEnd(';');

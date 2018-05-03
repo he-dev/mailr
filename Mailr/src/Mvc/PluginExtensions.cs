@@ -31,14 +31,14 @@ namespace Mailr.Mvc
             var pluginsRootPath = Path.Combine(hostingEnvironment.ContentRootPath, configuration["ExtensionDirectory:Root"]);
             var pluginAssemblies = GetPluginAssemblies(pluginsRootPath, configuration["ExtensionDirectory:Binary"]).ToList();
 
-            logger.Log(Abstraction.Layer.Infrastructure().Data().Variable(new { pluginAssemblies = pluginAssemblies.Select(x => x.FullName) }));
+            logger.Log(Abstraction.Layer.Infrastructure().Variable(new { pluginAssemblies = pluginAssemblies.Select(x => x.FullName) }));
 
             mvc
                 .ConfigureApplicationPartManager(apm =>
                 {
                     foreach (var pluginAssembly in pluginAssemblies)
                     {
-                        logger.Log(Abstraction.Layer.Infrastructure().Data().Object(new { pluginAssembly = new { pluginAssembly.FullName } }));
+                        logger.Log(Abstraction.Layer.Infrastructure().Meta(new { pluginAssembly = new { pluginAssembly.FullName } }));
                         apm.ApplicationParts.Add(new AssemblyPart(pluginAssembly));
                     }
                 });            
@@ -111,7 +111,7 @@ namespace Mailr.Mvc
                         $"{pluginDependencyName}.dll"
                     );
 
-                logger.Log(Abstraction.Layer.Infrastructure().Data().Variable(new { pluginDependencyFullName }));
+                logger.Log(Abstraction.Layer.Infrastructure().Variable(new { pluginDependencyFullName }));
 
                 return
                     File.Exists(pluginDependencyFullName)
