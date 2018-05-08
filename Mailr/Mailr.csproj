@@ -15,29 +15,25 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="src\Models\Email.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore" Version="2.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Hosting.WindowsServices" Version="2.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.WindowsServices" Version="2.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.4" />
     <!-- <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.ViewCompilation" Version="2.0.3" PrivateAssets="All" /> -->
-    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.0.3" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="2.0.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.0.2" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.0.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.4" />
     <PackageReference Include="NLog" Version="4.5.3" />
-    <PackageReference Include="Reusable.AspNetCore.Http.HeaderValidator" Version="5.0.0" />
-    <PackageReference Include="Reusable.AspNetCore.Http.SemanticLogger" Version="5.0.0" />
-    <PackageReference Include="Reusable.Net.Mail" Version="5.0.0" />
-    <PackageReference Include="Reusable.Net.Mail.OutlookClient" Version="5.0.0" />
-    <PackageReference Include="Reusable.Net.Mail.SmtpClient" Version="5.0.0" />
-    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="5.0.0" />
-    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="5.0.0" />
-    <PackageReference Include="Reusable.Utilities.JsonNet" Version="5.0.0" />
-    <PackageReference Include="Reusable.Utilities.NLog" Version="5.0.0" />
-    <PackageReference Include="Reusable.Utilities.SqlClient" Version="5.0.0" />
+    <PackageReference Include="Reusable.AspNetCore.Http.HeaderValidator" Version="5.2.0" />
+    <PackageReference Include="Reusable.AspNetCore.Http.SemanticLogger" Version="5.2.0" />
+    <PackageReference Include="Reusable.Net.Mail" Version="5.2.0" />
+    <PackageReference Include="Reusable.Net.Mail.OutlookClient" Version="5.2.0" />
+    <PackageReference Include="Reusable.Net.Mail.SmtpClient" Version="5.2.0" />
+    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="5.2.0" />
+    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="5.2.0" />
+    <PackageReference Include="Reusable.Utilities.JsonNet" Version="5.2.0" />
+    <PackageReference Include="Reusable.Utilities.NLog" Version="5.2.0" />
+    <PackageReference Include="Reusable.Utilities.SqlClient" Version="5.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,6 +55,10 @@
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="appsettings.Development.json" CopyToPublishDirectory="Never" />
   </ItemGroup>
 
   <ItemGroup>

@@ -3,6 +3,7 @@ using Mailr.Models.Test;
 using Mailr.Utilities;
 using Mailr.Utilities.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
+using Reusable.AspNetCore.Http.Mvc.Filters;
 
 namespace Mailr.Controllers
 {

@@ -29,7 +29,7 @@ namespace Mailr.Mvc
             var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Startup>();
 
             var pluginsRootPath = Path.Combine(hostingEnvironment.ContentRootPath, configuration["ExtensionDirectory:Root"]);
-            var pluginAssemblies = GetPluginAssemblies(pluginsRootPath, configuration["ExtensionDirectory:Binary"]).ToList();
+            var pluginAssemblies = GetPluginAssemblies(serviceProvider, pluginsRootPath, configuration["ExtensionDirectory:Binary"]).ToList();
 
             logger.Log(Abstraction.Layer.Infrastructure().Variable(new { pluginAssemblies = pluginAssemblies.Select(x => x.FullName) }));
 
@@ -41,7 +41,7 @@ namespace Mailr.Mvc
                         logger.Log(Abstraction.Layer.Infrastructure().Meta(new { pluginAssembly = new { pluginAssembly.FullName } }));
                         apm.ApplicationParts.Add(new AssemblyPart(pluginAssembly));
                     }
-                });            
+                });
 
             var fileProvider = new CompositeFileProvider(
                 CreateExtensionFileProviders(
@@ -69,8 +69,10 @@ namespace Mailr.Mvc
             return mvc;
         }
 
-        private static IEnumerable<Assembly> GetPluginAssemblies(string pluginsRootPath, string binDirectoryName)
+        private static IEnumerable<Assembly> GetPluginAssemblies(IServiceProvider serviceProvider, string pluginsRootPath, string binDirectoryName)
         {
+            var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Startup>();
+
             if (!Directory.Exists(pluginsRootPath))
             {
                 yield break;
@@ -89,7 +91,21 @@ namespace Mailr.Mvc
 
                 if (File.Exists(pluginFullName))
                 {
-                    yield return Assembly.LoadFile(pluginFullName);
+                    //yield return Assembly.LoadFile(pluginFullName);
+                    var plugin = default(Assembly);
+                    try
+                    {
+                        plugin = Assembly.LoadFile(pluginFullName);
+                    }
+                    catch (ReflectionTypeLoadException ex)
+                    {
+                        logger.Log(Abstraction.Layer.Infrastructure().Routine(nameof(Assembly.LoadFile)).Faulted(), ex);
+                    }
+
+                    if (!(plugin is null))
+                    {
+                        yield return plugin;
+                    }
                 }
             }
         }
@@ -118,7 +134,7 @@ namespace Mailr.Mvc
                         ? Assembly.LoadFile(pluginDependencyFullName)
                         : null;
             };
-        }        
+        }
 
         private static IEnumerable<IFileProvider> CreateExtensionFileProviders(IHostingEnvironment hostingEnvironment, IEnumerable<Assembly> pluginAssemblies, string pluginsRootPath)
         {
@@ -163,7 +179,7 @@ namespace Mailr.Mvc
                 yield return extensionsRootDirectory.FullName;
 
                 //return extensionsRootDirectory.FullName;
-                foreach (var directory in Directory.EnumerateDirectories(extensionsRootDirectory.FullName, "*Extension"))
+                foreach (var directory in Directory.EnumerateDirectories(extensionsRootDirectory.FullName, "Mailr.Extensions.*"))
                 {
                     yield return directory;
                 }
