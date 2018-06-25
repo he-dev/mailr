@@ -24,6 +24,7 @@ using Reusable.Net.Mail;
 using Reusable.OmniLog;
 using Reusable.OmniLog.SemanticExtensions;
 using Reusable.Utilities.NLog.LayoutRenderers;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 [assembly: AspMvcViewLocationFormat("/src/Views/{1}/{0}.cshtml")]
 [assembly: AspMvcViewLocationFormat("/src/Views/Emails/{1}/{0}.cshtml")]
@@ -60,7 +61,7 @@ namespace Mailr
 
             services
                 .AddMvc()
-                .AddPlugins();
+                .AddExtensions();
 
             services.AddScoped<ICssProvider, CssProvider>();
             services.Configure<RazorViewEngineOptions>(options =>
