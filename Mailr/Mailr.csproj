@@ -29,16 +29,16 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
     <PackageReference Include="NLog" Version="4.5.6" />
-    <PackageReference Include="Reusable.AspNetCore.Http.HeaderValidator" Version="6.0.1" />
-    <PackageReference Include="Reusable.AspNetCore.Http.SemanticLogger" Version="6.0.1" />
-    <PackageReference Include="Reusable.Net.Mail" Version="6.0.1" />
-    <PackageReference Include="Reusable.Net.Mail.OutlookClient" Version="6.0.1" />
-    <PackageReference Include="Reusable.Net.Mail.SmtpClient" Version="6.0.1" />
-    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="6.0.1" />
-    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="6.0.1" />
-    <PackageReference Include="Reusable.Utilities.JsonNet" Version="6.0.1" />
-    <PackageReference Include="Reusable.Utilities.NLog" Version="6.0.1" />
-    <PackageReference Include="Reusable.Utilities.SqlClient" Version="6.0.1" />
+    <PackageReference Include="Reusable.AspNetCore.Http.HeaderValidator" Version="6.1.0" />
+    <PackageReference Include="Reusable.AspNetCore.Http.SemanticLogger" Version="6.1.0" />
+    <PackageReference Include="Reusable.Net.Mail" Version="6.1.0" />
+    <PackageReference Include="Reusable.Net.Mail.OutlookClient" Version="6.1.0" />
+    <PackageReference Include="Reusable.Net.Mail.SmtpClient" Version="6.1.0" />
+    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="6.1.0" />
+    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="6.1.0" />
+    <PackageReference Include="Reusable.Utilities.JsonNet" Version="6.1.0" />
+    <PackageReference Include="Reusable.Utilities.NLog" Version="6.1.0" />
+    <PackageReference Include="Reusable.Utilities.SqlClient" Version="6.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -46,7 +46,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Mailr.Extensions\Mailr.Extensions.Gunter\Mailr.Extensions.Gunter.csproj" />
     <ProjectReference Include="..\Mailr.Models.Abstractions\Mailr.Models.Abstractions.csproj" />
     <ProjectReference Include="..\Mailr.Models\Mailr.Models.csproj" />
     <ProjectReference Include="..\Mailr.Utilities\Mailr.Utilities.csproj" />
