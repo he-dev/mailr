@@ -7,5 +7,7 @@
         string Subject { get; }
 
         bool IsHtml { get; }
+
+        string Theme { get; }
     }
 }

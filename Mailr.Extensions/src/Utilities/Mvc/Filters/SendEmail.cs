@@ -22,15 +22,6 @@ namespace Mailr.Extensions.Utilities.Mvc.Filters
             }
 
             context.HttpContext.Items[EmailMetadata] = emailMetadata;
-
-            //if (context.ActionArguments.TryGetValue("email", out var obj) && obj is IEmailMetadata email)
-            //{
-            //    context.HttpContext.Items["EmailMetadata"] = email;
-            //}
-            //else
-            //{
-            //    throw new InvalidOperationException("'email' argument not found.");
-            //}
         }
     }
 }

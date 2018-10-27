@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Custom;
 using JetBrains.Annotations;
+using Mailr.Extensions;
 using Mailr.Helpers;
 using Mailr.Middleware;
 using Mailr.Mvc;
@@ -45,10 +47,10 @@ namespace Mailr
 
         private IHostingEnvironment HostingEnvironment { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             SmartPropertiesLayoutRenderer.Register();
+
 
             services.AddSingleton<ILoggerFactory>(
                 new LoggerFactoryBuilder()
@@ -98,13 +100,22 @@ namespace Mailr
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            //const string headerPrefix = "X-Mailr-";
-
-            //app.UseSemanticLogger(headerPrefix, product => product is null ? "Unknown" : $"{product}_SemLog3");
-
             app.UseSemanticLogger(config =>
             {
-                config.MapProduct = _ => "Master_SemLog3";
+                //config.MapProduct = _ => "Master_SemLog3";
+                config.GetCorrelationContext = context =>
+                {
+                    var product = context.Request.Headers["X-Product"].ElementAtOrDefault(0);
+                    var environment = context.Request.Headers["X-Environment"].ElementAtOrDefault(0);
+
+                    return
+                             string.IsNullOrWhiteSpace(product) || string.IsNullOrWhiteSpace(environment)
+                              ? null
+                             //: new Dictionary<string, string> { [name] = value };
+                             : new { Product = product, Environment = environment };
+
+                    //return correlationContext is null ? null : new { Header = correlationContext };
+                };
             });
 
             if (env.IsDevelopment())
@@ -117,8 +128,7 @@ namespace Mailr
                 app.UseExceptionHandler("/Home/Error");
             }
 
-
-            app.UseWhen(httpContext => !httpContext.Request.Method.In(new[] { "GET" }, StringComparer.OrdinalIgnoreCase), UseHeaderValidator());
+            //app.UseWhen(httpContext => !httpContext.Request.Method.In(new[] { "GET" }, StringComparer.OrdinalIgnoreCase), UseHeaderValidator());
 
             app.UseMailer();
             app.UseStaticFiles();
@@ -129,10 +139,10 @@ namespace Mailr
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
                 routes.MapRoute(
-                    name: RouteNames.Extensions.External,
+                    name: ExtensionType.External.ToString(),
                     template: "{extension}/wwwroot/css/{controller}/{action}.css");
                 routes.MapRoute(
-                    name: RouteNames.Extensions.Internal,
+                    name: ExtensionType.Internal.ToString(),
                     template: "wwwroot/css/{extension}/{controller}/{action}.css");
                 routes.MapRoute(
                     name: RouteNames.Themes,
@@ -151,11 +161,6 @@ namespace Mailr
 
     internal class RouteNames
     {
-        public class Extensions
-        {
-            public const string External = nameof(External);
-            public const string Internal = nameof(Internal);
-        }
         public static string Themes = nameof(Themes);
     }
 }

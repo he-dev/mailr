@@ -54,11 +54,16 @@ namespace Mailr.Middleware
 
                     if (context.Items[EmailMetadata] is IEmailMetadata emailMetadata)
                     {
-
                         _workItemQueue.Enqueue(async cancellationToken =>
                         {
                             var scope = _logger.BeginScope().WithCorrelationId(correlationId).AttachElapsed();
-                            
+
+                            // todo - this should be configurable because no we have it twice.
+                            var product = context.Request.Headers["X-Product"].ElementAtOrDefault(0);
+                            var environment = context.Request.Headers["X-Environment"].ElementAtOrDefault(0);
+                            var correlationContext = string.IsNullOrWhiteSpace(product) || string.IsNullOrWhiteSpace(environment) ? null : new { Product = product, Environment = environment };
+                            if (!(correlationContext is null)) scope.WithCorrelationContext(correlationContext);
+
                             // Selecting interface properties because otherwise the body will be dumped too.
                             _logger.Log(Abstraction.Layer.Business().Meta(new { emailMetadata = new { emailMetadata.To, emailMetadata.Subject, emailMetadata.IsHtml } }));
 

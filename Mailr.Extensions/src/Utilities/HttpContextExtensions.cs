@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Mailr.Extensions.Abstractions;
+using Microsoft.AspNetCore.Http;
 
 namespace Mailr.Extensions.Utilities
 {
@@ -14,14 +15,19 @@ namespace Mailr.Extensions.Utilities
             return (string)context.Items[nameof(ExtensionId)];
         }
 
-        internal static void IsInternalExtension(this HttpContext context, bool isInternal)
+        internal static void ExtensionType(this HttpContext context, ExtensionType extensionType)
         {
-            context.Items[nameof(IsInternalExtension)] = isInternal;
+            context.Items[nameof(ExtensionType)] = extensionType;
         }
 
-        internal static bool IsInternalExtension(this HttpContext context)
+        internal static ExtensionType ExtensionType(this HttpContext context)
         {
-            return context.Items[nameof(IsInternalExtension)] is bool isInternal && isInternal;
+            return context.Items[nameof(ExtensionType)] is ExtensionType extensionType ? extensionType : Extensions.ExtensionType.Undefined;
+        }
+
+        internal static IEmailMetadata EmailMetadata(this HttpContext context)
+        {
+            return context.Items[ItemNames.EmailMetadata] is IEmailMetadata emailMetadata ? emailMetadata : default(IEmailMetadata);
         }
     }
 }

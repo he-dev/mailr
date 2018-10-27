@@ -1,4 +1,5 @@
-﻿using Mailr.Extensions.Abstractions;
+﻿using JetBrains.Annotations;
+using Mailr.Extensions.Abstractions;
 
 namespace Mailr.Extensions.Models
 {
@@ -11,8 +12,11 @@ namespace Mailr.Extensions.Models
         public TBody Body { get; set; }
 
         public bool IsHtml { get; set; }
+
+        public string Theme { get; set; }
     }
 
+    [PublicAPI]
     public static class Email
     {
         public static Email<TBody> Create<TBody>(string to, string subject, TBody body)

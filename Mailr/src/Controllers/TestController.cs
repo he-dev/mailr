@@ -8,16 +8,14 @@ using Reusable.AspNetCore.Http.Mvc.Filters;
 namespace Mailr.Controllers
 {
     [Route("api/mailr/[controller]")]
-    [ExtensionId("mailr")]
+    [Extension]
     public class TestController : Controller
     {
-        //private const string Action
-
-        // http://localhost:49471/preview/telexprocessor/cancellationreport
+        // http://localhost:49471/mailr/test/test
         [HttpGet("[action]")]
         public IActionResult Test()
         {
-            return View("~/src/Views/Mailr/Test/Test.cshtml", new TestBody { Greeting = "Hallo preview!" });
+            return View("~/src/Views/Mailr/Test/Test.cshtml", new TestBody { Greeting = "Hallo Mailr!" });
         }
         
         [HttpPost("[action]")]

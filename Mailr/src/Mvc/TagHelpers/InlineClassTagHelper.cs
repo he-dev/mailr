@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Custom;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Mailr.Extensions.Utilities;
 using Mailr.Helpers;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,7 @@ using Reusable.Extensions;
 
 namespace Mailr.Mvc.TagHelpers
 {
+    [UsedImplicitly]
     [HtmlTargetElement(Attributes = "class")]
     public class InlineClassTagHelper : TagHelper
     {
@@ -67,17 +69,14 @@ namespace Mailr.Mvc.TagHelpers
                 inlineableClassNames
                     .Select(className => $".{className.ToString()}".ToSoftString())
                     .ToList();
-            
+
             var url = _urlHelperFactory.GetUrlHelper(ViewContext);
 
-            var theme = ViewContext.HttpContext.Items["theme"] ?? "default";
+            var theme = ViewContext.HttpContext.EmailMetadata()?.Theme ?? "default";
 
             var themeCssFileName = url.RouteUrl(RouteNames.Themes, new { name = theme });
 
-            var route =
-                ViewContext.HttpContext.IsInternalExtension()
-                    ? RouteNames.Extensions.Internal
-                    : RouteNames.Extensions.External;
+            var route = ViewContext.HttpContext.ExtensionType().ToString();
             var extensionCssFileName = url.RouteUrl(route, new { extension = ViewContext.HttpContext.ExtensionId() });
 
             var themeCss = await _cssProvider.GetCss(themeCssFileName);
