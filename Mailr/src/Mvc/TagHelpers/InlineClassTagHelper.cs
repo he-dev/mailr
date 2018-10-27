@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Custom;
 using System.Threading.Tasks;
+using Mailr.Extensions.Utilities;
 using Mailr.Helpers;
-using Mailr.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -58,7 +58,7 @@ namespace Mailr.Mvc.TagHelpers
                  where className?.StartsWith(classPrefix) ?? false
                  select SoftString.Create(className)).ToList();
 
-            if (inlineableClassNames.None())
+            if (inlineableClassNames.Empty())
             {
                 return;
             }

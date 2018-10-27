@@ -1,4 +1,4 @@
-﻿ namespace Mailr.Models.Abstractions
+﻿ namespace Mailr.Extensions.Abstractions
 {
     public interface IEmailMetadata
     {

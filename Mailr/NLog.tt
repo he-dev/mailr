@@ -22,7 +22,7 @@
 	//var database = "testingdb";
 	var schema = "dbo";
 	var tablePattern = "Master_SemLog3$";
-	var fallbackLogPattern = "Mailr_SemLog3";
+	var fallbackLogPattern = "Master_SemLog3$";
 	var internalLogFile = @"c:\temp\Mailr.N.log";
 	
 #>

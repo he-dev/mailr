@@ -1,6 +1,6 @@
-﻿using Mailr.Models.Abstractions;
+﻿using Mailr.Extensions.Abstractions;
 
-namespace Mailr.Models
+namespace Mailr.Extensions.Models
 {
     public class Email<TBody> : IEmailMetadata
     {

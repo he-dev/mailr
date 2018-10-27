@@ -23,6 +23,7 @@ using Reusable.AspNetCore.Http;
 using Reusable.Net.Mail;
 using Reusable.OmniLog;
 using Reusable.OmniLog.SemanticExtensions;
+using Reusable.Utilities.AspNetCore.ActionFilters;
 using Reusable.Utilities.NLog.LayoutRenderers;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
@@ -90,6 +91,8 @@ namespace Mailr
 
             services.AddSingleton<IHostedService, WorkItemQueueService>();
             services.AddSingleton<IWorkItemQueue, WorkItemQueue>();
+
+            services.AddScoped<ValidateModel>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

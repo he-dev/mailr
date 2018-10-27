@@ -2,7 +2,7 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Mailr.Utilities.Mvc.Filters
+namespace Mailr.Extensions.Utilities.Mvc.Filters
 {
     public class ExtensionId : ActionFilterAttribute
     {

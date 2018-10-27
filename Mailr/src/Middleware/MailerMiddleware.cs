@@ -2,8 +2,9 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Mailr.Extensions.Abstractions;
+using Mailr.Extensions.Utilities;
 using Mailr.Models;
-using Mailr.Models.Abstractions;
 using Mailr.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -14,6 +15,8 @@ using Reusable.OmniLog.SemanticExtensions;
 
 namespace Mailr.Middleware
 {
+    using static ItemNames;
+
     public class MailerMiddleware
     {
         private readonly RequestDelegate _next;
@@ -49,20 +52,24 @@ namespace Mailr.Middleware
                 {
                     var body = await reader.ReadToEndAsync();
 
-                    if (context.Items["EmailMetadata"] is IEmailMetadata email)
+                    if (context.Items[EmailMetadata] is IEmailMetadata emailMetadata)
                     {
+
                         _workItemQueue.Enqueue(async cancellationToken =>
                         {
-                            var scope = _logger.BeginScope().WithCorrelationId(correlationId);
-                            _logger.Log(Abstraction.Layer.Network().Meta(new { email = new { email.To, email.Subject } }));
+                            var scope = _logger.BeginScope().WithCorrelationId(correlationId).AttachElapsed();
+                            
+                            // Selecting interface properties because otherwise the body will be dumped too.
+                            _logger.Log(Abstraction.Layer.Business().Meta(new { emailMetadata = new { emailMetadata.To, emailMetadata.Subject, emailMetadata.IsHtml } }));
+
                             try
                             {
                                 await _emailClient.SendAsync(new Email<EmailSubject, EmailBody>
                                 {
-                                    To = email.To,
-                                    Subject = new PlainTextSubject(email.Subject),
+                                    To = emailMetadata.To,
+                                    Subject = new PlainTextSubject(emailMetadata.Subject),
                                     Body =
-                                        email.IsHtml
+                                        emailMetadata.IsHtml
                                             ? (EmailBody)new ParialViewEmailBody(body)
                                             : (EmailBody)new PlainTextBody(body),
                                 });

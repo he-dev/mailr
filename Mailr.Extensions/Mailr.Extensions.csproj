@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net47</TargetFramework>
-    <RootNamespace>Mailr.Models</RootNamespace>
+    <RootNamespace>Mailr.Extensions</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,7 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Mailr.Models.Abstractions\Mailr.Models.Abstractions.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.3" />
+    <PackageReference Include="Reusable.Core" Version="7.0.22" />
   </ItemGroup>
 
 </Project>
