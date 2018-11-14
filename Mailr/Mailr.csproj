@@ -21,7 +21,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore" Version="2.1.4" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.1.6" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.WindowsServices" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.1.3" />
@@ -29,19 +29,19 @@
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="2.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.1.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.6" />
     <PackageReference Include="NLog" Version="4.5.10" />
     <PackageReference Include="Reusable.AspNetCore.Http.HeaderValidator" Version="7.0.23" />
-    <PackageReference Include="Reusable.AspNetCore.Http.SemanticLogger" Version="7.0.23" />
-    <PackageReference Include="Reusable.Core" Version="7.0.23" />
-    <PackageReference Include="Reusable.Net.Mail" Version="7.0.23" />
-    <PackageReference Include="Reusable.Net.Mail.OutlookClient" Version="7.0.23" />
-    <PackageReference Include="Reusable.Net.Mail.SmtpClient" Version="7.0.23" />
-    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="7.0.23" />
-    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="7.0.23" />
-    <PackageReference Include="Reusable.Utilities.JsonNet" Version="7.0.23" />
-    <PackageReference Include="Reusable.Utilities.NLog" Version="7.0.23" />
-    <PackageReference Include="Reusable.Utilities.SqlClient" Version="7.0.23" />
+    <PackageReference Include="Reusable.AspNetCore.Http.SemanticLogger" Version="7.2.2" />
+    <PackageReference Include="Reusable.Core" Version="7.2.2" />
+    <PackageReference Include="Reusable.Net.Mail" Version="7.2.2" />
+    <PackageReference Include="Reusable.Net.Mail.OutlookClient" Version="7.2.2" />
+    <PackageReference Include="Reusable.Net.Mail.SmtpClient" Version="7.2.2" />
+    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="7.2.2" />
+    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="7.2.2" />
+    <PackageReference Include="Reusable.Utilities.JsonNet" Version="7.2.2" />
+    <PackageReference Include="Reusable.Utilities.NLog" Version="7.2.2" />
+    <PackageReference Include="Reusable.Utilities.SqlClient" Version="7.2.2" />
   </ItemGroup>
 
   <ItemGroup>

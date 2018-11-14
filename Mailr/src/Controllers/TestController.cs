@@ -1,4 +1,7 @@
-﻿using Mailr.Extensions.Models;
+﻿using System;
+using JetBrains.Annotations;
+using Mailr.Extensions.Models;
+using Mailr.Extensions.Utilities.Mvc;
 using Mailr.Extensions.Utilities.Mvc.Filters;
 using Mailr.Models;
 using Mailr.Models.Test;
@@ -13,17 +16,17 @@ namespace Mailr.Controllers
     {
         // http://localhost:49471/mailr/test/test
         [HttpGet("[action]")]
-        public IActionResult Test()
+        public IActionResult Test(bool embedded)
         {
-            return View("~/src/Views/Mailr/Test/Test.cshtml", new TestBody { Greeting = "Hallo Mailr!" });
+            return this.EmailView(embedded)("~/src/Views/Mailr/Test/Test.cshtml", new TestBody { Greeting = "Hallo Mailr!" });
         }
-        
+
         [HttpPost("[action]")]
         [LogResponseBody]
         [SendEmail]
         public IActionResult Test([FromBody] Email<TestBody> email)
         {
-            return PartialView("~/src/Views/Mailr/Test/Test.cshtml", email.Body);
+            return this.EmailView(embedded: false)("~/src/Views/Mailr/Test/Test.cshtml", email.Body);
         }
     }
 }

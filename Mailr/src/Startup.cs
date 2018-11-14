@@ -21,9 +21,11 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
+using Reusable;
 using Reusable.AspNetCore.Http;
 using Reusable.Net.Mail;
 using Reusable.OmniLog;
+using Reusable.OmniLog.Attachements;
 using Reusable.OmniLog.SemanticExtensions;
 using Reusable.Utilities.AspNetCore.ActionFilters;
 using Reusable.Utilities.NLog.LayoutRenderers;
@@ -52,14 +54,16 @@ namespace Mailr
             SmartPropertiesLayoutRenderer.Register();
 
 
-            services.AddSingleton<ILoggerFactory>(
-                new LoggerFactoryBuilder()
-                    .Environment(HostingEnvironment.EnvironmentName)
-                    .Product("Mailr")
-                    .WithRx(NLogRx.Create())
-                    .ScopeSerializer(serializer => serializer.Formatting = Formatting.None)
-                    .SnapshotSerializer(serializer => serializer.Formatting = Formatting.None)
-                    .Build()
+            services.AddSingleton<ILoggerFactory>
+            (
+                new LoggerFactory()
+                    .AttachObject("Environment", HostingEnvironment.EnvironmentName)
+                    .AttachObject("Product", "Mailr")
+                    .AttachScope()
+                    .AttachSnapshot()
+                    .Attach<Timestamp<DateTimeUtc>>()
+                    .AttachElapsedMilliseconds()
+                    .AddObserver<NLogRx>()
             );
 
             services
