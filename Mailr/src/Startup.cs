@@ -53,12 +53,11 @@ namespace Mailr
         {
             SmartPropertiesLayoutRenderer.Register();
 
-
             services.AddSingleton<ILoggerFactory>
             (
                 new LoggerFactory()
                     .AttachObject("Environment", HostingEnvironment.EnvironmentName)
-                    .AttachObject("Product", "Mailr")
+                    .AttachObject("Product", "Mailr-v2.0.0")
                     .AttachScope()
                     .AttachSnapshot()
                     .Attach<Timestamp<DateTimeUtc>>()
