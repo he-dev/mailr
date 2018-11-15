@@ -151,15 +151,7 @@ namespace Mailr
                     name: RouteNames.Themes,
                     template: "wwwroot/css/themes/{name}.css");
             });
-        }
-
-        private static Action<IApplicationBuilder> UseHeaderValidator()
-        {
-            return app =>
-            {
-                app.UseHeaderValidator("X-Product", "X-Profile");
-            };
-        }
+        }        
     }
 
     internal class RouteNames
