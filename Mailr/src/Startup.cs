@@ -142,10 +142,10 @@ namespace Mailr
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
                 routes.MapRoute(
-                    name: ExtensionType.External.ToString(),
+                    name: ControllerType.External.ToString(),
                     template: "{extension}/wwwroot/css/{controller}/{action}.css");
                 routes.MapRoute(
-                    name: ExtensionType.Internal.ToString(),
+                    name: ControllerType.Internal.ToString(),
                     template: "wwwroot/css/{extension}/{controller}/{action}.css");
                 routes.MapRoute(
                     name: RouteNames.Themes,
