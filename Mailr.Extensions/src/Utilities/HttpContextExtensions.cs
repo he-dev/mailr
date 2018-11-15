@@ -15,14 +15,14 @@ namespace Mailr.Extensions.Utilities
             return (string)context.Items[nameof(ExtensionId)];
         }
 
-        internal static void ExtensionType(this HttpContext context, ExtensionType extensionType)
+        internal static void ControllerType(this HttpContext context, ControllerType controllerType)
         {
-            context.Items[nameof(ExtensionType)] = extensionType;
+            context.Items[nameof(ControllerType)] = controllerType;
         }
 
-        internal static ExtensionType ExtensionType(this HttpContext context)
+        internal static ControllerType ControllerType(this HttpContext context)
         {
-            return context.Items[nameof(ExtensionType)] is ExtensionType extensionType ? extensionType : Extensions.ExtensionType.Undefined;
+            return context.Items[nameof(ControllerType)] is ControllerType extensionType ? extensionType : Extensions.ControllerType.Undefined;
         }
 
         internal static IEmailMetadata EmailMetadata(this HttpContext context)

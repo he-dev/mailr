@@ -76,8 +76,8 @@ namespace Mailr.Mvc.TagHelpers
 
             var themeCssFileName = url.RouteUrl(RouteNames.Themes, new { name = theme });
 
-            var route = ViewContext.HttpContext.ExtensionType().ToString();
-            var extensionCssFileName = url.RouteUrl(route, new { extension = ViewContext.HttpContext.ExtensionId() });
+            var cssRouteName = ViewContext.HttpContext.ControllerType().ToString();
+            var extensionCssFileName = url.RouteUrl(cssRouteName, new { extension = ViewContext.HttpContext.ExtensionId() });
 
             var themeCss = await _cssProvider.GetCss(themeCssFileName);
             var extensionCss = extensionCssFileName is null ? new List<CssRuleset>() : await _cssProvider.GetCss(extensionCssFileName);

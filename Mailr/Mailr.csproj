@@ -52,6 +52,8 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
   </ItemGroup>
 
+
+
   <ItemGroup>
     <ProjectReference Include="..\Mailr.Extensions\Mailr.Extensions.csproj" />
   </ItemGroup>  
@@ -68,7 +70,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="appsettings.Development.json" CopyToPublishDirectory="Never" />
+    <None Remove="appsettings.Development.json" CopyToPublishDirectory="Never"  />
+    <None Remove="appsettings.DevelopmentExt.json"  CopyToPublishDirectory="Never" />
   </ItemGroup>
 
   <ItemGroup>

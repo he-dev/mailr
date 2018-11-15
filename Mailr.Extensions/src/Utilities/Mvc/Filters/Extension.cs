@@ -15,7 +15,7 @@ namespace Mailr.Extensions.Utilities.Mvc.Filters
             // ReSharper disable once PossibleNullReferenceException - I'm pretty sure DeclaringType is never null.
             var assemblyName = ((ControllerActionDescriptor)context.ActionDescriptor).MethodInfo.DeclaringType.Assembly.GetName().Name;
             context.HttpContext.ExtensionId(assemblyName);
-            context.HttpContext.ExtensionType(assemblyName == "Mailr" ? ExtensionType.Internal : ExtensionType.External);
+            context.HttpContext.ControllerType(assemblyName == "Mailr" ? ControllerType.Internal : ControllerType.External);
         }
     }
 }

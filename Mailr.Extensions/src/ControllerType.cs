@@ -1,6 +1,6 @@
 ﻿namespace Mailr.Extensions
 {
-    internal enum ExtensionType
+    internal enum ControllerType
     {
         Undefined,
         Internal,

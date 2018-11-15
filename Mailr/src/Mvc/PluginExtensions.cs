@@ -32,35 +32,52 @@ namespace Mailr.Mvc
             //logger.Log(Abstraction.Layer.Infrastructure().Variable(new { pluginAssemblies = extAssemblies.Select(x => x.FullName) }));
 
             var extensionDirectories =
-                (hostingEnvironment.IsDevelopmentExt()
-                    ? EnumerateExtensionProjectDirectories(serviceProvider)
-                    : EnumerateExtensionInstallationDirectories(serviceProvider)).ToList();
+                (
+                    hostingEnvironment.IsDevelopmentExt()
+                        ? EnumerateExtensionProjectDirectories(serviceProvider)
+                        : EnumerateExtensionInstallationDirectories(serviceProvider)
+                ).ToList();
+
+            var extensionDirectoriesWithoutRoot = extensionDirectories.Skip(1);
 
             mvc
                 .ConfigureApplicationPartManager(apm =>
                 {
-                    foreach (var extensionDirectory in extensionDirectories)
+                    var binDirectory = configuration["Extensibility:Bin"];
+
+                    // Skip the first directory which is the root and does not contain any extensions.
+                    foreach (var extensionDirectory in extensionDirectoriesWithoutRoot)
                     {
-                        if (TryLoadExtensionAssembly(serviceProvider, extensionDirectory, out var extensionAssembly))
+                        // Mailr.Extensions.Example
+                        var extensionName = Path.GetFileName(extensionDirectory);
+                        
+                        // Extension assemblies are located in the {Extensibility:Ext}: ..\ext\Foo\bin\Foo.dll
+                        var extensionFullName =
+                            Path.Combine(
+                                extensionDirectory,
+                                binDirectory,
+                                $"{extensionName}.dll"
+                            );
+
+                        if (TryLoadAssembly(serviceProvider, extensionFullName, out var extensionAssembly))
                         {
-                            logger.Log(Abstraction.Layer.Infrastructure().Meta(new { extensionAssembly = new { extensionAssembly.FullName } }));
                             apm.ApplicationParts.Add(new AssemblyPart(extensionAssembly));
                         }
                     }
                 });
 
-            if (hostingEnvironment.IsProduction() || hostingEnvironment.IsDevelopment())
+            //if (hostingEnvironment.IsProduction() || hostingEnvironment.IsDevelopment())
             {
-                ConfigureAssemblyResolve(serviceProvider);
+                ConfigureAssemblyResolve(serviceProvider, extensionDirectoriesWithoutRoot);
             }
 
-            var resouceFileProviders =
+            var staticFileProviders =
                 extensionDirectories
                     .Select(path => new PhysicalFileProvider(path))
                     .ToList();
 
             // ContentRootFileProvider is the default one and is always available.
-            var fileProvider = new CompositeFileProvider(new[] { hostingEnvironment.ContentRootFileProvider }.Concat(resouceFileProviders));
+            var fileProvider = new CompositeFileProvider(staticFileProviders.Prepend(hostingEnvironment.ContentRootFileProvider));
 
             mvc
                 .Services
@@ -92,41 +109,36 @@ namespace Mailr.Mvc
         private static IEnumerable<string> EnumerateExtensionProjectDirectories(IServiceProvider serviceProvider)
         {
             var configuration = serviceProvider.GetService<IConfiguration>();
-            var hostingEnvironment = serviceProvider.GetService<IHostingEnvironment>();
 
             // Extension development requires them to be referenced as projects.
 
-            // This path is required to find static files by css-provider.
+            // This path is required to find static files inside the wwwroot directory that is used by the css-provider.
             var solutionExtensions = configuration["Extensibility:Development:SolutionDirectory"];
             var projectNames = configuration.GetSection("Extensibility:Development:ProjectNames").GetChildren().AsEnumerable().Select(x => x.Value);
-
-            //foreach (var directory in Directory.EnumerateDirectories(extensionsRootDirectory.FullName, "Mailr.Extensions.*"))
-            foreach (var directory in projectNames.Prepend(solutionExtensions).Select(projectName => Path.Combine(solutionExtensions, projectName)))
-            {
-                yield return directory;
-            }
+            return projectNames.Prepend(solutionExtensions).Select(projectName => Path.Combine(solutionExtensions, projectName));
         }
 
         private static bool TryLoadExtensionAssembly(IServiceProvider serviceProvider, string extensionDirectory, out Assembly assembly)
         {
-            var hostingEnvironment = serviceProvider.GetService<IHostingEnvironment>();
             var configuration = serviceProvider.GetService<IConfiguration>();
             var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Startup>();
 
-            var binDirectoryName = configuration["Extensibility:Bin"];
+            // bin
+            var binDirectory = configuration["Extensibility:Bin"];
 
+            // Mailr.Extensions.Example
             var extensionName = Path.GetFileName(extensionDirectory);
 
-            if (hostingEnvironment.IsDevelopmentExt())
-            {
-                extensionDirectory = hostingEnvironment.ContentRootPath;
-            }
+            //if (hostingEnvironment.IsDevelopmentExt())
+            //{
+            //    extensionDirectory = hostingEnvironment.ContentRootPath;
+            //}
 
             // Extension assemblies are located in the {Extensibility:Ext}: ..\ext\Foo\bin\Foo.dll
             var extensionDllName =
                 Path.Combine(
                     extensionDirectory,
-                    binDirectoryName,
+                    binDirectory,
                     $"{extensionName}.dll"
                 );
 
@@ -135,6 +147,7 @@ namespace Mailr.Mvc
                 if (File.Exists(extensionDllName))
                 {
                     assembly = Assembly.LoadFile(extensionDllName);
+                    //logger.Log(Abstraction.Layer.Infrastructure().Meta(new { extensionAssembly = new { extensionAssembly.FullName } }));
                     return true;
                 }
             }
@@ -147,12 +160,13 @@ namespace Mailr.Mvc
             return false;
         }
 
-        private static void ConfigureAssemblyResolve(IServiceProvider serviceProvider)
+        private static void ConfigureAssemblyResolve(IServiceProvider serviceProvider, IEnumerable<string> extensionDirectories)
         {
             var configuration = serviceProvider.GetService<IConfiguration>();
             var hostingEnvironment = serviceProvider.GetService<IHostingEnvironment>();
             var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Startup>();
 
+            var exeDirectory = Path.GetDirectoryName(typeof(Program).Assembly.Location);
             var extRootPath = Path.Combine(hostingEnvironment.ContentRootPath, configuration["Extensibility:Ext"]);
             var binDirectoryName = configuration["Extensibility:Bin"];
 
@@ -160,24 +174,70 @@ namespace Mailr.Mvc
             {
                 // Extract dependency name from the full assembly name:
                 // FooPlugin.FooClass, Version = 1.0.0.0, Culture = neutral, PublicKeyToken = null
-                var extDependencyName = e.Name.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).First();
+                var dependencyName = e.Name.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).First() + ".dll";
 
-                // C:\..\ext\Foo\bin\FooDependency.dll
-                var extDependencyFullName =
-                    Path.Combine(
-                        extRootPath,
-                        extDependencyName,
+                logger.Log(Abstraction.Layer.Infrastructure().Meta(new { ResolveAssembly = new { Name = dependencyName, RequestingAssembly = e.RequestingAssembly?.GetName().Name } }));
+
+                var dependencyFullName = Path.Combine
+                (
+                    exeDirectory,
+                    dependencyName
+                );
+
+                if (TryLoadAssembly(serviceProvider, dependencyFullName, out var assembly))
+                {
+                    return assembly;
+                }
+
+                // Now try extension directories
+                // C:\..\ext\Foo\bin\Bar.dll
+                foreach (var directory in extensionDirectories)
+                {
+                    dependencyFullName = Path.Combine
+                    (
+                        directory,
                         binDirectoryName,
-                        $"{extDependencyName}.dll"
+                        dependencyName
                     );
 
-                logger.Log(Abstraction.Layer.Infrastructure().Variable(new { pluginDependencyFullName = extDependencyFullName }));
+                    if (TryLoadAssembly(serviceProvider, dependencyFullName, out assembly))
+                    {
+                        return assembly;
+                    }
+                }
 
-                return
-                    File.Exists(extDependencyFullName)
-                        ? Assembly.LoadFile(extDependencyFullName)
-                        : null;
+                return null;
             };
+        }
+
+        private static bool TryLoadAssembly(IServiceProvider serviceProvider, string fileName, out Assembly assembly)
+        {
+            var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Startup>();
+
+            try
+            {
+                if (File.Exists(fileName))
+                {
+                    assembly = Assembly.LoadFile(fileName);
+                    logger.Log(Abstraction.Layer.Infrastructure().Meta(new { LoadedAssembly = fileName }));
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Log(Abstraction.Layer.Infrastructure().Routine(nameof(TryLoadAssembly)).Faulted(), ex);
+
+                if (ex is ReflectionTypeLoadException inner)
+                {
+                    foreach (var loaderException in inner.LoaderExceptions)
+                    {
+                        logger.Log(Abstraction.Layer.Infrastructure().Routine(nameof(TryLoadAssembly)).Faulted(), nameof(ReflectionTypeLoadException), loaderException);
+                    }
+                }
+            }
+
+            assembly = default;
+            return false;
         }
     }
 
