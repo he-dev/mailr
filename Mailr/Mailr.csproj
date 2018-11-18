@@ -36,16 +36,16 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.6" />
     <PackageReference Include="NLog" Version="4.5.10" />
-    <PackageReference Include="Reusable.AspNetCore.Http.SemanticLogger" Version="7.2.2" />
-    <PackageReference Include="Reusable.Core" Version="7.2.2" />
-    <PackageReference Include="Reusable.Net.Mail" Version="7.2.2" />
-    <PackageReference Include="Reusable.Net.Mail.OutlookClient" Version="7.2.2" />
-    <PackageReference Include="Reusable.Net.Mail.SmtpClient" Version="7.2.2" />
-    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="7.2.2" />
-    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="7.2.2" />
-    <PackageReference Include="Reusable.Utilities.JsonNet" Version="7.2.2" />
-    <PackageReference Include="Reusable.Utilities.NLog" Version="7.2.2" />
-    <PackageReference Include="Reusable.Utilities.SqlClient" Version="7.2.2" />
+    <PackageReference Include="Reusable.OmniLog.SemanticMiddleware" Version="7.8.0" />
+    <PackageReference Include="Reusable.Core" Version="7.8.0" />
+    <PackageReference Include="Reusable.sdk.Mail" Version="7.8.0" />
+    <PackageReference Include="Reusable.sdk.Outlook" Version="7.8.0" />
+    <PackageReference Include="Reusable.sdk.Smtp" Version="7.8.0" />
+    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="7.8.0" />
+    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="7.8.0" />
+    <PackageReference Include="Reusable.Utilities.JsonNet" Version="7.8.0" />
+    <PackageReference Include="Reusable.Utilities.NLog" Version="7.8.0" />
+    <PackageReference Include="Reusable.Utilities.SqlClient" Version="7.8.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -70,8 +70,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="appsettings.Development.json" CopyToPublishDirectory="Never"  />
-    <None Remove="appsettings.DevelopmentExt.json"  CopyToPublishDirectory="Never" />
+    <None Remove="appsettings.Development.json" CopyToPublishDirectory="Never" />
+    <None Remove="appsettings.DevelopmentExt.json" CopyToPublishDirectory="Never" />
   </ItemGroup>
 
   <ItemGroup>

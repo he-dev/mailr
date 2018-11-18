@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Linq.Custom;
 using JetBrains.Annotations;
 using Mailr.Extensions;
 using Mailr.Helpers;
+using Mailr.Http;
 using Mailr.Middleware;
 using Mailr.Mvc;
 using Mailr.Mvc.Razor.ViewLocationExpanders;
@@ -22,11 +22,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using Reusable;
-using Reusable.AspNetCore.Http;
-using Reusable.Net.Mail;
 using Reusable.OmniLog;
 using Reusable.OmniLog.Attachements;
 using Reusable.OmniLog.SemanticExtensions;
+using Reusable.sdk.Mail;
+using Reusable.sdk.Outlook;
+using Reusable.sdk.Smtp;
 using Reusable.Utilities.AspNetCore.ActionFilters;
 using Reusable.Utilities.NLog.LayoutRenderers;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
@@ -57,13 +58,15 @@ namespace Mailr
             (
                 new LoggerFactory()
                     .AttachObject("Environment", HostingEnvironment.EnvironmentName)
-                    .AttachObject("Product", "Mailr-v2.0.0")
+                    .AttachObject("Product", "Mailr-v3.0.0")
                     .AttachScope()
                     .AttachSnapshot()
                     .Attach<Timestamp<DateTimeUtc>>()
                     .AttachElapsedMilliseconds()
                     .AddObserver<NLogRx>()
             );
+
+            services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
 
             services
                 .AddMvc()
@@ -103,22 +106,10 @@ namespace Mailr
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            //app.UseMiddleware<LogScopeMiddleware>();
             app.UseSemanticLogger(config =>
             {
-                //config.MapProduct = _ => "Master_SemLog3";
-                config.GetCorrelationContext = context =>
-                {
-                    var product = context.Request.Headers["X-Product"].ElementAtOrDefault(0);
-                    var environment = context.Request.Headers["X-Environment"].ElementAtOrDefault(0);
-
-                    return
-                             string.IsNullOrWhiteSpace(product) || string.IsNullOrWhiteSpace(environment)
-                              ? null
-                             //: new Dictionary<string, string> { [name] = value };
-                             : new { Product = product, Environment = environment };
-
-                    //return correlationContext is null ? null : new { Header = correlationContext };
-                };
+                config.ConfigureScope = (scope, context) => scope.AttachUserCorrelationId(context).AttachUserAgent(context);
             });
 
             if (env.IsDevelopment())
@@ -133,7 +124,7 @@ namespace Mailr
 
             //app.UseWhen(httpContext => !httpContext.Request.Method.In(new[] { "GET" }, StringComparer.OrdinalIgnoreCase), UseHeaderValidator());
 
-            app.UseMailer();
+            app.UseEmail();
             app.UseStaticFiles();
 
             app.UseMvc(routes =>
@@ -151,7 +142,7 @@ namespace Mailr
                     name: RouteNames.Themes,
                     template: "wwwroot/css/themes/{name}.css");
             });
-        }        
+        }
     }
 
     internal class RouteNames

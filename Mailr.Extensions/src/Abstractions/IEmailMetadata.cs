@@ -9,5 +9,7 @@
         bool IsHtml { get; }
 
         string Theme { get; }
+
+        bool CanSend { get; }
     }
 }

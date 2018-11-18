@@ -14,6 +14,8 @@ namespace Mailr.Extensions.Models
         public bool IsHtml { get; set; }
 
         public string Theme { get; set; }
+
+        public bool CanSend { get; set; } = true;
     }
 
     [PublicAPI]

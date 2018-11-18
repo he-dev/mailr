@@ -22,6 +22,11 @@ namespace Mailr.Extensions.Utilities.Mvc.Filters
             }
 
             context.HttpContext.Items[EmailMetadata] = emailMetadata;
+
+            //if (bool.TryParse(context.HttpContext.Request.Query["IsPreview"].FirstOrDefault(), out var isPreview))
+            //{
+            //    context.HttpContext.Items["IsPreview"] = isPreview;
+            //}
         }
     }
 }
