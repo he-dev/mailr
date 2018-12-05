@@ -10,6 +10,6 @@
 
         string Theme { get; }
 
-        bool CanSend { get; }
+        bool CanSend { get; set; }
     }
 }

@@ -7,6 +7,7 @@ using Mailr.Models;
 using Mailr.Models.Test;
 using Microsoft.AspNetCore.Mvc;
 using Reusable.OmniLog.Mvc.Filters;
+using Reusable.Utilities.AspNetCore.ActionFilters;
 
 namespace Mailr.Controllers
 {
@@ -15,30 +16,32 @@ namespace Mailr.Controllers
     public class MessagesController : Controller
     {
         // http://localhost:49471/api/mailr/messages/plaintext
-        [HttpGet("[action]")]
-        public IActionResult PlainText([FromQuery] EmailView view)
-        {
-            return this.EmailView(view)("~/src/Views/Mailr/Messages/PlainText.cshtml", "Hallo plain-text!");
-        }
+        //[HttpGet("[action]")]
+        //public IActionResult PlainText([FromQuery] EmailView view)
+        //{
+        //    return this.EmailView(view)("~/src/Views/Mailr/Messages/PlainText.cshtml", "Hallo plain-text!");
+        //}
 
         [HttpPost("[action]")]
         [LogResponseBody]
-        [SendEmail]
+        [ServiceFilter(typeof(ValidateModel))]
+        [ServiceFilter(typeof(SendEmail))]
         public IActionResult PlainText([FromBody] Email<string> email)
         {
             return this.EmailView(EmailView.Original)("~/src/Views/Mailr/Messages/PlainText.cshtml", email.Body);
         }
 
         // http://localhost:49471/api/mailr/messages/test
-        [HttpGet("[action]")]
-        public IActionResult Test([FromQuery] EmailView view)
-        {
-            return this.EmailView(view)("~/src/Views/Mailr/Messages/Test.cshtml", new TestBody { Greeting = "Hallo test!" });
-        }
+        //[HttpGet("[action]")]
+        //public IActionResult Test([FromQuery] EmailView view)
+        //{
+        //    return this.EmailView(view)("~/src/Views/Mailr/Messages/Test.cshtml", new TestBody { Greeting = "Hallo test!" });
+        //}
 
         [HttpPost("[action]")]
         [LogResponseBody]
-        [SendEmail]
+        [ServiceFilter(typeof(ValidateModel))]
+        [ServiceFilter(typeof(SendEmail))]
         public IActionResult Test([FromBody] Email<TestBody> email)
         {
             return this.EmailView(EmailView.Original)("~/src/Views/Mailr/Messages/Test.cshtml", email.Body);

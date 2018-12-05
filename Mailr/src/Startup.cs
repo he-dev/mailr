@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq.Custom;
 using JetBrains.Annotations;
 using Mailr.Extensions;
+using Mailr.Extensions.Utilities.Mvc.Filters;
 using Mailr.Helpers;
 using Mailr.Http;
 using Mailr.Middleware;
@@ -111,6 +112,7 @@ namespace Mailr
             services.AddSingleton<IWorkItemQueue, WorkItemQueue>();
 
             services.AddScoped<ValidateModel>();
+            services.AddScoped<SendEmail>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

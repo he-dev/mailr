@@ -44,26 +44,33 @@ namespace Mailr.Middleware
             {
                 context.Response.Body = responseBody;
 
-                await _next(context);
-
-                if (context.Items[EmailMetadata] is IEmailMetadata emailMetadata)
+                try
                 {
-                    // Selecting interface properties because otherwise the body will be dumped too.
-                    _logger.Log(Abstraction.Layer.Business().Meta(new { EmailMetadata = new { emailMetadata.To, emailMetadata.Subject, emailMetadata.IsHtml } }));
+                    await _next(context);
 
-                    using (var responseBodyCopy = new MemoryStream())
+                    if (context.Items[EmailMetadata] is IEmailMetadata emailMetadata)
                     {
-                        // We need a copy of this because the internal handler might close it and we won't able to restore it.
+                        // Selecting interface properties because otherwise the body will be dumped too.
+                        _logger.Log(Abstraction.Layer.Business().Meta(new { EmailMetadata = new { emailMetadata.To, emailMetadata.Subject, emailMetadata.IsHtml } }));
+
+                        using (var responseBodyCopy = new MemoryStream())
+                        {
+                            // We need a copy of this because the internal handler might close it and we won't able to restore it.
+                            responseBody.Seek(0, SeekOrigin.Begin);
+                            await responseBody.CopyToAsync(responseBodyCopy);
+                            await SendEmailAsync(context, responseBodyCopy, emailMetadata);
+                        }
+
+                        // Restore Response.Body
                         responseBody.Seek(0, SeekOrigin.Begin);
-                        await responseBody.CopyToAsync(responseBodyCopy);
-                        await SendEmailAsync(context, responseBodyCopy, emailMetadata);
+                        await responseBody.CopyToAsync(originalResponseBody);
+                        context.Response.Body = originalResponseBody;
                     }
                 }
-
-                // Restore Response.Body
-                responseBody.Seek(0, SeekOrigin.Begin);
-                await responseBody.CopyToAsync(originalResponseBody);
-                context.Response.Body = originalResponseBody;
+                catch (Exception inner)
+                {
+                    _logger.Log(Abstraction.Layer.Network().Routine("next").Faulted(), inner);
+                }
             }
         }
 
@@ -77,7 +84,7 @@ namespace Mailr.Middleware
                 {
                     // We need to rebuild the scope here because it'll be executed outside the request pipeline.
                     var scope = _logger.BeginScope().AttachElapsed().AttachUserCorrelationId(context).AttachUserAgent(context);
-                    
+
                     try
                     {
                         if (emailMetadata.CanSend)

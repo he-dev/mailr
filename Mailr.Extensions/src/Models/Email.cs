@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System.ComponentModel;
+using JetBrains.Annotations;
 using Mailr.Extensions.Abstractions;
 
 namespace Mailr.Extensions.Models
@@ -15,6 +16,7 @@ namespace Mailr.Extensions.Models
 
         public string Theme { get; set; }
 
+        [DefaultValue(true)]
         public bool CanSend { get; set; } = true;
     }
 

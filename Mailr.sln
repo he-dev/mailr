@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "app", "app", "{0DBB4638-4926-4BE6-B51F-7BF3D1C7F032}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mailr", "Mailr\Mailr.csproj", "{EC190B7A-D5B4-43D3-A729-75E272037C05}"
+	ProjectSection(ProjectDependencies) = postProject
+		{ABF48ACB-A01B-4ABF-BF23-FA33A02E79CA} = {ABF48ACB-A01B-4ABF-BF23-FA33A02E79CA}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{22D88015-A00B-4DDF-AB81-8A73D76526AF}"
 EndProject

@@ -27,10 +27,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="src\Controllers\TestController.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2018.2.1" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.1.6" >
       <ExcludeAssets>analyzers</ExcludeAssets>
