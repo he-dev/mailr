@@ -6,6 +6,7 @@ using System.Linq.Custom;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
+using Mailr.Data;
 using Mailr.Mvc.Razor.ViewLocationExpanders;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
@@ -25,9 +26,10 @@ namespace Mailr.Mvc
         public static IMvcBuilder AddExtensions(this IMvcBuilder mvc)
         {
             var serviceProvider = mvc.Services.BuildServiceProvider();
-            var configuration = serviceProvider.GetService<IConfiguration>();
             var hostingEnvironment = serviceProvider.GetService<IHostingEnvironment>();
             var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Startup>();
+
+            var extensibility = serviceProvider.Extensibility();
 
             var extensionDirectories =
             (
@@ -41,7 +43,7 @@ namespace Mailr.Mvc
             mvc
                 .ConfigureApplicationPartManager(apm =>
                 {
-                    var binDirectory = configuration["Extensibility:Bin"];
+                    var binDirectory = extensibility.Bin;
 
                     // Skip the first directory which is the root and does not contain any extensions.
                     foreach (var extensionDirectory in extensionDirectoriesWithoutRoot)
@@ -89,11 +91,11 @@ namespace Mailr.Mvc
 
         private static IEnumerable<string> EnumerateExtensionInstallationDirectories(IServiceProvider serviceProvider)
         {
-            var configuration = serviceProvider.GetService<IConfiguration>();
+            var extensibility = serviceProvider.Extensibility();
             var hostingEnvironment = serviceProvider.GetService<IHostingEnvironment>();
 
             // Razor view engine requires this path too.
-            var extRootPath = Path.Combine(hostingEnvironment.ContentRootPath, configuration["Extensibility:Ext"]);
+            var extRootPath = Path.Combine(hostingEnvironment.ContentRootPath, extensibility.Ext);
 
             return
                 Directory.Exists(extRootPath)
@@ -103,25 +105,30 @@ namespace Mailr.Mvc
 
         private static IEnumerable<string> EnumerateExtensionProjectDirectories(IServiceProvider serviceProvider)
         {
-            var configuration = serviceProvider.GetService<IConfiguration>();
+            var extensibility = serviceProvider.Extensibility();
 
             // Extension development requires them to be referenced as projects.
 
             // This path is required to find static files inside the wwwroot directory that is used by the css-provider.
-            var solutionExtensions = configuration["Extensibility:Development:SolutionDirectory"];
-            var projectNames = configuration.GetSection("Extensibility:Development:ProjectNames").GetChildren().AsEnumerable().Select(x => x.Value);
-            return projectNames.Prepend(solutionExtensions).Select(projectName => Path.Combine(solutionExtensions, projectName));
-        }      
+            //var solutionExtensions = configuration["Extensibility:Development:SolutionDirectory"];
+            //var projectNames = configuration.GetSection("Extensibility:Development:ProjectNames").GetChildren().AsEnumerable().Select(x => x.Value);
+            //return projectNames.Prepend(solutionExtensions).Select(projectName => Path.Combine(solutionExtensions, projectName));
+
+            return
+                from extension in extensibility.Development.Extensions
+                from path in extension.Projects.Prepend(extension.SolutionDirectory).Select(projectName => Path.Combine(extension.SolutionDirectory, projectName))
+                select path;
+        }
 
         private static void ConfigureAssemblyResolve(IServiceProvider serviceProvider, IEnumerable<string> extensionDirectories)
         {
-            var configuration = serviceProvider.GetService<IConfiguration>();
+            var extensibility = serviceProvider.Extensibility();
             var hostingEnvironment = serviceProvider.GetService<IHostingEnvironment>();
             var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Startup>();
 
             var exeDirectory = Path.GetDirectoryName(typeof(Program).Assembly.Location);
-            var extRootPath = Path.Combine(hostingEnvironment.ContentRootPath, configuration["Extensibility:Ext"]);
-            var binDirectoryName = configuration["Extensibility:Bin"];
+            var extRootPath = Path.Combine(hostingEnvironment.ContentRootPath, extensibility.Ext);
+            var binDirectoryName = extensibility.Bin;
 
             AppDomain.CurrentDomain.AssemblyResolve += (sender, e) =>
             {
@@ -201,4 +208,50 @@ namespace Mailr.Mvc
             return hostingEnvironment.IsEnvironment("DevelopmentExt");
         }
     }
+
+    internal static class ServiceProviderExtensions
+    {
+        public static Extensibility Extensibility(this IServiceProvider serviceProvider)
+        {
+            return
+                serviceProvider
+                    .GetService<IConfiguration>()
+                    .GetSection(nameof(Extensibility))
+                    .Get<Extensibility>();
+        }
+    }
+
+}
+
+namespace Mailr.Data
+{
+    public class Extensibility
+    {
+        public string Ext { get; set; }
+
+        public string Bin { get; set; }
+
+        public Development Development { get; set; }
+    }
+
+    public class Development
+    {
+        public IEnumerable<string> Bins { get; set; }
+
+        public IEnumerable<Extension> Extensions { get; set; }
+    }
+
+    public class Extension
+    {
+        public string SolutionDirectory { get; set; }
+
+        public IEnumerable<string> Projects { get; set; }
+    }
+
+    //public class Project
+    //{
+    //    public string Name { get; set; }
+
+    //    public string Bin { get; set; }
+    //}
 }

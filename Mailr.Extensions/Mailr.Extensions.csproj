@@ -4,6 +4,20 @@
     <TargetFramework>net47</TargetFramework>
     <RootNamespace>Mailr.Extensions</RootNamespace>
     <Configurations>Debug;Release;Debug.csproj</Configurations>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutDir>bin\Release</OutDir>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Debug.csproj'">
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <OutputPath>bin\Debug</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,7 +25,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="2.3.0" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+  <ItemGroup Condition="'$(Configuration)'=='Debug' OR '$(Configuration)'=='Release'">
     <PackageReference Include="Reusable.Core" Version="7.8.0" />
     <PackageReference Include="Reusable.OmniLog" Version="7.8.0" />
     <PackageReference Include="Reusable.OmniLog.SemanticExtensions" Version="7.8.0" />
