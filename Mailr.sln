@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{22D88015-A00
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ext", "ext", "{5E024597-563A-4956-BB60-0F40EA5D7B6A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mailr.Extensions.Gunter", "..\Mailr.Extensions\Mailr.Extensions.Gunter\Mailr.Extensions.Gunter.csproj", "{ABF48ACB-A01B-4ABF-BF23-FA33A02E79CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mailr.Extensions.Gunter", "..\mailr-extensions-native\Mailr.Extensions.Gunter\Mailr.Extensions.Gunter.csproj", "{ABF48ACB-A01B-4ABF-BF23-FA33A02E79CA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mailr.Extensions", "Mailr.Extensions\Mailr.Extensions.csproj", "{E4A107D3-1A46-4D87-8125-CA1DADE0F523}"
 EndProject
