@@ -64,17 +64,12 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug.csproj'">
-    <ProjectReference Include="..\..\Reusable\Reusable.Convertia\Reusable.Convertia.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.Core\Reusable.Core.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.Flexo\Reusable.Flexo.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.NLogRx\Reusable.OmniLog.NLogRx.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.SemanticExtensions\Reusable.OmniLog.SemanticExtensions.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.OmniLog\Reusable.OmniLog.csproj" />
-    <ProjectReference Include="..\..\Reusable\Reusable.sdk.Http\Reusable.sdk.Http.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.sdk.Mailr\Reusable.sdk.Mailr.csproj" />
-    <ProjectReference Include="..\..\Reusable\Reusable.SmartConfig.AppConfig\Reusable.SmartConfig.AppConfig.csproj" />
-    <ProjectReference Include="..\..\Reusable\Reusable.SmartConfig.InMemory\Reusable.SmartConfig.InMemory.csproj" />
-    <ProjectReference Include="..\..\Reusable\Reusable.SmartConfig.JsonConverter\Reusable.SmartConfig.JsonConverter.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.SmartConfig\Reusable.SmartConfig.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.Utilities.JsonNet\Reusable.Utilities.JsonNet.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.Utilities.NLog\Reusable.Utilities.NLog.csproj" />
@@ -86,6 +81,7 @@
     <ProjectReference Include="..\..\Reusable\Reusable.sdk.Outlook\Reusable.sdk.Outlook.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.sdk.Smtp\Reusable.sdk.Smtp.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.Utilities.AspNetCore\Reusable.Utilities.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OneTo1\Reusable.OneTo1.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -122,6 +118,12 @@
       <DependentUpon>NLog.tt</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Remove="src\Views\Shared\Footer.cshtml" />
   </ItemGroup>
 
+  <Target Name="DisplayMessages">
+    <Message Text="Project File Name = $(MSBuildProjectFile)" Importance="High" />
+    <Message Text="Project Extension = $(MSBuildProjectExtension)" />
+  </Target>
+  
 </Project>

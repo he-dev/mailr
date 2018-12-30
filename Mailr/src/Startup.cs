@@ -35,9 +35,10 @@ using Reusable.Utilities.AspNetCore.ActionFilters;
 using Reusable.Utilities.NLog.LayoutRenderers;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
+[assembly: AspMvcPartialViewLocationFormat("/src/Views/Shared/{0}.cshtml")]
 [assembly: AspMvcViewLocationFormat("/src/Views/{1}/{0}.cshtml")]
 [assembly: AspMvcViewLocationFormat("/src/Views/Emails/{1}/{0}.cshtml")]
-[assembly: AspMvcViewLocationFormat("/src/Views/Shared/{0}.cshtml")]
+//[assembly: AspMvcViewLocationFormat("/src/Views/Shared/{0}.cshtml")]
 
 namespace Mailr
 {
