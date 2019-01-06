@@ -33,7 +33,9 @@
 
   <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Debug.csproj|AnyCPU'">
     <ProjectReference Include="..\..\Reusable\Reusable.Core\Reusable.Core.csproj" />
-    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.SemanticExtensions\Reusable.OmniLog.SemanticExtensions.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.SemanticExtensions\Reusable.OmniLog.SemanticExtensions.csproj" >
+      <ExcludeAssets>analyzers</ExcludeAssets>
+    </ProjectReference>
     <ProjectReference Include="..\..\Reusable\Reusable.OmniLog\Reusable.OmniLog.csproj" />
   </ItemGroup>
 
