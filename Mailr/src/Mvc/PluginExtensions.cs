@@ -9,8 +9,10 @@ using JetBrains.Annotations;
 using Mailr.Data;
 using Mailr.Mvc.Razor.ViewLocationExpanders;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -61,7 +63,7 @@ namespace Mailr.Mvc
 
                         if (TryLoadAssembly(serviceProvider, extensionFullName, out var extensionAssembly))
                         {
-                            apm.ApplicationParts.Add(new AssemblyPart(extensionAssembly));
+                            apm.ApplicationParts.Add(new AssemblyPart(extensionAssembly));                           
                         }
                     }
                 });

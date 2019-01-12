@@ -29,9 +29,9 @@ namespace Mailr.Extensions.Utilities.Mvc.Filters
             {
                 context.HttpContext.Items[EmailMetadata] = emailMetadata;
 
-                if (bool.TryParse(context.HttpContext.Request.Query["IsPreview"].FirstOrDefault(), out var isPreview))
+                if (bool.TryParse(context.HttpContext.Request.Query["isDesignMode"].FirstOrDefault(), out var isDesignMode))
                 {
-                    emailMetadata.CanSend = !isPreview;
+                    emailMetadata.CanSend = !isDesignMode;
                 }
             }
             else

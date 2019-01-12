@@ -33,34 +33,31 @@
 
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2018.2.1" />
-    <PackageReference Include="Microsoft.AspNetCore" Version="2.1.6">
-      <ExcludeAssets>analyzers</ExcludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.AspNetCore.Hosting.WindowsServices" Version="2.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.3">
-      <ExcludeAssets>analyzers</ExcludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="2.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.1.3" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.WindowsServices" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="3.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
     <!-- <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.ViewCompilation" Version="2.0.3" PrivateAssets="All" /> -->
-    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.1.1" />
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="2.1.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.1.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.6" />
-    <PackageReference Include="NLog" Version="4.5.10" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="2.2.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.1" />
+    <PackageReference Include="NLog" Version="4.5.11" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug' OR '$(Configuration)'=='Release'">
-    <PackageReference Include="Reusable.OmniLog.SemanticMiddleware" Version="7.8.0" />
-    <PackageReference Include="Reusable.Core" Version="7.8.0" />
-    <PackageReference Include="Reusable.sdk.Mail" Version="7.8.0" />
-    <PackageReference Include="Reusable.sdk.Outlook" Version="7.8.0" />
-    <PackageReference Include="Reusable.sdk.Smtp" Version="7.8.0" />
-    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="7.8.0" />
-    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="7.8.0" />
-    <PackageReference Include="Reusable.Utilities.JsonNet" Version="7.8.0" />
-    <PackageReference Include="Reusable.Utilities.NLog" Version="7.8.0" />
-    <PackageReference Include="Reusable.Utilities.SqlClient" Version="7.8.0" />
+    <PackageReference Include="Reusable.Core" Version="8.2.0" />
+    <PackageReference Include="Reusable.IOnymous" Version="8.2.0" />
+    <PackageReference Include="Reusable.IOnymous.Mail" Version="8.2.0" />
+    <PackageReference Include="Reusable.IOnymous.Mail.Smtp" Version="8.2.0" />
+    <PackageReference Include="Reusable.IOnymous.Mail.Outlook" Version="8.2.0" />
+    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="8.2.0" />
+    <PackageReference Include="Reusable.OmniLog.SemanticMiddleware" Version="8.2.0" />
+    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="8.2.0" />
+    <PackageReference Include="Reusable.Utilities.JsonNet" Version="8.2.0" />
+    <PackageReference Include="Reusable.Utilities.NLog" Version="8.2.0" />
+    <PackageReference Include="Reusable.Utilities.SqlClient" Version="8.2.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug.csproj'">
