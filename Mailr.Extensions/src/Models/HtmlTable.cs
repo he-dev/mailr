@@ -15,9 +15,15 @@ namespace Mailr.Extensions.Models
         public HtmlTableRowGroup Foot { get; set; }
     }
 
-    public class HtmlTableRow : List<HtmlTableCell> { }
+    public class HtmlTableRow : List<HtmlTableCell>
+    {
+        public static HtmlTableRow Empty => new HtmlTableRow();
+    }
 
-    public class HtmlTableRowGroup : List<HtmlTableRow> { }
+    public class HtmlTableRowGroup : List<HtmlTableRow>
+    {
+        public static HtmlTableRowGroup Empty => new HtmlTableRowGroup();
+    }
 
     public class HtmlTableCell
     {

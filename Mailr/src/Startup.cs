@@ -21,7 +21,7 @@ using Microsoft.Extensions.Hosting;
 using Reusable;
 using Reusable.IOnymous;
 using Reusable.OmniLog;
-using Reusable.OmniLog.Attachements;
+using Reusable.OmniLog.Attachments;
 using Reusable.OmniLog.SemanticExtensions;
 using Reusable.Utilities.AspNetCore.ActionFilters;
 using Reusable.Utilities.NLog.LayoutRenderers;
@@ -54,7 +54,7 @@ namespace Mailr
             (
                 new LoggerFactory()
                     .AttachObject("Environment", HostingEnvironment.EnvironmentName)
-                    .AttachObject("Product", "Mailr-v4.0.0")
+                    .AttachObject("Product", $"{ProgramInfo.Name}-v{ProgramInfo.Version}")
                     .AttachScope()
                     .AttachSnapshot()
                     .Attach<Timestamp<DateTimeUtc>>()

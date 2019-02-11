@@ -47,17 +47,17 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug' OR '$(Configuration)'=='Release'">
-    <PackageReference Include="Reusable.Core" Version="8.2.0" />
-    <PackageReference Include="Reusable.IOnymous" Version="8.2.0" />
-    <PackageReference Include="Reusable.IOnymous.Mail" Version="8.2.0" />
-    <PackageReference Include="Reusable.IOnymous.Mail.Smtp" Version="8.2.0" />
-    <PackageReference Include="Reusable.IOnymous.Mail.Outlook" Version="8.2.0" />
-    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="8.2.0" />
-    <PackageReference Include="Reusable.OmniLog.SemanticMiddleware" Version="8.2.0" />
-    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="8.2.0" />
-    <PackageReference Include="Reusable.Utilities.JsonNet" Version="8.2.0" />
-    <PackageReference Include="Reusable.Utilities.NLog" Version="8.2.0" />
-    <PackageReference Include="Reusable.Utilities.SqlClient" Version="8.2.0" />
+    <PackageReference Include="Reusable.Core" Version="8.2.2" />
+    <PackageReference Include="Reusable.IOnymous" Version="8.2.2" />
+    <PackageReference Include="Reusable.IOnymous.Mail" Version="8.2.2" />
+    <PackageReference Include="Reusable.IOnymous.Mail.Smtp" Version="8.2.2" />
+    <PackageReference Include="Reusable.IOnymous.Mail.Outlook" Version="8.2.2" />
+    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="8.2.2" />
+    <PackageReference Include="Reusable.OmniLog.SemanticMiddleware" Version="8.2.2" />
+    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="8.2.2" />
+    <PackageReference Include="Reusable.Utilities.JsonNet" Version="8.2.2" />
+    <PackageReference Include="Reusable.Utilities.NLog" Version="8.2.2" />
+    <PackageReference Include="Reusable.Utilities.SqlClient" Version="8.2.2" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug.csproj'">
@@ -115,7 +115,6 @@
       <DependentUpon>NLog.tt</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Remove="src\Views\Shared\Footer.cshtml" />
   </ItemGroup>
 
   <Target Name="DisplayMessages">

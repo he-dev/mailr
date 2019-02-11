@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 using Reusable.OmniLog;
-using Reusable.OmniLog.Attachements;
+using Reusable.OmniLog.Attachments;
 
 namespace Mailr.Http
 {

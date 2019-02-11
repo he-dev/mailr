@@ -56,4 +56,11 @@ namespace Mailr
                     : Directory.GetCurrentDirectory();
         }
     }
+
+    public class ProgramInfo
+    {
+        public const string Name = "Mailr";
+
+        public const string Version = "4.1.0";
+    }
 }
