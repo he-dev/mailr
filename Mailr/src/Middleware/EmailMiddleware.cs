@@ -9,10 +9,9 @@ using Mailr.Models;
 using Mailr.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Reusable.IOnymous;
 using Reusable.OmniLog;
 using Reusable.OmniLog.SemanticExtensions;
-using Reusable.sdk.Mail;
-using Reusable.sdk.Mail.Models;
 
 namespace Mailr.Middleware
 {
@@ -26,14 +25,14 @@ namespace Mailr.Middleware
 
         private readonly IWorkItemQueue _workItemQueue;
 
-        private readonly IEmailClient _emailClient;
+        private readonly IResourceProvider _mailProvider;
 
-        public EmailMiddleware(RequestDelegate next, ILoggerFactory loggerFactory, IWorkItemQueue workItemQueue, IEmailClient emailClient)
+        public EmailMiddleware(RequestDelegate next, ILoggerFactory loggerFactory, IWorkItemQueue workItemQueue, IResourceProvider mailProvider)
         {
             _next = next;
             _logger = loggerFactory.CreateLogger<EmailMiddleware>();
             _workItemQueue = workItemQueue;
-            _emailClient = emailClient;
+            _mailProvider = mailProvider;
         }
 
         public async Task Invoke(HttpContext context)
@@ -89,47 +88,30 @@ namespace Mailr.Middleware
                     {
                         if (emailMetadata.CanSend)
                         {
-                            await _emailClient.SendAsync(new Email<EmailSubject, EmailBody>
+                            await _mailProvider.SendEmailAsync(new Email<EmailSubject, EmailBody>
                             {
                                 To = emailMetadata.To,
-                                Subject = new PlainTextSubject(emailMetadata.Subject),
-                                Body =
-                                    emailMetadata.IsHtml
-                                        ? (EmailBody)new HtmlEmailBody(body)
-                                        : (EmailBody)new PlainTextBody(body),
+                                CC = emailMetadata.CC,
+                                Subject = new EmailSubject { Value = emailMetadata.Subject },
+                                Body = new EmailBody { Value = body },
+                                IsHtml = emailMetadata.IsHtml
                             });
-                            _logger.Log(Abstraction.Layer.Network().Routine(nameof(IEmailClient.SendAsync)).Completed());
+                            _logger.Log(Abstraction.Layer.Network().Routine(nameof(MailProviderExtensions.SendEmailAsync)).Completed());
                         }
                         else
                         {
-                            _logger.Log(Abstraction.Layer.Network().Routine(nameof(IEmailClient.SendAsync)).Canceled(), "Email sending disabled.");
+                            _logger.Log(Abstraction.Layer.Network().Routine(nameof(MailProviderExtensions.SendEmailAsync)).Canceled(), "Email sending disabled.");
                         }
                     }
                     catch (Exception ex)
                     {
-                        _logger.Log(Abstraction.Layer.Network().Routine(nameof(IEmailClient.SendAsync)).Faulted(), ex);
+                        _logger.Log(Abstraction.Layer.Network().Routine(nameof(MailProviderExtensions.SendEmailAsync)).Faulted(), ex);
                     }
                     finally
                     {
                         scope.Dispose();
                     }
                 });
-            }
-        }
-
-        private class HtmlEmailBody : EmailBody
-        {
-            private readonly string _body;
-
-            public HtmlEmailBody(string body)
-            {
-                _body = body;
-                IsHtml = true;
-                Encoding = System.Text.Encoding.UTF8;
-            }
-            public override string ToString()
-            {
-                return _body;
             }
         }
     }

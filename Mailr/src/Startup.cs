@@ -13,31 +13,24 @@ using Mailr.Mvc.Razor.ViewLocationExpanders;
 using Mailr.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.AspNetCore.Razor.Language.Intermediate;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Net.Http.Headers;
-using Newtonsoft.Json;
 using Reusable;
+using Reusable.IOnymous;
 using Reusable.OmniLog;
 using Reusable.OmniLog.Attachements;
 using Reusable.OmniLog.SemanticExtensions;
-using Reusable.sdk.Mail;
-using Reusable.sdk.Outlook;
-using Reusable.sdk.Smtp;
 using Reusable.Utilities.AspNetCore.ActionFilters;
 using Reusable.Utilities.NLog.LayoutRenderers;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
+[assembly: AspMvcPartialViewLocationFormat("/src/Views/Shared/{0}.cshtml")]
 [assembly: AspMvcViewLocationFormat("/src/Views/{1}/{0}.cshtml")]
 [assembly: AspMvcViewLocationFormat("/src/Views/Emails/{1}/{0}.cshtml")]
-[assembly: AspMvcViewLocationFormat("/src/Views/Shared/{0}.cshtml")]
+//[assembly: AspMvcViewLocationFormat("/src/Views/Shared/{0}.cshtml")]
 
 namespace Mailr
 {
@@ -61,7 +54,7 @@ namespace Mailr
             (
                 new LoggerFactory()
                     .AttachObject("Environment", HostingEnvironment.EnvironmentName)
-                    .AttachObject("Product", "Mailr-v3.0.0")
+                    .AttachObject("Product", "Mailr-v4.0.0")
                     .AttachScope()
                     .AttachSnapshot()
                     .Attach<Timestamp<DateTimeUtc>>()
@@ -77,7 +70,7 @@ namespace Mailr
 
             services.AddApiVersioning(options =>
             {
-                options.ApiVersionReader = new HeaderApiVersionReader("Api-Version");
+                //options.ApiVersionReader = new HeaderApiVersionReader("Api-Version");
                 options.ReportApiVersions = true;
                 options.AssumeDefaultVersionWhenUnspecified = true;
                 options.DefaultApiVersion = new ApiVersion(1, 0);
@@ -93,19 +86,20 @@ namespace Mailr
                     .Add(new RelativeViewLocationExpander(prefix));
             });
 
-            var emailClient = Configuration["emailClient"];
-            switch (emailClient)
+            var mailProviderRegistrations = new Dictionary<SoftString, Action>
             {
-                case nameof(SmtpClient):
-                    services.AddSingleton<IEmailClient, SmtpClient>();
-                    break;
+                [nameof(SmtpProvider)] = () => services.AddSingleton<IResourceProvider, SmtpProvider>(),
+                [nameof(OutlookProvider)] = () => services.AddSingleton<IResourceProvider, OutlookProvider>(),
+            };
 
-                case nameof(OutlookClient):
-                    services.AddSingleton<IEmailClient, OutlookClient>();
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException($"Invalid EmailClient: {emailClient}. Expected {nameof(SmtpClient)} or {nameof(OutlookClient)}.");
+            var mailProvider = Configuration["mailProvider"];
+            if (mailProviderRegistrations.TryGetValue(mailProvider, out var register))
+            {
+                register();
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException($"Invalid mail-provider: {mailProvider}. Expected [{mailProviderRegistrations.Keys.Join(", ")}].");
             }
 
             services.AddSingleton<IHostedService, WorkItemQueueService>();

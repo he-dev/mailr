@@ -1,13 +1,23 @@
-﻿ namespace Mailr.Extensions.Abstractions
+﻿using System.Collections.Generic;
+using JetBrains.Annotations;
+
+namespace Mailr.Extensions.Abstractions
 {
     public interface IEmailMetadata
     {
-        string To { get; }
+        [CanBeNull, ItemCanBeNull]
+        IEnumerable<string> To { get; }
 
+        // ReSharper disable once InconsistentNaming
+        [CanBeNull, ItemCanBeNull]
+        IEnumerable<string> CC { get; }
+
+        [CanBeNull]
         string Subject { get; }
 
         bool IsHtml { get; }
 
+        [CanBeNull]
         string Theme { get; }
 
         bool CanSend { get; set; }
