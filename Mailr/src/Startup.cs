@@ -29,7 +29,9 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 [assembly: AspMvcPartialViewLocationFormat("/src/Views/Shared/{0}.cshtml")]
 [assembly: AspMvcViewLocationFormat("/src/Views/{1}/{0}.cshtml")]
+//[assembly: AspMvcViewLocationFormat("/src/Views/Shared/{1}/{0}.cshtml")]
 [assembly: AspMvcViewLocationFormat("/src/Views/Emails/{1}/{0}.cshtml")]
+
 //[assembly: AspMvcViewLocationFormat("/src/Views/Shared/{0}.cshtml")]
 
 namespace Mailr
@@ -89,7 +91,7 @@ namespace Mailr
             var mailProviderRegistrations = new Dictionary<SoftString, Action>
             {
                 [nameof(SmtpProvider)] = () => services.AddSingleton<IResourceProvider, SmtpProvider>(),
-                [nameof(OutlookProvider)] = () => services.AddSingleton<IResourceProvider, OutlookProvider>(),
+                //[nameof(OutlookProvider)] = () => services.AddSingleton<IResourceProvider, OutlookProvider>(),
             };
 
             var mailProvider = Configuration["mailProvider"];

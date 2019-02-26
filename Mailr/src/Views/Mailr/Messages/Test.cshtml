@@ -5,11 +5,23 @@
     ViewData["Title"] = "About";
 }
 
-<h2 class="m-title">@ViewData["Title"]</h2>
+<html>
+<head>
+    <style>
+        
+        
+    </style>
+</head>
+<body>
+
+<h2 class="title">@ViewData["Title"]</h2>
 <h3>@ViewData["Message"]</h3>
 
-<p class="m-greeting">@Model.Greeting</p>
+<p class="greeting">@Model.Greeting</p>
 <hr/>
 @{
     Html.RenderPartial("Footer");
 }
+
+</body>
+</html>
