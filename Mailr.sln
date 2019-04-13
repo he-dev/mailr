@@ -58,6 +58,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reusable.IOnymous.Mail", ".
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reusable.IOnymous.Mail.Smtp", "..\Reusable\Reusable.IOnymous.Mail.Smtp\Reusable.IOnymous.Mail.Smtp.csproj", "{DA5F5609-D2D1-4524-921D-4C69CD74BB78}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reusable.OmniLog.Abstractions", "..\Reusable\Reusable.OmniLog.Abstractions\Reusable.OmniLog.Abstractions.csproj", "{5C1D563B-DF11-42E8-B877-BE04166DE424}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug.csproj|Any CPU = Debug.csproj|Any CPU
@@ -321,6 +323,18 @@ Global
 		{DA5F5609-D2D1-4524-921D-4C69CD74BB78}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DA5F5609-D2D1-4524-921D-4C69CD74BB78}.Release|x86.ActiveCfg = Release|Any CPU
 		{DA5F5609-D2D1-4524-921D-4C69CD74BB78}.Release|x86.Build.0 = Release|Any CPU
+		{5C1D563B-DF11-42E8-B877-BE04166DE424}.Debug.csproj|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C1D563B-DF11-42E8-B877-BE04166DE424}.Debug.csproj|Any CPU.Build.0 = Debug|Any CPU
+		{5C1D563B-DF11-42E8-B877-BE04166DE424}.Debug.csproj|x86.ActiveCfg = Debug|Any CPU
+		{5C1D563B-DF11-42E8-B877-BE04166DE424}.Debug.csproj|x86.Build.0 = Debug|Any CPU
+		{5C1D563B-DF11-42E8-B877-BE04166DE424}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C1D563B-DF11-42E8-B877-BE04166DE424}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C1D563B-DF11-42E8-B877-BE04166DE424}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5C1D563B-DF11-42E8-B877-BE04166DE424}.Debug|x86.Build.0 = Debug|Any CPU
+		{5C1D563B-DF11-42E8-B877-BE04166DE424}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C1D563B-DF11-42E8-B877-BE04166DE424}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C1D563B-DF11-42E8-B877-BE04166DE424}.Release|x86.ActiveCfg = Release|Any CPU
+		{5C1D563B-DF11-42E8-B877-BE04166DE424}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -348,6 +362,7 @@ Global
 		{F7BAA30C-7B3E-4429-ACDD-222105EAA7B9} = {8D28BF6B-93D5-42B5-ADAB-8CE9BDE403D5}
 		{83BFCFC5-0974-4E80-A919-64AC1CAA8B3A} = {8D28BF6B-93D5-42B5-ADAB-8CE9BDE403D5}
 		{DA5F5609-D2D1-4524-921D-4C69CD74BB78} = {8D28BF6B-93D5-42B5-ADAB-8CE9BDE403D5}
+		{5C1D563B-DF11-42E8-B877-BE04166DE424} = {8D28BF6B-93D5-42B5-ADAB-8CE9BDE403D5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5346371C-0C45-402F-8187-7C1FDCB7CEFA}

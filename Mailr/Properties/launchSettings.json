@@ -29,7 +29,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "DevelopmentExt"
       },
-      "applicationUrl": "http://localhost:49471/"
+      "applicationUrl": "http://localhost:5000/"
     },
     "Mailr.Production": {
       "commandName": "Project",

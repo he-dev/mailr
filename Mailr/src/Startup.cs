@@ -21,6 +21,7 @@ using Microsoft.Extensions.Hosting;
 using Reusable;
 using Reusable.IOnymous;
 using Reusable.OmniLog;
+using Reusable.OmniLog.Abstractions;
 using Reusable.OmniLog.Attachments;
 using Reusable.OmniLog.SemanticExtensions;
 using Reusable.Utilities.AspNetCore.ActionFilters;
@@ -54,7 +55,8 @@ namespace Mailr
 
             services.AddSingleton<ILoggerFactory>
             (
-                new LoggerFactory()
+                LoggerFactory
+                    .Empty
                     .AttachObject("Environment", HostingEnvironment.EnvironmentName)
                     .AttachObject("Product", $"{ProgramInfo.Name}-v{ProgramInfo.Version}")
                     .AttachScope()
