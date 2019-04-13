@@ -19,7 +19,7 @@ namespace Mailr.Extensions.Utilities.Mvc.ModelBinding
                 }
                 else
                 {
-                    bindingContext.ModelState.AddModelError(bindingContext.ModelName, "Invalid view value.");
+                    bindingContext.ModelState.AddModelError(bindingContext.ModelName, "Invalid email-view value.");
                     bindingContext.Result = ModelBindingResult.Failed();
                 }
             }

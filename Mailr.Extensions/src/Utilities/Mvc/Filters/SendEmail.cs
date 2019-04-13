@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Mailr.Extensions.Abstractions;
+using Mailr.Extensions.Utilities.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Reusable.OmniLog;
@@ -13,11 +14,11 @@ namespace Mailr.Extensions.Utilities.Mvc.Filters
     using static ItemNames;
 
     /// <summary>
-    /// Adds the action 'Email{T}' argument as IEmailMatadat to the http-context that the middleware sees and uses for sending emails.
+    /// Adds the action 'Email{T}' argument as IEmailMetadata to the http-context that the middleware sees and uses for sending emails.
     /// </summary>
     public class SendEmail : ActionFilterAttribute
     {
-        private readonly ILogger<SendEmail> _logger;
+        private readonly ILogger _logger;
 
         public SendEmail(ILogger<SendEmail> logger)
         {
@@ -30,14 +31,14 @@ namespace Mailr.Extensions.Utilities.Mvc.Filters
             {
                 context.HttpContext.Items[EmailMetadata] = emailMetadata;
 
-                if (bool.TryParse(context.HttpContext.Request.Query["isDesignMode"].FirstOrDefault(), out var isDesignMode))
+                if (bool.TryParse(context.HttpContext.Request.Query[QueryStringNames.IsDesignMode].FirstOrDefault(), out var isDesignMode))
                 {
                     emailMetadata.CanSend = !isDesignMode;
                 }
             }
             else
             {
-                _logger.Log(Abstraction.Layer.Infrastructure().Routine("GetEmailMetadata").Faulted(), "EmailMetadata is null.");
+                _logger.Log(Abstraction.Layer.Service().Routine("GetEmailMetadata").Faulted(), "EmailMetadata is null.");
                 //throw DynamicException.Create
                 //(
                 //    $"{((ControllerActionDescriptor)context.ActionDescriptor).ActionName}ActionArgument",

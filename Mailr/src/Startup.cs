@@ -28,12 +28,9 @@ using Reusable.Utilities.AspNetCore.ActionFilters;
 using Reusable.Utilities.NLog.LayoutRenderers;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
-[assembly: AspMvcPartialViewLocationFormat("/src/Views/Shared/{0}.cshtml")]
-[assembly: AspMvcViewLocationFormat("/src/Views/{1}/{0}.cshtml")]
-//[assembly: AspMvcViewLocationFormat("/src/Views/Shared/{1}/{0}.cshtml")]
-[assembly: AspMvcViewLocationFormat("/src/Views/Emails/{1}/{0}.cshtml")]
-
-//[assembly: AspMvcViewLocationFormat("/src/Views/Shared/{0}.cshtml")]
+[assembly: AspMvcMasterLocationFormat("~/src/Views/{1}/{0}.cshtml")]
+[assembly: AspMvcViewLocationFormat("~/src/Views/{1}/{0}.cshtml")]
+[assembly: AspMvcPartialViewLocationFormat("~/src/Views/Shared/{0}.cshtml")]
 
 namespace Mailr
 {
@@ -117,10 +114,7 @@ namespace Mailr
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             //app.UseMiddleware<LogScopeMiddleware>();
-            app.UseSemanticLogger(config =>
-            {
-                config.ConfigureScope = (scope, context) => scope.AttachUserCorrelationId(context).AttachUserAgent(context);
-            });
+            app.UseSemanticLogger(config => { config.ConfigureScope = (scope, context) => scope.AttachUserCorrelationId(context).AttachUserAgent(context); });
 
             if (env.IsDevelopment())
             {
@@ -143,20 +137,32 @@ namespace Mailr
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
                 routes.MapRoute(
-                    name: ControllerType.External.ToString(),
-                    template: "{extension}/wwwroot/css/{controller}/{action}.css");
-                routes.MapRoute(
-                    name: ControllerType.Internal.ToString(),
+                    name: RouteNameFactory.CreateCssRouteName(ControllerType.Internal, false),
                     template: "wwwroot/css/{extension}/{controller}/{action}.css");
                 routes.MapRoute(
+                    name: RouteNameFactory.CreateCssRouteName(ControllerType.External, false),
+                    template: "{extension}/wwwroot/css/{controller}/{action}.css");
+                routes.MapRoute(
+                    name: RouteNameFactory.CreateCssRouteName(ControllerType.External, true),
+                    template: "{extension}/wwwroot/css/{controller}/{action}-{theme}.css");
+                routes.MapRoute(
                     name: RouteNames.Themes,
-                    template: "wwwroot/css/themes/{name}.css");
+                    template: "wwwroot/css/themes/{theme}.css");                
             });
         }
     }
 
-    internal class RouteNames
+    internal static class RouteNames
     {
-        public static string Themes = nameof(Themes);
+        public const string Themes = nameof(Themes);
+        public const string Mailr = nameof(Mailr);
+    }
+
+    internal static class RouteNameFactory
+    {
+        public static string CreateCssRouteName(ControllerType controllerType, bool useCustomTheme)
+        {
+            return $"{controllerType}-extension{(useCustomTheme ? "-with-theme" : default)}";
+        }
     }
 }

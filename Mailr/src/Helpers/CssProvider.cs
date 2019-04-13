@@ -1,6 +1,8 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Microsoft.Extensions.FileProviders;
 using Reusable;
 
@@ -8,7 +10,8 @@ namespace Mailr.Helpers
 {
     public interface ICssProvider
     {
-        Task<Css> GetCss(string fileName);
+        [ItemNotNull]
+        Task<Css> GetCss([NotNull] string fileName);
     }
 
     public class CssProvider : ICssProvider
@@ -24,7 +27,8 @@ namespace Mailr.Helpers
 
         public Task<Css> GetCss(string fileName)
         {
-            //Debug.WriteLine($"{nameof(GetCss)}: {fileName}");
+            if (fileName == null) throw new ArgumentNullException(nameof(fileName));
+            
             return _cache.GetOrAdd(fileName, async (cssFilename) =>
             {
                 var cssFile = _fileProvider.GetFileInfo(fileName);

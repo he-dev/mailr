@@ -22,12 +22,15 @@ namespace Mailr.Extensions.Utilities
 
         internal static ControllerType ControllerType(this HttpContext context)
         {
-            return context.Items[nameof(ControllerType)] is ControllerType extensionType ? extensionType : Extensions.ControllerType.Undefined;
+            return
+                context.Items[nameof(ControllerType)] is ControllerType extensionType
+                    ? extensionType
+                    : Extensions.ControllerType.Undefined;
         }
 
         internal static IEmailMetadata EmailMetadata(this HttpContext context)
         {
-            return context.Items[ItemNames.EmailMetadata] is IEmailMetadata emailMetadata ? emailMetadata : default(IEmailMetadata);
+            return context.Items[ItemNames.EmailMetadata] is IEmailMetadata emailMetadata ? emailMetadata : default;
         }
     }
 }
