@@ -139,7 +139,7 @@ namespace Mailr.Mvc
                 // FooPlugin.FooClass, Version = 1.0.0.0, Culture = neutral, PublicKeyToken = null
                 var dependencyName = e.Name.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).First() + ".dll";
 
-                logger.Log(Abstraction.Layer.Infrastructure().Meta(new { ResolveAssembly = new { Name = dependencyName, RequestingAssembly = e.RequestingAssembly?.GetName().Name } }));
+                logger.Log(Abstraction.Layer.Service().Meta(new { ResolveAssembly = new { Name = dependencyName, RequestingAssembly = e.RequestingAssembly?.GetName().Name } }));
 
                 var dependencyFullName = Path.Combine
                 (
@@ -182,19 +182,19 @@ namespace Mailr.Mvc
                 if (File.Exists(fileName))
                 {
                     assembly = Assembly.LoadFile(fileName);
-                    logger.Log(Abstraction.Layer.Infrastructure().Meta(new { LoadedAssembly = fileName }));
+                    logger.Log(Abstraction.Layer.Service().Meta(new { LoadedAssembly = fileName }));
                     return true;
                 }
             }
             catch (Exception ex)
             {
-                logger.Log(Abstraction.Layer.Infrastructure().Routine(nameof(TryLoadAssembly)).Faulted(), ex);
+                logger.Log(Abstraction.Layer.Service().Routine(nameof(TryLoadAssembly)).Faulted(), ex);
 
                 if (ex is ReflectionTypeLoadException inner)
                 {
                     foreach (var loaderException in inner.LoaderExceptions)
                     {
-                        logger.Log(Abstraction.Layer.Infrastructure().Routine(nameof(TryLoadAssembly)).Faulted(), nameof(ReflectionTypeLoadException), loaderException);
+                        logger.Log(Abstraction.Layer.Service().Routine(nameof(TryLoadAssembly)).Faulted(), nameof(ReflectionTypeLoadException), loaderException);
                     }
                 }
             }
@@ -228,6 +228,7 @@ namespace Mailr.Mvc
 
 namespace Mailr.Data
 {
+    [UsedImplicitly]
     public class Extensibility
     {
         public string Ext { get; set; }
@@ -237,6 +238,7 @@ namespace Mailr.Data
         public Development Development { get; set; }
     }
 
+    [UsedImplicitly]
     public class Development
     {
         public IEnumerable<string> Bins { get; set; }
@@ -244,6 +246,7 @@ namespace Mailr.Data
         public IEnumerable<Extension> Extensions { get; set; }
     }
 
+    [UsedImplicitly]
     public class Extension
     {
         public string SolutionDirectory { get; set; }

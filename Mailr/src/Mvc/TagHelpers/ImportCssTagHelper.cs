@@ -57,8 +57,6 @@ namespace Mailr.Mvc.TagHelpers
             }
 
             output.Content.SetHtmlContent(Environment.NewLine + styles.Join(Environment.NewLine));
-
-            // todo - add error styles here
         }
 
         [NotNull]
@@ -68,6 +66,7 @@ namespace Mailr.Mvc.TagHelpers
             
             var theme = ViewContext.HttpContext.EmailMetadata()?.Theme ?? "default";
                         
+            // Always use the default.css
             var mainCssFileName = urlHelper.RouteUrl(RouteNames.Themes, new { theme});
             yield return _fileProvider.GetFileInfo(mainCssFileName);
 

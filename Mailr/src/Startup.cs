@@ -155,7 +155,6 @@ namespace Mailr
     internal static class RouteNames
     {
         public const string Themes = nameof(Themes);
-        public const string Mailr = nameof(Mailr);
     }
 
     internal static class RouteNameFactory

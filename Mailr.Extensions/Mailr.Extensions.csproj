@@ -27,9 +27,10 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug' OR '$(Configuration)'=='Release'">
-    <PackageReference Include="Reusable.Core" Version="8.2.2" />
-    <PackageReference Include="Reusable.OmniLog" Version="8.2.2" />
-    <PackageReference Include="Reusable.OmniLog.SemanticExtensions" Version="8.2.2" />
+    <PackageReference Include="Reusable.Core" Version="8.12.0" />
+    <PackageReference Include="Reusable.OmniLog" Version="8.12.0" />
+    <PackageReference Include="Reusable.OmniLog.Abstractions" Version="8.12.0" />
+    <PackageReference Include="Reusable.OmniLog.SemanticExtensions" Version="8.12.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Debug.csproj|AnyCPU'">
