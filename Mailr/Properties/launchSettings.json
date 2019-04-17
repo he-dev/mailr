@@ -17,11 +17,11 @@
     },
     "Mailr.Development": {
       "commandName": "Project",
-      "launchBrowser": true,
+      "launchBrowser": false,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:49471/"
+      "applicationUrl": "http://localhost:5000/"
     },
     "Mailr.DevelopmentExt": {
       "commandName": "Project",

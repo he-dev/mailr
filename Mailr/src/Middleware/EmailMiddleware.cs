@@ -95,7 +95,8 @@ namespace Mailr.Middleware
                                 CC = emailMetadata.CC,
                                 Subject = new EmailSubject { Value = emailMetadata.Subject },
                                 Body = new EmailBody { Value = body },
-                                IsHtml = emailMetadata.IsHtml
+                                IsHtml = emailMetadata.IsHtml,
+                                Attachments = emailMetadata.Attachments
                             });
                             _logger.Log(Abstraction.Layer.Network().Routine(nameof(MailProviderExtensions.SendEmailAsync)).Completed());
                         }

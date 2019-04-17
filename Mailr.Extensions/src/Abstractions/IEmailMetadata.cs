@@ -15,6 +15,9 @@ namespace Mailr.Extensions.Abstractions
         [CanBeNull]
         string Subject { get; }
 
+        [CanBeNull]
+        Dictionary<string, byte[]> Attachments { get; }
+
         bool IsHtml { get; }
 
         [CanBeNull]

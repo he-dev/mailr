@@ -15,12 +15,14 @@ namespace Mailr.Extensions.Models
 
         public TBody Body { get; set; }
 
+        public Dictionary<string, byte[]> Attachments { get; set; }
+
         public bool IsHtml { get; set; }
 
         public string Theme { get; set; }
 
         [DefaultValue(true)]
-        public bool CanSend { get; set; } = true;
+        public bool CanSend { get; set; } = true;        
     }
 
     [PublicAPI]
