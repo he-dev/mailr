@@ -51,18 +51,18 @@ namespace Mailr.Middleware
                     if (context.Items[EmailMetadata] is IEmailMetadata emailMetadata)
                     {
                         // Selecting interface properties because otherwise the body will be dumped too.
-                        _logger.Log(Abstraction.Layer.Business().Meta(new { EmailMetadata = new { emailMetadata.To, emailMetadata.Subject, emailMetadata.IsHtml } }));
+                        _logger.Log(Abstraction.Layer.Business().Meta(new { EmailMetadata = new { emailMetadata.From, emailMetadata.To, emailMetadata.Subject, emailMetadata.IsHtml } }));
 
                         using (var responseBodyCopy = new MemoryStream())
                         {
                             // We need a copy of this because the internal handler might close it and we won't able to restore it.
-                            responseBody.Seek(0, SeekOrigin.Begin);
+                            responseBody.Rewind();
                             await responseBody.CopyToAsync(responseBodyCopy);
                             await SendEmailAsync(context, responseBodyCopy, emailMetadata);
                         }
 
                         // Restore Response.Body
-                        responseBody.Seek(0, SeekOrigin.Begin);
+                        responseBody.Rewind();
                         await responseBody.CopyToAsync(originalResponseBody);
                         context.Response.Body = originalResponseBody;
                     }
@@ -76,7 +76,7 @@ namespace Mailr.Middleware
 
         private async Task SendEmailAsync(HttpContext context, Stream responseBody, IEmailMetadata emailMetadata)
         {
-            responseBody.Seek(0, SeekOrigin.Begin);
+            responseBody.Rewind();
             using (var reader = new StreamReader(responseBody))
             {
                 var body = await reader.ReadToEndAsync();
@@ -91,6 +91,7 @@ namespace Mailr.Middleware
                         {
                             await _mailProvider.SendEmailAsync(new Email<EmailSubject, EmailBody>
                             {
+                                From = emailMetadata.From,
                                 To = emailMetadata.To,
                                 CC = emailMetadata.CC,
                                 Subject = new EmailSubject { Value = emailMetadata.Subject },

@@ -7,6 +7,8 @@ namespace Mailr.Extensions.Models
 {
     public class Email<TBody> : IEmailMetadata
     {
+        public string From { get; set; }
+
         public IEnumerable<string> To { get; set; }
 
         public IEnumerable<string> CC { get; set; }
@@ -28,10 +30,11 @@ namespace Mailr.Extensions.Models
     [PublicAPI]
     public static class Email
     {
-        public static Email<TBody> Create<TBody>(IEnumerable<string> to, IEnumerable<string> cc, string subject, TBody body)
+        public static Email<TBody> Create<TBody>(string from,IEnumerable<string> to, IEnumerable<string> cc, string subject, TBody body)
         {
             return new Email<TBody>
             {
+                From = from,
                 To = to,
                 Subject = subject,
                 Body = body

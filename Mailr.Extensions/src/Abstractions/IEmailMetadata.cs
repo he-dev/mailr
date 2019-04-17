@@ -5,6 +5,9 @@ namespace Mailr.Extensions.Abstractions
 {
     public interface IEmailMetadata
     {
+        [CanBeNull]
+        string From { get; }
+
         [CanBeNull, ItemCanBeNull]
         IEnumerable<string> To { get; }
 
