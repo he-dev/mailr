@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using JetBrains.Annotations;
 using Mailr.Extensions.Abstractions;
 
@@ -9,9 +10,9 @@ namespace Mailr.Extensions.Models
     {
         public string From { get; set; }
 
-        public IEnumerable<string> To { get; set; }
+        public List<string> To { get; set; }
 
-        public IEnumerable<string> CC { get; set; }
+        public List<string> CC { get; set; }
 
         public string Subject { get; set; }
 
@@ -24,18 +25,19 @@ namespace Mailr.Extensions.Models
         public string Theme { get; set; }
 
         [DefaultValue(true)]
-        public bool CanSend { get; set; } = true;        
+        public bool CanSend { get; set; } = true;
     }
 
     [PublicAPI]
     public static class Email
     {
-        public static Email<TBody> Create<TBody>(string from,IEnumerable<string> to, IEnumerable<string> cc, string subject, TBody body)
+        public static Email<TBody> Create<TBody>(string from, IEnumerable<string> to, IEnumerable<string> cc, string subject, TBody body)
         {
             return new Email<TBody>
             {
                 From = from,
-                To = to,
+                To = to.ToList(),
+                CC = cc.ToList(),
                 Subject = subject,
                 Body = body
             };

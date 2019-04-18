@@ -9,11 +9,11 @@ namespace Mailr.Extensions.Abstractions
         string From { get; }
 
         [CanBeNull, ItemCanBeNull]
-        IEnumerable<string> To { get; }
+        List<string> To { get; }
 
         // ReSharper disable once InconsistentNaming
         [CanBeNull, ItemCanBeNull]
-        IEnumerable<string> CC { get; }
+        List<string> CC { get; }
 
         [CanBeNull]
         string Subject { get; }
