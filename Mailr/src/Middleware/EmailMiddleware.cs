@@ -89,6 +89,7 @@ namespace Mailr.Middleware
                     {
                         if (emailMetadata.CanSend)
                         {
+                            _logger.Log(Abstraction.Layer.Service().Decision("Send email.").Because("Sending emails is enabled."));
                             await _mailProvider.SendEmailAsync(new Email<EmailSubject, EmailBody>
                             {
                                 From = emailMetadata.From,
@@ -103,7 +104,7 @@ namespace Mailr.Middleware
                         }
                         else
                         {
-                            _logger.Log(Abstraction.Layer.Network().Routine(nameof(MailProviderExtensions.SendEmailAsync)).Canceled(), "Email sending disabled.");
+                            _logger.Log(Abstraction.Layer.Service().Decision("Don't send email.").Because("Sending emails is disabled."));
                         }
                     }
                     catch (Exception ex)
