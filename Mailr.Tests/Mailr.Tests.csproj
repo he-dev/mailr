@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp2.2;net47</TargetFrameworks>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="xunit" Version="2.4.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Reusable\Reusable.Core\Reusable.Core.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Cryptography\Reusable.Cryptography.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Flexo\Reusable.Flexo.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.IOnymous.Http.Mailr\Reusable.IOnymous.Http.Mailr.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.IOnymous.Http\Reusable.IOnymous.Http.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.IOnymous.Mail.Smtp\Reusable.IOnymous.Mail.Smtp.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.IOnymous.Mail\Reusable.IOnymous.Mail.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.IOnymous\Reusable.IOnymous.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.Abstractions\Reusable.OmniLog.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.NLogRx\Reusable.OmniLog.NLogRx.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.SemanticExtensions\Reusable.OmniLog.SemanticExtensions.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.SemanticMiddleware\Reusable.OmniLog.SemanticMiddleware.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog\Reusable.OmniLog.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OneTo1\Reusable.OneTo1.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.SmartConfig.SqlServer\Reusable.SmartConfig.SqlServer.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.SmartConfig\Reusable.SmartConfig.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Utilities.AspNetCore\Reusable.Utilities.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Utilities.JsonNet\Reusable.Utilities.JsonNet.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Utilities.NLog\Reusable.Utilities.NLog.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Utilities.SqlClient\Reusable.Utilities.SqlClient.csproj" />
+    <ProjectReference Include="..\Mailr.Extensions\Mailr.Extensions.csproj" />
+    <ProjectReference Include="..\Mailr\Mailr.csproj" />
+  </ItemGroup>
+
+</Project>

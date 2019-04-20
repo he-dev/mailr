@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq.Custom;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using Mailr.Extensions;
 using Mailr.Extensions.Utilities.Mvc.Filters;
@@ -31,6 +32,8 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 [assembly: AspMvcMasterLocationFormat("~/src/Views/{1}/{0}.cshtml")]
 [assembly: AspMvcViewLocationFormat("~/src/Views/{1}/{0}.cshtml")]
 [assembly: AspMvcPartialViewLocationFormat("~/src/Views/Shared/{0}.cshtml")]
+
+[assembly: InternalsVisibleTo("Mailr.Tests")]
 
 namespace Mailr
 {
@@ -78,14 +81,7 @@ namespace Mailr
             });
 
             services.AddScoped<ICssProvider, CssProvider>();
-            services.Configure<RazorViewEngineOptions>(options =>
-            {
-                const string prefix = "src";
-
-                options
-                    .ViewLocationExpanders
-                    .Add(new RelativeViewLocationExpander(prefix));
-            });
+            services.AddRelativeViewLocationExpander();
 
             var mailProviderRegistrations = new Dictionary<SoftString, Action>
             {
@@ -162,6 +158,21 @@ namespace Mailr
         public static string CreateCssRouteName(ControllerType controllerType, bool useCustomTheme)
         {
             return $"{controllerType}-extension{(useCustomTheme ? "-with-theme" : default)}";
+        }
+    }
+
+    internal static class ServiceCollectionExtensions
+    {
+        public static IServiceCollection AddRelativeViewLocationExpander(this IServiceCollection services)
+        {
+            return services.Configure<RazorViewEngineOptions>(options =>
+            {
+                const string prefix = "src";
+
+                options
+                    .ViewLocationExpanders
+                    .Add(new RelativeViewLocationExpander(prefix));
+            });
         }
     }
 }

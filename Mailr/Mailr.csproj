@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net47</TargetFramework>
+    <TargetFrameworks>netcoreapp2.2;net47</TargetFrameworks>
     <RuntimeIdentifier>win81-x64</RuntimeIdentifier>
     <AssemblyName>Mailr</AssemblyName>
     <RootNamespace>Mailr</RootNamespace>
@@ -9,7 +9,7 @@
     <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
     <LangVersion>latest</LangVersion>
     <Configurations>Debug;Release;Debug.csproj</Configurations>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <!--<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>-->
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
   </PropertyGroup>
 
@@ -46,18 +46,18 @@
     <PackageReference Include="NLog" Version="4.5.11" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(Configuration)'=='Debug' OR '$(Configuration)'=='Release'">
-    <PackageReference Include="Reusable.Core" Version="8.12.0" />
-    <PackageReference Include="Reusable.IOnymous" Version="8.12.0" />
-    <PackageReference Include="Reusable.IOnymous.Mail" Version="8.12.0" />
-    <PackageReference Include="Reusable.IOnymous.Mail.Smtp" Version="8.12.0" />
-    <PackageReference Include="Reusable.IOnymous.Mail.Outlook" Version="8.12.0" />
-    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="8.12.0" />
-    <PackageReference Include="Reusable.OmniLog.SemanticMiddleware" Version="8.12.0" />
-    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="8.12.0" />
-    <PackageReference Include="Reusable.Utilities.JsonNet" Version="8.12.0" />
-    <PackageReference Include="Reusable.Utilities.NLog" Version="8.12.0" />
-    <PackageReference Include="Reusable.Utilities.SqlClient" Version="8.12.0" />
+  <ItemGroup Condition="('$(Configuration)'=='Debug' OR '$(Configuration)'=='Release') AND '$(TargetFramework)'=='net47'">
+    <PackageReference Include="Reusable.Core" Version="9.0.3" />
+    <PackageReference Include="Reusable.IOnymous" Version="9.0.3" />
+    <PackageReference Include="Reusable.IOnymous.Mail" Version="9.0.3" />
+    <PackageReference Include="Reusable.IOnymous.Mail.Smtp" Version="9.0.3" />
+    <PackageReference Include="Reusable.IOnymous.Mail.Outlook" Version="9.0.3" />
+    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="9.0.3" />
+    <PackageReference Include="Reusable.OmniLog.SemanticMiddleware" Version="9.0.3" />
+    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="9.0.3" />
+    <PackageReference Include="Reusable.Utilities.JsonNet" Version="9.0.3" />
+    <PackageReference Include="Reusable.Utilities.NLog" Version="9.0.3" />
+    <PackageReference Include="Reusable.Utilities.SqlClient" Version="9.0.3" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug.csproj'">
