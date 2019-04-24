@@ -17,7 +17,7 @@ namespace Mailr.Tests
 
         }
 
-        [Fact]
+        //[Fact]
         //public void ExtensionMethodAddsNewViewLocationExpander()
         //{
         //    // Arrange
