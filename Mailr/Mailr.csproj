@@ -44,31 +44,19 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.1" />
     <PackageReference Include="NLog" Version="4.5.11" />
-    <PackageReference Include="Reusable.Core" Version="9.1.1" />
-    <PackageReference Include="Reusable.IOnymous" Version="9.1.1" />
-    <PackageReference Include="Reusable.IOnymous.Mail" Version="9.1.1" />
-    <PackageReference Include="Reusable.IOnymous.Mail.Outlook" Version="9.1.1" />
-    <PackageReference Include="Reusable.IOnymous.Mail.Smtp" Version="9.1.1" />
-    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="9.1.1" />
-    <PackageReference Include="Reusable.OmniLog.SemanticMiddleware" Version="9.1.1" />
-    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="9.1.1" />
-    <PackageReference Include="Reusable.Utilities.JsonNet" Version="9.1.1" />
-    <PackageReference Include="Reusable.Utilities.NLog" Version="9.1.1" />
-    <PackageReference Include="Reusable.Utilities.SqlClient" Version="9.1.1" />
   </ItemGroup>
 
-  <ItemGroup Condition="('$(Configuration)'=='Debug' OR '$(Configuration)'=='Release') AND '$(TargetFramework)'=='net47'">
-    <PackageReference Include="Reusable.Core" Version="9.0.3" />
-    <PackageReference Include="Reusable.IOnymous" Version="9.0.3" />
-    <PackageReference Include="Reusable.IOnymous.Mail" Version="9.0.3" />
-    <PackageReference Include="Reusable.IOnymous.Mail.Smtp" Version="9.0.3" />
-    <PackageReference Include="Reusable.IOnymous.Mail.Outlook" Version="9.0.3" />
-    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="9.0.3" />
-    <PackageReference Include="Reusable.OmniLog.SemanticMiddleware" Version="9.0.3" />
-    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="9.0.3" />
-    <PackageReference Include="Reusable.Utilities.JsonNet" Version="9.0.3" />
-    <PackageReference Include="Reusable.Utilities.NLog" Version="9.0.3" />
-    <PackageReference Include="Reusable.Utilities.SqlClient" Version="9.0.3" />
+  <ItemGroup Condition="('$(Configuration)'=='Debug' OR '$(Configuration)'=='Release')">
+    <PackageReference Include="Reusable.Core" Version="9.1.2" />
+    <PackageReference Include="Reusable.IOnymous" Version="9.1.2" />
+    <PackageReference Include="Reusable.IOnymous.Mail" Version="9.1.2" />
+    <PackageReference Include="Reusable.IOnymous.Mail.Smtp" Version="9.1.2" />
+    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="9.1.2" />
+    <PackageReference Include="Reusable.OmniLog.SemanticMiddleware" Version="9.1.2" />
+    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="9.1.2" />
+    <PackageReference Include="Reusable.Utilities.JsonNet" Version="9.1.2" />
+    <PackageReference Include="Reusable.Utilities.NLog" Version="9.1.2" />
+    <PackageReference Include="Reusable.Utilities.SqlClient" Version="9.1.2" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug.csproj'">
