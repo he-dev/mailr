@@ -83,9 +83,10 @@ namespace Mailr
             services.AddScoped<ICssProvider, CssProvider>();
             services.AddRelativeViewLocationExpander();
 
+
             var mailProviderRegistrations = new Dictionary<SoftString, Action>
             {
-                [nameof(SmtpProvider)] = () => services.AddSingleton<IResourceProvider, SmtpProvider>(),
+                [nameof(SmtpProvider)] = () => services.AddSingleton<IResourceProvider, SmtpProvider>()
                 //[nameof(OutlookProvider)] = () => services.AddSingleton<IResourceProvider, OutlookProvider>(),
             };
 
@@ -143,7 +144,7 @@ namespace Mailr
                     template: "{extension}/wwwroot/css/{controller}/{action}-{theme}.css");
                 routes.MapRoute(
                     name: RouteNames.Themes,
-                    template: "wwwroot/css/themes/{theme}.css");                
+                    template: "wwwroot/css/themes/{theme}.css");
             });
         }
     }

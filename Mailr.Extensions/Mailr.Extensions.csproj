@@ -3,21 +3,14 @@
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.2;net47</TargetFrameworks>
     <RootNamespace>Mailr.Extensions</RootNamespace>
-    <Configurations>Debug;Release;Debug.csproj</Configurations>
+    <Configurations>Debug;Debug.csproj;Release</Configurations>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutDir>bin\Release</OutDir>
+    <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug.csproj'">
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <OutputPath>bin\Debug</OutputPath>
   </PropertyGroup>
 

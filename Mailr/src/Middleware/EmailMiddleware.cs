@@ -9,6 +9,7 @@ using Mailr.Models;
 using Mailr.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Reusable.IOnymous;
 using Reusable.OmniLog;
 using Reusable.OmniLog.Abstractions;
@@ -28,12 +29,22 @@ namespace Mailr.Middleware
 
         private readonly IResourceProvider _mailProvider;
 
-        public EmailMiddleware(RequestDelegate next, ILoggerFactory loggerFactory, IWorkItemQueue workItemQueue, IResourceProvider mailProvider)
+        private readonly IConfiguration _configuration;
+
+        public EmailMiddleware
+        (
+            RequestDelegate next,
+            ILoggerFactory loggerFactory,
+            IWorkItemQueue workItemQueue,
+            IResourceProvider mailProvider,
+            IConfiguration configuration
+        )
         {
             _next = next;
             _logger = loggerFactory.CreateLogger<EmailMiddleware>();
             _workItemQueue = workItemQueue;
             _mailProvider = mailProvider;
+            _configuration = configuration;
         }
 
         public async Task Invoke(HttpContext context)
@@ -90,16 +101,26 @@ namespace Mailr.Middleware
                         if (emailMetadata.CanSend)
                         {
                             _logger.Log(Abstraction.Layer.Service().Decision("Send email.").Because("Sending emails is enabled."));
+
+                            var metadata =
+                                Metadata
+                                    .Empty
+                                    .Scope<ISmtpMetadata>(s => s
+                                        .Set(x => x.Host, _configuration["Smtp:Host"])
+                                        .Set(x => x.Port, int.Parse(_configuration["Smtp:Port"]))
+                                    );
+
+
                             await _mailProvider.SendEmailAsync(new Email<EmailSubject, EmailBody>
                             {
-                                From = emailMetadata.From,
+                                From = emailMetadata.From ?? "mailr@test.com",
                                 To = emailMetadata.To,
                                 CC = emailMetadata.CC,
                                 Subject = new EmailSubject { Value = emailMetadata.Subject },
                                 Body = new EmailBody { Value = body },
                                 IsHtml = emailMetadata.IsHtml,
                                 Attachments = emailMetadata.Attachments
-                            });
+                            }, metadata);
                             _logger.Log(Abstraction.Layer.Network().Routine(nameof(MailProviderExtensions.SendEmailAsync)).Completed());
                         }
                         else

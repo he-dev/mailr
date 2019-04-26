@@ -5,7 +5,7 @@
     <RuntimeIdentifier>win81-x64</RuntimeIdentifier>
     <AssemblyName>Mailr</AssemblyName>
     <RootNamespace>Mailr</RootNamespace>
-    <Platforms>AnyCPU</Platforms>
+    <Platforms>x64</Platforms>
     <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
     <LangVersion>latest</LangVersion>
     <Configurations>Debug;Release;Debug.csproj</Configurations>
@@ -13,18 +13,20 @@
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug</OutputPath>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug.csproj|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug.csproj|x64'">
+    <PlatformTarget>x64</PlatformTarget>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <Optimize>false</Optimize>
@@ -68,7 +70,7 @@
     <ProjectReference Include="..\..\Reusable\Reusable.IOnymous\Reusable.IOnymous.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.IOnymous.Mail\Reusable.IOnymous.Mail.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.IOnymous.Mail.Smtp\Reusable.IOnymous.Mail.Smtp.csproj" />
-    <ProjectReference Include="..\..\Reusable\Reusable.IOnymous.Http.Mailr\Reusable.IOnymous.Http.Mailr.csproj" />
+    <!--<ProjectReference Include="..\..\Reusable\Reusable.IOnymous.Http.Mailr\Reusable.IOnymous.Http.Mailr.csproj" />-->
     <ProjectReference Include="..\..\Reusable\Reusable.SmartConfig\Reusable.SmartConfig.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.Utilities.JsonNet\Reusable.Utilities.JsonNet.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.Utilities.NLog\Reusable.Utilities.NLog.csproj" />
