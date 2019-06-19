@@ -10,10 +10,12 @@ using Mailr.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Reusable.Data;
 using Reusable.IOnymous;
 using Reusable.OmniLog;
 using Reusable.OmniLog.Abstractions;
 using Reusable.OmniLog.SemanticExtensions;
+using Reusable.Quickey;
 
 namespace Mailr.Middleware
 {
@@ -103,12 +105,10 @@ namespace Mailr.Middleware
                             _logger.Log(Abstraction.Layer.Service().Decision("Send email.").Because("Sending emails is enabled."));
 
                             var metadata =
-                                Metadata
+                                ImmutableSession
                                     .Empty
-                                    .Scope<ISmtpMetadata>(s => s
-                                        .Set(x => x.Host, _configuration["Smtp:Host"])
-                                        .Set(x => x.Port, int.Parse(_configuration["Smtp:Port"]))
-                                    );
+                                    .SetItem(From<ISmtpMeta>.Select(x => x.Host), _configuration["Smtp:Host"])
+                                    .SetItem(From<ISmtpMeta>.Select(x => x.Port), int.Parse(_configuration["Smtp:Port"]));
 
 
                             await _mailProvider.SendEmailAsync(new Email<EmailSubject, EmailBody>
