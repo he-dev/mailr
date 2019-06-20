@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Mailr.Extensions.Abstractions;
 using Mailr.Extensions.Utilities;
 using Mailr.Http;
@@ -21,6 +22,7 @@ namespace Mailr.Middleware
 {
     using static ItemNames;
 
+    [UsedImplicitly]
     public class EmailMiddleware
     {
         private readonly RequestDelegate _next;
@@ -110,10 +112,9 @@ namespace Mailr.Middleware
                                     .SetItem(From<ISmtpMeta>.Select(x => x.Host), _configuration["Smtp:Host"])
                                     .SetItem(From<ISmtpMeta>.Select(x => x.Port), int.Parse(_configuration["Smtp:Port"]));
 
-
                             await _mailProvider.SendEmailAsync(new Email<EmailSubject, EmailBody>
                             {
-                                From = emailMetadata.From ?? "mailr@test.com",
+                                From = emailMetadata.From ?? _configuration["Smtp:From"],
                                 To = emailMetadata.To,
                                 CC = emailMetadata.CC,
                                 Subject = new EmailSubject { Value = emailMetadata.Subject },

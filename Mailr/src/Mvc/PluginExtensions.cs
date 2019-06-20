@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Custom;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using Mailr.Data;
@@ -13,8 +14,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyModel;
+using Microsoft.Extensions.DependencyModel.Resolution;
 using Microsoft.Extensions.FileProviders;
 using Reusable.OmniLog;
 using Reusable.OmniLog.Abstractions;
@@ -46,6 +50,7 @@ namespace Mailr.Mvc
             mvc
                 .ConfigureApplicationPartManager(apm =>
                 {
+                    //apm.FeatureProviders.Insert(0, new test());
                     var binDirectory = extensibility.Bin;
 
                     // Skip the first directory which is the root and does not contain any extensions.
@@ -62,14 +67,26 @@ namespace Mailr.Mvc
                             extensionName
                         );
 
-                        if (TryLoadAssembly(serviceProvider, extensionFullName, out var extensionAssembly))
-                        {
-                            apm.ApplicationParts.Add(new AssemblyPart(extensionAssembly));                           
-                        }
+                        //if (TryLoadAssembly(serviceProvider, extensionFullName, out var extensionAssembly))
+                        //{
+                        //    //var parts = new CompiledRazorAssemblyApplicationPartFactory().GetApplicationParts(extensionAssembly);
+                        //    //foreach (var applicationPart in parts)
+                        //    //{
+                        //    //    apm.ApplicationParts.Add(applicationPart);
+                        //    //}
+
+                        //    apm.ApplicationParts.Add(new AssemblyPart(extensionAssembly));
+                        //    //apm.ApplicationParts.Add(new CompiledRazorAssemblyPart(extensionAssembly));
+
+                        //    //mvc.Services.Configure<RazorViewEngineOptions>(o => o.FileProviders.Add(new EmbeddedFileProvider(extensionAssembly)));
+                        //}
+
+                        
                     }
+
                 });
 
-            ConfigureAssemblyResolve(serviceProvider, extensionDirectoriesWithoutRoot);
+            //ConfigureAssemblyResolve(serviceProvider, extensionDirectoriesWithoutRoot);
 
             var staticFileProviders =
                 extensionDirectories
@@ -133,57 +150,100 @@ namespace Mailr.Mvc
             var extRootPath = Path.Combine(hostingEnvironment.ContentRootPath, extensibility.Ext);
             var binDirectoryName = extensibility.Bin;
 
-            AppDomain.CurrentDomain.AssemblyResolve += (sender, e) =>
+            //AppDomain.CurrentDomain.AssemblyResolve += (sender, e) =>
+            AssemblyLoadContext.Default.Resolving += (context, assemblyName) =>
             {
                 // Extract dependency name from the full assembly name:
                 // FooPlugin.FooClass, Version = 1.0.0.0, Culture = neutral, PublicKeyToken = null
-                var dependencyName = e.Name.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).First() + ".dll";
+                var dependencyName = assemblyName.Name.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).First() + ".dll";
 
-                logger.Log(Abstraction.Layer.Service().Meta(new { ResolveAssembly = new { Name = dependencyName, RequestingAssembly = e.RequestingAssembly?.GetName().Name } }));
-
-                var dependencyFullName = Path.Combine
-                (
-                    exeDirectory,
-                    dependencyName
-                );
-
-                if (TryLoadAssembly(serviceProvider, dependencyFullName, out var assembly))
+                using (logger.BeginScope().WithCorrelationHandle($"Event:{nameof(AppDomain.AssemblyResolve)}").AttachElapsed())
                 {
-                    return assembly;
-                }
+                    //logger.Log(Abstraction.Layer.Service().Meta(new { DependencyName = dependencyName, RequestingAssembly = e.RequestingAssembly?.GetName().Name }));
 
-                // Now try extension directories
-                // C:\..\ext\Foo\bin\Bar.dll
-                foreach (var directory in extensionDirectories)
-                {
-                    dependencyFullName = Path.Combine
-                    (
-                        directory,
-                        binDirectoryName,
-                        dependencyName
-                    );
-
-                    if (TryLoadAssembly(serviceProvider, dependencyFullName, out assembly))
+                    // Try the current directory first...
+                    var dependencyFullName = Path.Combine(exeDirectory, dependencyName);
+                    if (TryLoadAssembly(serviceProvider, dependencyFullName, out var assembly))
                     {
                         return assembly;
                     }
-                }
 
-                return null;
+                    // ...the try extension directories.
+                    // C:\..\ext\Foo\bin\Bar.dll
+                    foreach (var directory in extensionDirectories)
+                    {
+                        dependencyFullName = Path.Combine(directory, binDirectoryName, dependencyName);
+                        if (TryLoadAssembly(serviceProvider, dependencyFullName, out assembly))
+                        {
+                            return assembly;
+                        }
+                    }
+
+                    return null;
+                }
             };
         }
 
         private static bool TryLoadAssembly(IServiceProvider serviceProvider, string fileName, out Assembly assembly)
         {
             var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Startup>();
+            logger.Log(Abstraction.Layer.Service().Meta(new { fileName }));
 
             try
             {
                 if (File.Exists(fileName))
                 {
-                    assembly = Assembly.LoadFile(fileName);
-                    logger.Log(Abstraction.Layer.Service().Meta(new { LoadedAssembly = fileName }));
+                    //assembly = Assembly.LoadFile(fileName);
+                    assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(fileName);
+
+                    var dependencyContext = DependencyContext.Load(assembly);
+
+                    var loadContext = AssemblyLoadContext.GetLoadContext(assembly);
+
+                    var assemblyResolver = new CompositeCompilationAssemblyResolver
+                    (new ICompilationAssemblyResolver[]
+                    {
+                        new AppBaseCompilationAssemblyResolver(Path.GetDirectoryName(fileName)),
+                        new ReferenceAssemblyPathResolver(),
+                        new PackageCompilationAssemblyResolver()
+                    });
+
+                    loadContext.Resolving += (context, assemblyName) =>
+                    {
+                        bool NamesMatch(RuntimeLibrary runtime)
+                        {
+                            return string.Equals(runtime.Name, assemblyName.Name, StringComparison.OrdinalIgnoreCase);
+                        }
+
+                        var library = dependencyContext?.RuntimeLibraries.FirstOrDefault(NamesMatch);
+                        if (library != null)
+                        {
+                            var wrapper = new CompilationLibrary(
+                                library.Type,
+                                library.Name,
+                                library.Version,
+                                library.Hash,
+                                library.RuntimeAssemblyGroups.SelectMany(g => g.AssetPaths),
+                                library.Dependencies,
+                                library.Serviceable);
+
+                            var assemblies = new List<string>();
+                            assemblyResolver.TryResolveAssemblyPaths(wrapper, assemblies);
+                            if (assemblies.Count > 0)
+                            {
+                                return loadContext.LoadFromAssemblyPath(assemblies[0]);
+                            }
+                        }
+
+                        return default;
+                    };
+
+                    logger.Log(Abstraction.Layer.Service().Routine(nameof(TryLoadAssembly)).Completed());
                     return true;
+                }
+                else
+                {
+                    logger.Log(Abstraction.Layer.Service().Routine(nameof(TryLoadAssembly)).Canceled(), "File not found.");
                 }
             }
             catch (Exception ex)
@@ -221,6 +281,14 @@ namespace Mailr.Mvc
                     .GetService<IConfiguration>()
                     .GetSection(nameof(Extensibility))
                     .Get<Extensibility>();
+        }
+    }
+
+    internal class test : IApplicationFeatureProvider<Microsoft.AspNetCore.Mvc.ViewComponents.ViewComponentFeature>
+    {
+        public void PopulateFeature(IEnumerable<ApplicationPart> parts, ViewComponentFeature feature)
+        {
+
         }
     }
 }

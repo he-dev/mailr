@@ -1,25 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-<!--    <TargetFrameworks>netcoreapp2.2;net47</TargetFrameworks>-->
+    <!--    <TargetFrameworks>netcoreapp2.2;net47</TargetFrameworks>-->
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <RuntimeIdentifier>win81-x64</RuntimeIdentifier>
     <AssemblyName>Mailr</AssemblyName>
     <RootNamespace>Mailr</RootNamespace>
     <Platforms>x64</Platforms>
-    <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
+    <!--<MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>-->
     <LangVersion>latest</LangVersion>
-    <Configurations>Debug;Release;Debug.csproj</Configurations>
-    <!--<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>-->
+    <Configurations>Debug.csproj;Debug.nuget;Release</Configurations>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <!--<StartupObject>Mailr.Program</StartupObject>-->
+
+    <PreserveCompilationContext>true</PreserveCompilationContext>
+
+    <!--<CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>-->
+    <!--<RazorCompileOnBuild>true</RazorCompileOnBuild>-->
+    <!--<CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>-->
+    
+    <!--<RazorCompileOnBuild>false</RazorCompileOnBuild>-->
+    
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  <PropertyGroup Condition="'$(Configuration)'=='Debug.nuget'">
     <PlatformTarget>x64</PlatformTarget>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
@@ -32,7 +42,12 @@
     <DebugSymbols>true</DebugSymbols>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="src\Mvc\TagHelpers\ImportCssTagHelper.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
@@ -41,25 +56,25 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="3.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
-    <!-- <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.ViewCompilation" Version="2.0.3" PrivateAssets="All" /> -->
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.ViewCompilation" Version="2.2.0" /> 
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
     <PackageReference Include="NLog" Version="4.6.5" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(Configuration)'=='Debug' OR '$(Configuration)'=='Release'">
-    <PackageReference Include="Reusable.Core" Version="9.1.2" />
-    <PackageReference Include="Reusable.IOnymous" Version="9.1.2" />
-    <PackageReference Include="Reusable.IOnymous.Mail" Version="9.1.2" />
-    <PackageReference Include="Reusable.IOnymous.Mail.Smtp" Version="9.1.2" />
-    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="9.1.2" />
-    <PackageReference Include="Reusable.OmniLog.SemanticMiddleware" Version="9.1.2" />
-    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="9.1.2" />
-    <PackageReference Include="Reusable.Utilities.JsonNet" Version="9.1.2" />
-    <PackageReference Include="Reusable.Utilities.NLog" Version="9.1.2" />
-    <PackageReference Include="Reusable.Utilities.SqlClient" Version="9.1.2" />
+  <ItemGroup Condition="'$(Configuration)'=='Debug.nuget' OR '$(Configuration)'=='Release'">
+    <PackageReference Include="Reusable.Core" Version="11.0.3" />
+    <PackageReference Include="Reusable.IOnymous" Version="11.0.3" />
+    <PackageReference Include="Reusable.IOnymous.Mail" Version="11.0.3" />
+    <PackageReference Include="Reusable.IOnymous.Mail.Smtp" Version="11.0.3" />
+    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="11.0.3" />
+    <PackageReference Include="Reusable.OmniLog.SemanticMiddleware" Version="11.0.3" />
+    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="11.0.3" />
+    <PackageReference Include="Reusable.Utilities.JsonNet" Version="11.0.3" />
+    <PackageReference Include="Reusable.Utilities.NLog" Version="11.0.3" />
+    <PackageReference Include="Reusable.Utilities.SqlClient" Version="11.0.3" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug.csproj'">
@@ -72,7 +87,7 @@
     <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.Abstractions\Reusable.OmniLog.Abstractions.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.NLogRx\Reusable.OmniLog.NLogRx.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.SemanticExtensions\Reusable.OmniLog.SemanticExtensions.csproj" />
-    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.SemanticMiddleware\Reusable.OmniLog.SemanticMiddleware.csproj" >
+    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.SemanticMiddleware\Reusable.OmniLog.SemanticMiddleware.csproj">
       <ExcludeAssets>analyzers</ExcludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Reusable\Reusable.IOnymous\Reusable.IOnymous.csproj" />
@@ -85,13 +100,15 @@
     <ProjectReference Include="..\..\Reusable\Reusable.OneTo1\Reusable.OneTo1.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
-  </ItemGroup>
+  <!--<ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.4" />
+  </ItemGroup>-->
 
   <ItemGroup>
+    <!--<ProjectReference Include="..\..\mailr-extensions-native\Mailr.Extensions.Gunter\Mailr.Extensions.Gunter.csproj" />-->
+    <ProjectReference Include="..\..\mailr-extensions-native\Mailr.Extensions.Gunter\Mailr.Extensions.Gunter.csproj" />
     <ProjectReference Include="..\Mailr.Extensions\Mailr.Extensions.csproj" />
-  </ItemGroup>  
+  </ItemGroup>
 
   <ItemGroup>
     <None Update="NLog.tt">
@@ -104,15 +121,21 @@
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <None Remove="appsettings.Development.json" CopyToPublishDirectory="Never" />
     <None Remove="appsettings.DevelopmentExt.json" CopyToPublishDirectory="Never" />
-  </ItemGroup>
+  </ItemGroup>-->
 
   <ItemGroup>
-    <Content Update="appsettings.json">
+    <!--<Content Update="appsettings.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="appsettings.DevelopmentExt.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>-->
     <Content Update="NLog.config">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -125,5 +148,5 @@
     <Message Text="Project File Name = $(MSBuildProjectFile)" Importance="High" />
     <Message Text="Project Extension = $(MSBuildProjectExtension)" />
   </Target>
-  
+
 </Project>

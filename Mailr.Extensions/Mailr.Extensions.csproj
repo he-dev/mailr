@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -19,11 +19,11 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="3.1.2" />
   </ItemGroup>
 
-  <ItemGroup Condition="('$(Configuration)'=='Debug' OR '$(Configuration)'=='Release')">
-    <PackageReference Include="Reusable.Core" Version="9.1.2" />
-    <PackageReference Include="Reusable.OmniLog" Version="9.1.2" />
-    <PackageReference Include="Reusable.OmniLog.Abstractions" Version="9.1.2" />
-    <PackageReference Include="Reusable.OmniLog.SemanticExtensions" Version="9.1.2" />
+  <ItemGroup Condition="'$(Configuration)'=='Debug' OR '$(Configuration)'=='Release'">
+    <PackageReference Include="Reusable.Core" Version="11.0.3" />
+    <PackageReference Include="Reusable.OmniLog" Version="11.0.3" />
+    <PackageReference Include="Reusable.OmniLog.Abstractions" Version="11.0.3" />
+    <PackageReference Include="Reusable.OmniLog.SemanticExtensions" Version="11.0.3" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Debug.csproj|AnyCPU'">

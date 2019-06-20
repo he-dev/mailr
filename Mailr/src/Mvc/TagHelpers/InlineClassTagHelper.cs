@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Custom;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using Mailr.Extensions.Helpers;
 using Mailr.Extensions.Utilities;
 using Mailr.Helpers;
 using Microsoft.AspNetCore.Mvc;
