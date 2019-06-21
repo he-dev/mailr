@@ -119,7 +119,6 @@ namespace Mailr
 
             services.AddScoped<ValidateModel>();
             services.AddScoped<SendEmail>();
-            //services.AddScoped<ImportCssTagHelper>();
 
             //var runtimeId = RuntimeEnvironment.GetRuntimeIdentifier();
             //var assemblyNames = DependencyContext.Default.GetRuntimeAssemblyNames(runtimeId);
@@ -128,12 +127,6 @@ namespace Mailr
             //    extensionAssemblyNames
             //        .SelectMany(a => AssemblyLoadContext.Default.LoadFromAssemblyName(a).DefinedTypes)
             //        .Where(t => typeof(Controller).IsAssignableFrom(t))
-            //        .ToList();
-
-            //var currentDirectory =
-            //var staticFileProviders =
-            //    extensionAssemblyNames
-            //        .Select(n => new PhysicalFileProvider(Path.Combine(HostingEnvironment.ContentRootPath, n)))
             //        .ToList();
 
             if (HostingEnvironment.IsDevelopmentExt())
@@ -147,7 +140,7 @@ namespace Mailr
                         .SelectMany(x => x.Elements("ProjectReference"))
                         .Select(x => x.Attribute("Include").Value)
                         .Where(x => Regex.IsMatch(x, @"Mailr\.Extensions\.\w+\.csproj"))
-                        .Select(n => Path.GetDirectoryName(n)) // Regex.Replace(n, @"\.csproj$", string.Empty))
+                        .Select(Path.GetDirectoryName) // Regex.Replace(n, @"\.csproj$", string.Empty))
                         .Select(n => new PhysicalFileProvider(Path.Combine(HostingEnvironment.ContentRootPath, n)))
                         .Append(HostingEnvironment.ContentRootFileProvider);
 
@@ -182,9 +175,6 @@ namespace Mailr
 
             app.UseMvc(routes =>
             {
-                //routes.MapRoute(
-                //    name: "areas",
-                //    template: "{area}/{controller=Home}/{action=Index}/{id?}");
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
