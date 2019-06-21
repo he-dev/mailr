@@ -6,7 +6,7 @@
     <RuntimeIdentifier>win81-x64</RuntimeIdentifier>
     <AssemblyName>Mailr</AssemblyName>
     <RootNamespace>Mailr</RootNamespace>
-    <Platforms>x64</Platforms>
+    <Platforms>x64;AnyCPU</Platforms>
     <!--<MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>-->
     <LangVersion>latest</LangVersion>
     <Configurations>Debug.csproj;Debug.nuget;Release</Configurations>
