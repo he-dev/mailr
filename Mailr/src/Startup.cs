@@ -96,27 +96,9 @@ namespace Mailr
 
             services.AddScoped<ICssProvider, CssProvider>();
             services.AddRelativeViewLocationExpander();
-
-
-            var mailProviderRegistrations = new Dictionary<SoftString, Action>
-            {
-                [nameof(SmtpProvider)] = () => services.AddSingleton<IResourceProvider, SmtpProvider>()
-                //[nameof(OutlookProvider)] = () => services.AddSingleton<IResourceProvider, OutlookProvider>(),
-            };
-
-            var mailProvider = Configuration["mailProvider"];
-            if (mailProviderRegistrations.TryGetValue(mailProvider, out var register))
-            {
-                register();
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException($"Invalid mail-provider: {mailProvider}. Expected [{mailProviderRegistrations.Keys.Join(", ")}].");
-            }
-
+            services.AddSingleton<IResourceProvider, SmtpProvider>();
             services.AddSingleton<IHostedService, WorkItemQueueService>();
             services.AddSingleton<IWorkItemQueue, WorkItemQueue>();
-
             services.AddScoped<ValidateModel>();
             services.AddScoped<SendEmail>();
 
@@ -128,28 +110,14 @@ namespace Mailr
             //        .SelectMany(a => AssemblyLoadContext.Default.LoadFromAssemblyName(a).DefinedTypes)
             //        .Where(t => typeof(Controller).IsAssignableFrom(t))
             //        .ToList();
+            
+            var wwwrootFileProviders =
+                services
+                    .EnumerateExtensionDirectories()
+                    .Select(n => new PhysicalFileProvider(Path.Combine(HostingEnvironment.ContentRootPath, n)))
+                    .Append(HostingEnvironment.ContentRootFileProvider);
 
-            if (HostingEnvironment.IsDevelopmentExt())
-            {
-                var xMailr = XDocument.Load(Path.Combine(HostingEnvironment.ContentRootPath, "Mailr.csproj"));
-
-                var extensionPaths =
-                    xMailr
-                        .Root
-                        .Elements("ItemGroup")
-                        .SelectMany(x => x.Elements("ProjectReference"))
-                        .Select(x => x.Attribute("Include").Value)
-                        .Where(x => Regex.IsMatch(x, @"Mailr\.Extensions\.\w+\.csproj"))
-                        .Select(Path.GetDirectoryName) // Regex.Replace(n, @"\.csproj$", string.Empty))
-                        .Select(n => new PhysicalFileProvider(Path.Combine(HostingEnvironment.ContentRootPath, n)))
-                        .Append(HostingEnvironment.ContentRootFileProvider);
-
-                services.AddSingleton<IFileProvider>(new CompositeFileProvider(extensionPaths));
-            }
-            else
-            {
-                services.AddSingleton<IFileProvider>(HostingEnvironment.ContentRootFileProvider);
-            }
+            services.AddSingleton<IFileProvider>(new CompositeFileProvider(wwwrootFileProviders));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -179,33 +147,21 @@ namespace Mailr
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
                 routes.MapRoute(
-                    name: RouteNameFactory.CreateCssRouteName(ControllerType.Internal, false),
-                    template: "wwwroot/css/{extension}/{controller}/{action}.css");
+                    name: RouteNames.Css.Global,
+                    template: "wwwroot/css/{theme}.css");
                 routes.MapRoute(
-                    name: RouteNameFactory.CreateCssRouteName(ControllerType.External, false),
-                    //template: "{extension}/wwwroot/css/{controller}/{action}.css");
-                    template: "wwwroot/css/{extension}/{controller}/{action}.css");
-                //routes.MapRoute(
-                //    name: RouteNameFactory.CreateCssRouteName(ControllerType.External, true),
-                //    template: "{extension}/wwwroot/css/{controller}/{action}-{theme}.css");
-                routes.MapRoute(
-                    name: RouteNameFactory.CreateCssRouteName(ControllerType.External, true),
-                    template: "wwwroot/css/{extension}/{controller}/{action}-{theme}.css");
-                routes.MapRoute(
-                    name: RouteNames.Themes,
-                    template: "wwwroot/css/themes/{theme}.css");
+                    name: RouteNames.Css.Extension,
+                    template: "wwwroot/css/{area}/{controller}/{action}/{theme}.css");
             });
         }
     }
 
     internal static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddRelativeViewLocationExpander(this IServiceCollection services)
+        public static IServiceCollection AddRelativeViewLocationExpander(this IServiceCollection services, string prefix = "src")
         {
             return services.Configure<RazorViewEngineOptions>(options =>
             {
-                const string prefix = "src";
-
                 options
                     .ViewLocationExpanders
                     .Add(new RelativeViewLocationExpander(prefix));

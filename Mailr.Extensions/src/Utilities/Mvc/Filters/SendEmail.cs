@@ -11,7 +11,7 @@ using Reusable.Reflection;
 
 namespace Mailr.Extensions.Utilities.Mvc.Filters
 {
-    using static ItemNames;
+    using static HttpContextItemNames;
 
     /// <summary>
     /// Adds the action 'Email{T}' argument as IEmailMetadata to the http-context that the middleware sees and uses for sending emails.
@@ -27,9 +27,10 @@ namespace Mailr.Extensions.Utilities.Mvc.Filters
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            if (context.ActionArguments.Values.OfType<IEmailMetadata>().SingleOrDefault() is var emailMetadata && !(emailMetadata is null))
+            if (context.ActionArguments.Values.OfType<IEmail>().SingleOrDefault() is var emailMetadata && !(emailMetadata is null))
             {
                 context.HttpContext.Items[EmailMetadata] = emailMetadata;
+                context.HttpContext.Items[EmailTheme] = emailMetadata.Theme;
 
                 if (bool.TryParse(context.HttpContext.Request.Query[QueryStringNames.IsDesignMode].FirstOrDefault(), out var isDesignMode))
                 {
@@ -38,7 +39,7 @@ namespace Mailr.Extensions.Utilities.Mvc.Filters
             }
             else
             {
-                _logger.Log(Abstraction.Layer.Service().Routine("GetEmailMetadata").Faulted(), "EmailMetadata is null.");
+                //_logger.Log(Abstraction.Layer.Service().Routine("GetEmailMetadata").Faulted(), "EmailMetadata is null.");
                 //throw DynamicException.Create
                 //(
                 //    $"{((ControllerActionDescriptor)context.ActionDescriptor).ActionName}ActionArgument",

@@ -1,6 +1,6 @@
-﻿namespace Mailr.Extensions.Utilities.Mvc.ModelBinding
+﻿namespace Mailr.Extensions.Utilities
 {
-    public class QueryStringNames
+    public static class QueryStringNames
     {
         public const string IsDesignMode = nameof(IsDesignMode);
     }

@@ -6,7 +6,7 @@ using Mailr.Extensions.Abstractions;
 
 namespace Mailr.Extensions.Models
 {
-    public class Email<TBody> : IEmailMetadata
+    public class Email<TBody> : IEmail
     {
         public string From { get; set; }
 

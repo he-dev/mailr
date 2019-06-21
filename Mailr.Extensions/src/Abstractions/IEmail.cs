@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 
 namespace Mailr.Extensions.Abstractions
 {
-    public interface IEmailMetadata
+    public interface IEmail
     {
         [CanBeNull]
         string From { get; }

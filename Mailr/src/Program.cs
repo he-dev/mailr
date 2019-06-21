@@ -14,8 +14,10 @@ namespace Mailr
     {
         public static void Main(string[] args)
         {
+            //args = new[] { "-console" };
             var isService = IsService(args);
             var contentRootPath = GetContentRootPath(isService);
+            Console.WriteLine(contentRootPath);
 
             var configuration =
                 new ConfigurationBuilder()
@@ -55,12 +57,5 @@ namespace Mailr
                     ? Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName)
                     : Directory.GetCurrentDirectory();
         }
-    }
-
-    public class ProgramInfo
-    {
-        public const string Name = "Mailr";
-
-        public const string Version = "4.1.0";
     }
 }

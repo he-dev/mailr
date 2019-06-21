@@ -47,6 +47,7 @@
 
   <ItemGroup>
     <Compile Remove="src\Mvc\TagHelpers\ImportCssTagHelper.cs" />
+    <Compile Remove="src\Mvc\TagHelpers\InlineClassTagHelper.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -142,6 +143,13 @@
       <DependentUpon>NLog.tt</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="appsettings.json">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="src\Mvc\TagHelpers" />
   </ItemGroup>
 
   <Target Name="DisplayMessages" AfterTargets="AfterBuild">

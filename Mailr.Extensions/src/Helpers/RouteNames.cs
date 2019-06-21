@@ -2,6 +2,10 @@
 {
     internal static class RouteNames
     {
-        public const string Themes = nameof(Themes);
+        public static class Css
+        {
+            public const string Global = nameof(Global);
+            public const string Extension = nameof(Extension);
+        }
     }
 }

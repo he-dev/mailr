@@ -15,8 +15,9 @@ using Reusable.Utilities.AspNetCore.ActionFilters;
 namespace Mailr.Controllers
 {
     //[ApiVersion("3.0")]
+    [Area("mailr")]
     [Route("api/v{version:apiVersion}/mailr/[controller]")]
-    [Extension]
+    //[Extension]
     [ApiController]
     public class MessagesController : Controller
     {

@@ -20,7 +20,7 @@ using Reusable.Quickey;
 
 namespace Mailr.Middleware
 {
-    using static ItemNames;
+    using static HttpContextItemNames;
 
     [UsedImplicitly]
     public class EmailMiddleware
@@ -63,7 +63,7 @@ namespace Mailr.Middleware
                 {
                     await _next(context);
 
-                    if (context.Items[EmailMetadata] is IEmailMetadata emailMetadata)
+                    if (context.Items[EmailMetadata] is IEmail emailMetadata)
                     {
                         // Selecting interface properties because otherwise the body will be dumped too.
                         _logger.Log(Abstraction.Layer.Business().Meta(new { EmailMetadata = new { emailMetadata.From, emailMetadata.To, emailMetadata.Subject, emailMetadata.IsHtml } }));
@@ -89,10 +89,10 @@ namespace Mailr.Middleware
             }
         }
 
-        private async Task SendEmailAsync(HttpContext context, Stream responseBody, IEmailMetadata emailMetadata)
+        private async Task SendEmailAsync(HttpContext context, Stream responseBody, IEmail email)
         {
-            responseBody.Rewind();
-            using (var reader = new StreamReader(responseBody))
+            //responseBody.Rewind();
+            using (var reader = new StreamReader(responseBody.Rewind()))
             {
                 var body = await reader.ReadToEndAsync();
                 _workItemQueue.Enqueue(async cancellationToken =>
@@ -102,31 +102,35 @@ namespace Mailr.Middleware
 
                     try
                     {
-                        if (emailMetadata.CanSend)
+                        if (email.CanSend)
                         {
                             _logger.Log(Abstraction.Layer.Service().Decision("Send email.").Because("Sending emails is enabled."));
 
+
+                            var smtpEmail = new Email<EmailSubject, EmailBody>
+                            {
+                                From = email.From ?? _configuration["Smtp:From"] ?? "unknown@email.com",
+                                To = email.To,
+                                CC = email.CC,
+                                Subject = email.Subject,
+                                Body = body,
+                                IsHtml = email.IsHtml,
+                                Attachments = email.Attachments
+                            };
+                            
                             var metadata =
                                 ImmutableSession
                                     .Empty
                                     .SetItem(From<ISmtpMeta>.Select(x => x.Host), _configuration["Smtp:Host"])
                                     .SetItem(From<ISmtpMeta>.Select(x => x.Port), int.Parse(_configuration["Smtp:Port"]));
-
-                            await _mailProvider.SendEmailAsync(new Email<EmailSubject, EmailBody>
-                            {
-                                From = emailMetadata.From ?? _configuration["Smtp:From"],
-                                To = emailMetadata.To,
-                                CC = emailMetadata.CC,
-                                Subject = new EmailSubject { Value = emailMetadata.Subject },
-                                Body = new EmailBody { Value = body },
-                                IsHtml = emailMetadata.IsHtml,
-                                Attachments = emailMetadata.Attachments
-                            }, metadata);
+                            
+                            await _mailProvider.SendEmailAsync(smtpEmail, metadata);
+                            
                             _logger.Log(Abstraction.Layer.Network().Routine(nameof(MailProviderExtensions.SendEmailAsync)).Completed());
                         }
                         else
                         {
-                            _logger.Log(Abstraction.Layer.Service().Decision("Don't send email.").Because("Sending emails is disabled."));
+                            _logger.Log(Abstraction.Layer.Service().Decision("Don't send email.").Because("Sending emails is disabled.").Warning());
                         }
                     }
                     catch (Exception ex)

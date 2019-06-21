@@ -1,6 +1,6 @@
-﻿@using Mailr.Models.Test
+﻿@using Mailr.Extensions.Models
 @model Mailr.Models.Test.TestBody
-@addTagHelper *, Mailr
+@addTagHelper *, Mailr.Extensions
 @{
     ViewData["Title"] = "About";
 }
@@ -8,20 +8,17 @@
 <html>
 <head>
     <style>
-        
-        
     </style>
 </head>
 <body>
 
-<h2 class="title">@ViewData["Title"]</h2>
-<h3>@ViewData["Message"]</h3>
+    <h2 class="title">@ViewData["Title"]</h2>
+    <h3>@ViewData["Message"]</h3>
 
-<p class="greeting">@Model.Greeting</p>
-<hr/>
-@{
-    Html.RenderPartial("Footer-v2");
-}
+    <p class="greeting">@Model.Greeting</p>
+    <hr />
+
+    <partial name="/src/Views/Shared/Footer.cshtml" model="@(new Footer())" />
 
 </body>
 </html>

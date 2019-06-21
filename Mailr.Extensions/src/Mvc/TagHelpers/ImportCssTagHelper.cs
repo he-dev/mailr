@@ -23,6 +23,7 @@ namespace Mailr.Extensions.Mvc.TagHelpers
     public class ImportCssTagHelper : TagHelper
     {
         private readonly IUrlHelperFactory _urlHelperFactory;
+
         //private readonly IConfiguration _configuration;
         private readonly IFileProvider _fileProvider;
 
@@ -45,7 +46,13 @@ namespace Mailr.Extensions.Mvc.TagHelpers
         {
             var styles = new List<string>();
 
-            foreach (var cssFile in GetCss().Where(cssFile => cssFile.Exists))
+            var css =
+                from cssFileName in CssFileNames()
+                let fileInfo = _fileProvider.GetFileInfo(cssFileName)
+                where fileInfo.Exists
+                select fileInfo;
+
+            foreach (var cssFile in css)
             {
                 using (var readStream = cssFile.CreateReadStream())
                 using (var reader = new StreamReader(readStream))
@@ -57,36 +64,17 @@ namespace Mailr.Extensions.Mvc.TagHelpers
             output.Content.SetHtmlContent(Environment.NewLine + styles.Join(Environment.NewLine));
         }
 
-        [NotNull]
-        private IEnumerable<IFileInfo> GetCss()
+        private IEnumerable<string> CssFileNames()
         {
             var urlHelper = _urlHelperFactory.GetUrlHelper(ViewContext);
 
-            var theme = ViewContext.HttpContext.EmailMetadata()?.Theme ?? "default";
+            yield return urlHelper.RouteUrl(RouteNames.Css.Global, new { theme = "default" });
+            yield return urlHelper.RouteUrl(RouteNames.Css.Extension, new { theme = "default" });
 
-            // Always use the default.css
-            var mainCssFileName = urlHelper.RouteUrl(RouteNames.Themes, new { theme });
-            yield return _fileProvider.GetFileInfo(mainCssFileName);
-
-            // First, try to get the css by theme.
-            var extension = ViewContext.HttpContext.ExtensionId();
-            var controllerType = ViewContext.HttpContext.ControllerType();
-
-            var cssRouteName = RouteNameFactory.CreateCssRouteName(controllerType, true);
-            var cssFileName = urlHelper.RouteUrl(cssRouteName, new { extension, theme });
-
-            var cssFile = _fileProvider.GetFileInfo(cssFileName);
-            if (cssFile.Exists)
+            if (ViewContext.HttpContext.Items[HttpContextItemNames.EmailTheme] is string theme)
             {
-                yield return cssFile;
-            }
-
-            else
-            {
-                // Otherwise fallback to the default css.
-                cssRouteName = RouteNameFactory.CreateCssRouteName(controllerType, false);
-                cssFileName = urlHelper.RouteUrl(cssRouteName, new { extension });
-                yield return _fileProvider.GetFileInfo(cssFileName);
+                yield return urlHelper.RouteUrl(RouteNames.Css.Global, new { theme });
+                yield return urlHelper.RouteUrl(RouteNames.Css.Extension, new { theme });
             }
         }
     }

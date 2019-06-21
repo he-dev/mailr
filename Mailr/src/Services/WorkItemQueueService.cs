@@ -54,8 +54,8 @@ namespace Mailr.Services
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            // ReSharper disable once MethodSupportsCancellation - this task is not supposted to be cancelled until shutdown
-            _backgroundTask = Task.Run(BackgroundProceessing);
+            // ReSharper disable once MethodSupportsCancellation - this task is not supported to be cancelled until shutdown
+            _backgroundTask = Task.Run(BackgroundProcessing);
 
             return Task.CompletedTask;
         }
@@ -73,7 +73,7 @@ namespace Mailr.Services
             _workItemQueue.Enqueue(workItem);
         }
 
-        private async Task BackgroundProceessing()
+        private async Task BackgroundProcessing()
         {
             while (!_shutdown.IsCancellationRequested)
             {
