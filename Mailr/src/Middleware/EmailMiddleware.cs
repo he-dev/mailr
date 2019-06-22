@@ -20,8 +20,6 @@ using Reusable.Quickey;
 
 namespace Mailr.Middleware
 {
-    using static HttpContextItemNames;
-
     [UsedImplicitly]
     public class EmailMiddleware
     {
@@ -63,17 +61,17 @@ namespace Mailr.Middleware
                 {
                     await _next(context);
 
-                    if (context.Items[EmailMetadata] is IEmail emailMetadata)
+                    if (context.Items.TryGetItem(From<IHttpContextItem>.Select(x => x.Email), out var email))
                     {
                         // Selecting interface properties because otherwise the body will be dumped too.
-                        _logger.Log(Abstraction.Layer.Business().Meta(new { EmailMetadata = new { emailMetadata.From, emailMetadata.To, emailMetadata.Subject, emailMetadata.IsHtml } }));
+                        _logger.Log(Abstraction.Layer.Business().Meta(new { EmailMetadata = new { email.From, email.To, email.Subject, email.IsHtml } }));
 
                         using (var responseBodyCopy = new MemoryStream())
                         {
                             // We need a copy of this because the internal handler might close it and we won't able to restore it.
                             responseBody.Rewind();
                             await responseBody.CopyToAsync(responseBodyCopy);
-                            await SendEmailAsync(context, responseBodyCopy, emailMetadata);
+                            await SendEmailAsync(context, responseBodyCopy, email);
                         }
 
                         // Restore Response.Body

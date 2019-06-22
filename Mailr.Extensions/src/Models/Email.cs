@@ -28,19 +28,19 @@ namespace Mailr.Extensions.Models
         public bool CanSend { get; set; } = true;
     }
 
-    [PublicAPI]
-    public static class Email
-    {
-        public static Email<TBody> Create<TBody>(string from, IEnumerable<string> to, IEnumerable<string> cc, string subject, TBody body)
-        {
-            return new Email<TBody>
-            {
-                From = from,
-                To = to.ToList(),
-                CC = cc.ToList(),
-                Subject = subject,
-                Body = body
-            };
-        }
-    }
+//    [PublicAPI]
+//    public static class Email
+//    {
+//        public static Email<TBody> Create<TBody>(string from, IEnumerable<string> to, IEnumerable<string> cc, string subject, TBody body)
+//        {
+//            return new Email<TBody>
+//            {
+//                From = from,
+//                To = to.ToList(),
+//                CC = cc.ToList(),
+//                Subject = subject,
+//                Body = body
+//            };
+//        }
+//    }
 }

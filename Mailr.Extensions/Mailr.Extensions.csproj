@@ -39,6 +39,7 @@
     <Compile Remove="src\Utilities\Mvc\Filters\Extension.cs" />
     <Compile Remove="src\ControllerType.cs" />
     <Compile Remove="src\Utilities\HttpContextExtensions.cs" />
+    <Compile Remove="src\Mvc\TagHelpers\InlineClassTagHelper.cs" />
   </ItemGroup>
 
 </Project>

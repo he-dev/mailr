@@ -7,12 +7,11 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Reusable.OmniLog;
 using Reusable.OmniLog.Abstractions;
 using Reusable.OmniLog.SemanticExtensions;
+using Reusable.Quickey;
 using Reusable.Reflection;
 
 namespace Mailr.Extensions.Utilities.Mvc.Filters
 {
-    using static HttpContextItemNames;
-
     /// <summary>
     /// Adds the action 'Email{T}' argument as IEmailMetadata to the http-context that the middleware sees and uses for sending emails.
     /// </summary>
@@ -27,14 +26,14 @@ namespace Mailr.Extensions.Utilities.Mvc.Filters
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            if (context.ActionArguments.Values.OfType<IEmail>().SingleOrDefault() is var emailMetadata && !(emailMetadata is null))
+            if (context.ActionArguments.Values.OfType<IEmail>().SingleOrDefault() is var email && !(email is null))
             {
-                context.HttpContext.Items[EmailMetadata] = emailMetadata;
-                context.HttpContext.Items[EmailTheme] = emailMetadata.Theme;
+                context.HttpContext.Items.SetItem(From<IHttpContextItem>.Select(x => x.Email), email);
+                context.HttpContext.Items.SetItem(From<IHttpContextItem>.Select(x => x.EmailTheme), email.Theme);
 
                 if (bool.TryParse(context.HttpContext.Request.Query[QueryStringNames.IsDesignMode].FirstOrDefault(), out var isDesignMode))
                 {
-                    emailMetadata.CanSend = !isDesignMode;
+                    email.CanSend = !isDesignMode;
                 }
             }
             else

@@ -3,6 +3,7 @@ using JetBrains.Annotations;
 
 namespace Mailr.Extensions.Models
 {
+    [UsedImplicitly]
     public class HtmlTable
     {
         [CanBeNull]
@@ -28,9 +29,9 @@ namespace Mailr.Extensions.Models
     public class HtmlTableCell
     {
         [CanBeNull]
-        public IList<string> Styles { get; set; }
-
-        [CanBeNull]
         public object Value { get; set; }
+        
+        [CanBeNull]
+        public IList<string> Styles { get; set; }
     }
 }

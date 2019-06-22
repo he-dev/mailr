@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
+using Reusable.Quickey;
 
 namespace Mailr.Extensions.Mvc.TagHelpers
 {
@@ -71,7 +72,7 @@ namespace Mailr.Extensions.Mvc.TagHelpers
             yield return urlHelper.RouteUrl(RouteNames.Css.Global, new { theme = "default" });
             yield return urlHelper.RouteUrl(RouteNames.Css.Extension, new { theme = "default" });
 
-            if (ViewContext.HttpContext.Items[HttpContextItemNames.EmailTheme] is string theme)
+            if (ViewContext.HttpContext.Items.TryGetItem(From<IHttpContextItem>.Select(x => x.EmailTheme), out var theme))
             {
                 yield return urlHelper.RouteUrl(RouteNames.Css.Global, new { theme });
                 yield return urlHelper.RouteUrl(RouteNames.Css.Extension, new { theme });
