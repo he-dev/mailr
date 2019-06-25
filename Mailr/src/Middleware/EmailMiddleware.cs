@@ -110,20 +110,20 @@ namespace Mailr.Middleware
                                 From = email.From ?? _configuration["Smtp:From"] ?? "unknown@email.com",
                                 To = email.To,
                                 CC = email.CC,
-                                Subject = email.Subject,
-                                Body = body,
+                                Subject = new EmailSubject { Value = email.Subject },
+                                Body = new EmailBody { Value = body },
                                 IsHtml = email.IsHtml,
                                 Attachments = email.Attachments
                             };
-                            
+
                             var metadata =
                                 ImmutableSession
                                     .Empty
                                     .SetItem(From<ISmtpMeta>.Select(x => x.Host), _configuration["Smtp:Host"])
                                     .SetItem(From<ISmtpMeta>.Select(x => x.Port), int.Parse(_configuration["Smtp:Port"]));
-                            
+
                             await _mailProvider.SendEmailAsync(smtpEmail, metadata);
-                            
+
                             _logger.Log(Abstraction.Layer.Network().Routine(nameof(MailProviderExtensions.SendEmailAsync)).Completed());
                         }
                         else
