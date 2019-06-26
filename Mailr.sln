@@ -105,8 +105,8 @@ Global
 		{ABF48ACB-A01B-4ABF-BF23-FA33A02E79CA}.Debug.csproj|x64.Build.0 = Debug.csproj|Any CPU
 		{ABF48ACB-A01B-4ABF-BF23-FA33A02E79CA}.Debug.csproj|x86.ActiveCfg = Debug.csproj|Any CPU
 		{ABF48ACB-A01B-4ABF-BF23-FA33A02E79CA}.Debug.csproj|x86.Build.0 = Debug.csproj|Any CPU
-		{ABF48ACB-A01B-4ABF-BF23-FA33A02E79CA}.Debug.nuget|Any CPU.ActiveCfg = Debug.csproj|Any CPU
-		{ABF48ACB-A01B-4ABF-BF23-FA33A02E79CA}.Debug.nuget|Any CPU.Build.0 = Debug.csproj|Any CPU
+		{ABF48ACB-A01B-4ABF-BF23-FA33A02E79CA}.Debug.nuget|Any CPU.ActiveCfg = Debug.nuget|Any CPU
+		{ABF48ACB-A01B-4ABF-BF23-FA33A02E79CA}.Debug.nuget|Any CPU.Build.0 = Debug.nuget|Any CPU
 		{ABF48ACB-A01B-4ABF-BF23-FA33A02E79CA}.Debug.nuget|x64.ActiveCfg = Debug|Any CPU
 		{ABF48ACB-A01B-4ABF-BF23-FA33A02E79CA}.Debug.nuget|x64.Build.0 = Debug|Any CPU
 		{ABF48ACB-A01B-4ABF-BF23-FA33A02E79CA}.Debug.nuget|x86.ActiveCfg = Debug.csproj|Any CPU
