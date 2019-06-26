@@ -20,10 +20,10 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug.nuget' OR '$(Configuration)'=='Release'">
-    <PackageReference Include="Reusable.Core" Version="11.0.3" />
-    <PackageReference Include="Reusable.OmniLog" Version="11.0.3" />
-    <PackageReference Include="Reusable.OmniLog.Abstractions" Version="11.0.3" />
-    <PackageReference Include="Reusable.OmniLog.SemanticExtensions" Version="11.0.3" />
+    <PackageReference Include="Reusable.Core" Version="11.0.4" />
+    <PackageReference Include="Reusable.OmniLog" Version="11.0.4" />
+    <PackageReference Include="Reusable.OmniLog.Abstractions" Version="11.0.4" />
+    <PackageReference Include="Reusable.OmniLog.SemanticExtensions" Version="11.0.4" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug.csproj'">
