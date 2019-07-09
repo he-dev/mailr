@@ -31,6 +31,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Reusable;
 using Reusable.IOnymous;
+using Reusable.IOnymous.Mail.Smtp;
 using Reusable.OmniLog;
 using Reusable.OmniLog.Abstractions;
 using Reusable.OmniLog.Attachments;

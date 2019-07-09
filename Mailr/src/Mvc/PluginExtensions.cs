@@ -157,7 +157,7 @@ namespace Mailr.Mvc
                 // FooPlugin.FooClass, Version = 1.0.0.0, Culture = neutral, PublicKeyToken = null
                 var dependencyName = assemblyName.Name.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).First() + ".dll";
 
-                using (logger.BeginScope().WithCorrelationHandle($"Event:{nameof(AppDomain.AssemblyResolve)}").AttachElapsed())
+                using (logger.BeginScope().CorrelationHandle($"Event:{nameof(AppDomain.AssemblyResolve)}").AttachElapsed())
                 {
                     //logger.Log(Abstraction.Layer.Service().Meta(new { DependencyName = dependencyName, RequestingAssembly = e.RequestingAssembly?.GetName().Name }));
 

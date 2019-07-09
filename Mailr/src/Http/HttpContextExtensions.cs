@@ -13,7 +13,8 @@ namespace Mailr.Http
         {
             if (context.Request.Headers.TryGetValue("User-Agent", out var userAgent))
             {
-                scope.With(new Lambda("Product", _ => Regex.Replace(userAgent.First(), "\\/", "-v")));
+                var product = new Lambda("Product", _ => Regex.Replace(userAgent.First(), "\\/", "-v"));
+                scope.Add(product.Name, product);
             }
 
             return scope;
@@ -28,7 +29,7 @@ namespace Mailr.Http
                 correlationId = correlationIds.First();
             }
 
-            scope.WithCorrelationId(correlationId);
+            scope.CorrelationId(correlationId);
             return scope;
         }
     }

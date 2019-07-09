@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Reusable.Data;
 using Reusable.IOnymous;
+using Reusable.IOnymous.Mail;
+using Reusable.IOnymous.Mail.Smtp;
 using Reusable.OmniLog;
 using Reusable.OmniLog.Abstractions;
 using Reusable.OmniLog.SemanticExtensions;
@@ -116,13 +118,13 @@ namespace Mailr.Middleware
                                 Attachments = email.Attachments
                             };
 
-                            var metadata =
-                                ImmutableSession
+                            var requestContext =
+                                ImmutableContainer
                                     .Empty
-                                    .SetItem(From<ISmtpMeta>.Select(x => x.Host), _configuration["Smtp:Host"])
-                                    .SetItem(From<ISmtpMeta>.Select(x => x.Port), int.Parse(_configuration["Smtp:Port"]));
+                                    .SetItem(SmtpRequestContext.Host, _configuration["Smtp:Host"])
+                                    .SetItem(SmtpRequestContext.Port, int.Parse(_configuration["Smtp:Port"]));
 
-                            await _mailProvider.SendEmailAsync(smtpEmail, metadata);
+                            await _mailProvider.SendEmailAsync(smtpEmail, requestContext);
 
                             _logger.Log(Abstraction.Layer.Network().Routine(nameof(MailProviderExtensions.SendEmailAsync)).Completed());
                         }
