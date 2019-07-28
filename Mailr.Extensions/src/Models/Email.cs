@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using JetBrains.Annotations;
@@ -8,6 +9,8 @@ namespace Mailr.Extensions.Models
 {
     public class Email<TBody> : IEmail
     {
+        public string Id { get; set; } = Guid.NewGuid().ToString().ToUpper();
+        
         public string From { get; set; }
 
         public List<string> To { get; set; }

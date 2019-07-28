@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using Mailr.Extensions;
 using Mailr.Extensions.Abstractions;
 using Mailr.Extensions.Utilities;
 using Mailr.Http;
@@ -11,7 +12,9 @@ using Mailr.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Reusable.Beaver;
 using Reusable.Data;
+using Reusable.Extensions;
 using Reusable.IOnymous;
 using Reusable.IOnymous.Mail;
 using Reusable.IOnymous.Mail.Smtp;
@@ -26,14 +29,11 @@ namespace Mailr.Middleware
     public class EmailMiddleware
     {
         private readonly RequestDelegate _next;
-
         private readonly ILogger _logger;
-
         private readonly IWorkItemQueue _workItemQueue;
-
         private readonly IResourceProvider _mailProvider;
-
         private readonly IConfiguration _configuration;
+        private readonly IFeatureToggle _featureToggle;
 
         public EmailMiddleware
         (
@@ -41,7 +41,8 @@ namespace Mailr.Middleware
             ILoggerFactory loggerFactory,
             IWorkItemQueue workItemQueue,
             IResourceProvider mailProvider,
-            IConfiguration configuration
+            IConfiguration configuration,
+            IFeatureToggle featureToggle
         )
         {
             _next = next;
@@ -49,6 +50,7 @@ namespace Mailr.Middleware
             _workItemQueue = workItemQueue;
             _mailProvider = mailProvider;
             _configuration = configuration;
+            _featureToggle = featureToggle;
         }
 
         public async Task Invoke(HttpContext context)
@@ -63,7 +65,7 @@ namespace Mailr.Middleware
                 {
                     await _next(context);
 
-                    if (context.Items.TryGetItem(From<IHttpContextItem>.Select(x => x.Email), out var email))
+                    if (context.Items.TryGetItem(HttpContextItems.Email, out var email))
                     {
                         // Selecting interface properties because otherwise the body will be dumped too.
                         _logger.Log(Abstraction.Layer.Business().Meta(new { EmailMetadata = new { email.From, email.To, email.Subject, email.IsHtml } }));
@@ -102,10 +104,9 @@ namespace Mailr.Middleware
 
                     try
                     {
-                        if (email.CanSend)
+                        //if (email.CanSend)
                         {
-                            _logger.Log(Abstraction.Layer.Service().Decision("Send email.").Because("Sending emails is enabled."));
-
+                            //_logger.Log(Abstraction.Layer.Service().Decision("Send email.").Because("Sending emails is enabled."));
 
                             var smtpEmail = new Email<EmailSubject, EmailBody>
                             {
@@ -124,13 +125,20 @@ namespace Mailr.Middleware
                                     .SetItem(SmtpRequestContext.Host, _configuration["Smtp:Host"])
                                     .SetItem(SmtpRequestContext.Port, int.Parse(_configuration["Smtp:Port"]));
 
-                            await _mailProvider.SendEmailAsync(smtpEmail, requestContext);
+                            //await _mailProvider.SendEmailAsync(smtpEmail, requestContext);
 
-                            _logger.Log(Abstraction.Layer.Network().Routine(nameof(MailProviderExtensions.SendEmailAsync)).Completed());
+                            await _featureToggle.ExecuteAsync<IResource>
+                            (
+                               name: Features.SendEmail.Index(email.Id),
+                               body: async () => await _mailProvider.SendEmailAsync(smtpEmail, requestContext)
+                               //fallback: () => Task.FromResult<IResource>(default)
+                            );
+
+                            //_logger.Log(Abstraction.Layer.Network().Routine(nameof(MailProviderExtensions.SendEmailAsync)).Completed());
                         }
-                        else
+                        //else
                         {
-                            _logger.Log(Abstraction.Layer.Service().Decision("Don't send email.").Because("Sending emails is disabled.").Warning());
+                            //_logger.Log(Abstraction.Layer.Service().Decision("Don't send email.").Because("Sending emails is disabled.").Warning());
                         }
                     }
                     catch (Exception ex)

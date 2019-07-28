@@ -7,6 +7,9 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using Autofac;
+using Autofac.Core;
+using Autofac.Extensions.DependencyInjection;
 using JetBrains.Annotations;
 using Mailr.Extensions;
 using Mailr.Extensions.Helpers;
@@ -23,6 +26,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Razor.Language.Intermediate;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.DotNet.PlatformAbstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,6 +34,7 @@ using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Reusable;
+using Reusable.Beaver;
 using Reusable.IOnymous;
 using Reusable.IOnymous.Mail.Smtp;
 using Reusable.OmniLog;
@@ -37,6 +42,7 @@ using Reusable.OmniLog.Abstractions;
 using Reusable.OmniLog.Attachments;
 using Reusable.OmniLog.SemanticExtensions;
 using Reusable.Utilities.AspNetCore.ActionFilters;
+using Reusable.Utilities.AspNetCore.DependencyInjection;
 using Reusable.Utilities.NLog.LayoutRenderers;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using PhysicalFileProvider = Microsoft.Extensions.FileProviders.PhysicalFileProvider;
@@ -61,7 +67,7 @@ namespace Mailr
 
         private IHostingEnvironment HostingEnvironment { get; }
 
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             SmartPropertiesLayoutRenderer.Register();
 
@@ -100,6 +106,7 @@ namespace Mailr
             services.AddSingleton<IResourceProvider, SmtpProvider>();
             services.AddSingleton<IHostedService, WorkItemQueueService>();
             services.AddSingleton<IWorkItemQueue, WorkItemQueue>();
+            //services.AddSingleton<IFeatureToggle, FeatureToggle>();
             services.AddScoped<ValidateModel>();
             services.AddScoped<SendEmail>();
 
@@ -111,7 +118,7 @@ namespace Mailr
             //        .SelectMany(a => AssemblyLoadContext.Default.LoadFromAssemblyName(a).DefinedTypes)
             //        .Where(t => typeof(Controller).IsAssignableFrom(t))
             //        .ToList();
-            
+
             var wwwrootFileProviders =
                 services
                     .EnumerateExtensionDirectories()
@@ -119,6 +126,29 @@ namespace Mailr
                     .Append(HostingEnvironment.ContentRootFileProvider);
 
             services.AddSingleton<IFileProvider>(new CompositeFileProvider(wwwrootFileProviders));
+
+            return
+                AutofacLifetimeScopeBuilder
+                    .From(services)
+                    .Configure(builder =>
+                    {
+                        builder
+                            .RegisterType<FeatureOptionRepository>()
+                            .As<IFeatureOptionRepository>()
+                            .SingleInstance();
+                        builder
+                            .RegisterDecorator<IFeatureOptionRepository>(
+                                (context, parameters, repository) => new FeatureOptionFallback.Enabled(repository, FeatureOption.Telemetry));
+                        builder
+                            .RegisterType<FeatureToggle>()
+                            .As<IFeatureToggle>()
+                            .SingleInstance();
+                        builder
+                            .RegisterDecorator<FeatureToggler, IFeatureToggle>();
+                        builder
+                            .RegisterDecorator<FeatureTelemetry, IFeatureToggle>();
+                    })
+                    .ToServiceProvider();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

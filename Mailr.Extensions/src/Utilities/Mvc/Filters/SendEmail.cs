@@ -4,6 +4,7 @@ using Mailr.Extensions.Abstractions;
 using Mailr.Extensions.Utilities.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Reusable.Beaver;
 using Reusable.OmniLog;
 using Reusable.OmniLog.Abstractions;
 using Reusable.OmniLog.SemanticExtensions;
@@ -18,22 +19,28 @@ namespace Mailr.Extensions.Utilities.Mvc.Filters
     public class SendEmail : ActionFilterAttribute
     {
         private readonly ILogger _logger;
+        private readonly IFeatureToggle _featureToggle;
 
-        public SendEmail(ILogger<SendEmail> logger)
+        public SendEmail(ILogger<SendEmail> logger, IFeatureToggle featureToggle)
         {
             _logger = logger;
+            _featureToggle = featureToggle;
         }
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             if (context.ActionArguments.Values.OfType<IEmail>().SingleOrDefault() is var email && !(email is null))
             {
-                context.HttpContext.Items.SetItem(From<IHttpContextItem>.Select(x => x.Email), email);
-                context.HttpContext.Items.SetItem(From<IHttpContextItem>.Select(x => x.EmailTheme), email.Theme);
+                context.HttpContext.Items.SetItem(HttpContextItems.Email, email);
+                context.HttpContext.Items.SetItem(HttpContextItems.EmailTheme, email.Theme);
 
                 if (bool.TryParse(context.HttpContext.Request.Query[QueryStringNames.IsDesignMode].FirstOrDefault(), out var isDesignMode))
                 {
-                    email.CanSend = !isDesignMode;
+                    //email.CanSend = !isDesignMode;
+                    if (isDesignMode)
+                    {
+                        _featureToggle.With(Features.SendEmail.Index(email.Id), f => f.Disable().EnableToggler());
+                    }
                 }
             }
             else

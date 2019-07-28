@@ -72,7 +72,7 @@ namespace Mailr.Extensions.Mvc.TagHelpers
             yield return urlHelper.RouteUrl(RouteNames.Css.Global, new { theme = "default" });
             yield return urlHelper.RouteUrl(RouteNames.Css.Extension, new { theme = "default" });
 
-            if (ViewContext.HttpContext.Items.TryGetItem(From<IHttpContextItem>.Select(x => x.EmailTheme), out var theme))
+            if (ViewContext.HttpContext.Items.TryGetItem(HttpContextItems.EmailTheme, out var theme))
             {
                 yield return urlHelper.RouteUrl(RouteNames.Css.Global, new { theme });
                 yield return urlHelper.RouteUrl(RouteNames.Css.Extension, new { theme });

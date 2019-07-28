@@ -5,6 +5,9 @@ namespace Mailr.Extensions.Abstractions
 {
     public interface IEmail
     {
+        [NotNull]
+        string Id { get; }
+        
         [CanBeNull]
         string From { get; }
 

@@ -38,6 +38,7 @@
       <ExcludeAssets>analyzers</ExcludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Reusable\Reusable.OmniLog\Reusable.OmniLog.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Beaver\Reusable.Beaver.csproj" />
   </ItemGroup>
 
   <ItemGroup>

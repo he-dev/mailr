@@ -7,11 +7,11 @@ namespace Mailr.Extensions.Utilities
 {
     [UseMember]
     [PlainSelectorFormatter]
-    public interface IHttpContextItem
+    public class HttpContextItems : SelectorBuilder<HttpContextItems>
     {
-        IEmail Email { get; }
+        public static Selector<IEmail> Email { get; } = Select(() => Email);
 
-        string EmailTheme { get; }
+        public static Selector<string> EmailTheme { get; } = Select(() => EmailTheme);
     }
 
     public static class DictionaryExtension
