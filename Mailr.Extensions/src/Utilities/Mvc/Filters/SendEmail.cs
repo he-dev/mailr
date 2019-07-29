@@ -39,7 +39,13 @@ namespace Mailr.Extensions.Utilities.Mvc.Filters
                     //email.CanSend = !isDesignMode;
                     if (isDesignMode)
                     {
-                        _featureToggle.With(Features.SendEmail.Index(email.Id), f => f.Disable().EnableToggler());
+                        _featureToggle.With(
+                            Features.SendEmail.Index(email.Id), f => f
+                                .Remove(FeatureOption.Enabled)
+                                .Set(FeatureOption.Toggle)
+                                .Set(FeatureOption.ToggleOnce)
+                                .Set(FeatureOption.ToggleReset)
+                        );
                     }
                 }
             }
