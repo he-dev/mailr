@@ -131,7 +131,6 @@ namespace Mailr.Middleware
                             (
                                name: Features.SendEmail.Index(email.Id),
                                body: async () => await _mailProvider.SendEmailAsync(smtpEmail, requestContext)
-                               //fallback: () => Task.FromResult<IResource>(default)
                             );
 
                             //_logger.Log(Abstraction.Layer.Network().Routine(nameof(MailProviderExtensions.SendEmailAsync)).Completed());
