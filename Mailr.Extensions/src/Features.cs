@@ -2,7 +2,7 @@ using Reusable.Quickey;
 
 namespace Mailr.Extensions
 {
-    [UseType, UseMember]
+    [UseType, UseMember, UseIndex]
     [PlainSelectorFormatter]
     public class Features : SelectorBuilder<Features>
     {

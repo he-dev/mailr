@@ -22,6 +22,7 @@ using Microsoft.Extensions.DependencyModel.Resolution;
 using Microsoft.Extensions.FileProviders;
 using Reusable.OmniLog;
 using Reusable.OmniLog.Abstractions;
+using Reusable.OmniLog.Nodes;
 using Reusable.OmniLog.SemanticExtensions;
 
 namespace Mailr.Mvc
@@ -80,10 +81,7 @@ namespace Mailr.Mvc
 
                         //    //mvc.Services.Configure<RazorViewEngineOptions>(o => o.FileProviders.Add(new EmbeddedFileProvider(extensionAssembly)));
                         //}
-
-                        
                     }
-
                 });
 
             //ConfigureAssemblyResolve(serviceProvider, extensionDirectoriesWithoutRoot);
@@ -157,7 +155,8 @@ namespace Mailr.Mvc
                 // FooPlugin.FooClass, Version = 1.0.0.0, Culture = neutral, PublicKeyToken = null
                 var dependencyName = assemblyName.Name.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).First() + ".dll";
 
-                using (logger.BeginScope().CorrelationHandle($"Event:{nameof(AppDomain.AssemblyResolve)}").AttachElapsed())
+                using (logger.UseScope(correlationHandle: $"Event:{nameof(AppDomain.AssemblyResolve)}"))
+                using (logger.UseStopwatch())
                 {
                     //logger.Log(Abstraction.Layer.Service().Meta(new { DependencyName = dependencyName, RequestingAssembly = e.RequestingAssembly?.GetName().Name }));
 
@@ -286,9 +285,6 @@ namespace Mailr.Mvc
 
     internal class test : IApplicationFeatureProvider<Microsoft.AspNetCore.Mvc.ViewComponents.ViewComponentFeature>
     {
-        public void PopulateFeature(IEnumerable<ApplicationPart> parts, ViewComponentFeature feature)
-        {
-
-        }
+        public void PopulateFeature(IEnumerable<ApplicationPart> parts, ViewComponentFeature feature) { }
     }
 }

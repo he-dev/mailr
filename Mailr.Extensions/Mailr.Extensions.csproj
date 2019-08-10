@@ -23,6 +23,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="3.1.2" />
+    <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug.nuget' OR '$(Configuration)'=='Release'">
@@ -34,11 +35,13 @@
 
   <ItemGroup Condition="'$(Configuration)'=='Debug.csproj'">
     <ProjectReference Include="..\..\Reusable\Reusable.Core\Reusable.Core.csproj" />
-    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.SemanticExtensions\Reusable.OmniLog.SemanticExtensions.csproj">
-      <ExcludeAssets>analyzers</ExcludeAssets>
-    </ProjectReference>
     <ProjectReference Include="..\..\Reusable\Reusable.OmniLog\Reusable.OmniLog.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.SemanticExtensions\Reusable.OmniLog.SemanticExtensions.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.SemanticExtensions.AspNetCore\Reusable.OmniLog.SemanticExtensions.AspNetCore.csproj" />
+<!--      <ExcludeAssets>analyzers</ExcludeAssets>-->
+<!--    </ProjectReference>-->
     <ProjectReference Include="..\..\Reusable\Reusable.Beaver\Reusable.Beaver.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Quickey\Reusable.Quickey.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,5 +51,6 @@
     <Compile Remove="src\Utilities\HttpContextExtensions.cs" />
     <Compile Remove="src\Mvc\TagHelpers\InlineClassTagHelper.cs" />
   </ItemGroup>
+
 
 </Project>

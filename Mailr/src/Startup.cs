@@ -9,7 +9,6 @@ using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using Autofac;
 using Autofac.Core;
-using Autofac.Extensions.DependencyInjection;
 using JetBrains.Annotations;
 using Mailr.Extensions;
 using Mailr.Extensions.Helpers;
@@ -39,11 +38,16 @@ using Reusable.IOnymous;
 using Reusable.IOnymous.Mail.Smtp;
 using Reusable.OmniLog;
 using Reusable.OmniLog.Abstractions;
-using Reusable.OmniLog.Attachments;
+using Reusable.OmniLog.Abstractions.Data;
+using Reusable.OmniLog.Nodes;
+using Reusable.OmniLog.Rx;
+using Reusable.OmniLog.Scalars;
 using Reusable.OmniLog.SemanticExtensions;
+using Reusable.OmniLog.SemanticExtensions.AspNetCore;
 using Reusable.Utilities.AspNetCore.ActionFilters;
 using Reusable.Utilities.AspNetCore.DependencyInjection;
 using Reusable.Utilities.NLog.LayoutRenderers;
+using IApplicationLifetime = Microsoft.AspNetCore.Hosting.IApplicationLifetime;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using PhysicalFileProvider = Microsoft.Extensions.FileProviders.PhysicalFileProvider;
 
@@ -71,17 +75,26 @@ namespace Mailr
         {
             SmartPropertiesLayoutRenderer.Register();
 
-            services.AddSingleton<ILoggerFactory>
-            (
-                LoggerFactory
-                    .Empty
-                    .AttachObject("Environment", HostingEnvironment.EnvironmentName)
-                    .AttachObject("Product", $"{ProgramInfo.Name}-v{ProgramInfo.Version}")
-                    .AttachScope()
-                    .AttachSnapshot()
-                    .Attach<Timestamp<DateTimeUtc>>()
-                    .AttachElapsedMilliseconds()
-                    .AddObserver<NLogRx>()
+            services.AddOmniLog(loggerFactory =>
+                loggerFactory
+                    .UseConstant(
+                        ("Environment", HostingEnvironment.EnvironmentName),
+                        ("Product", $"{ProgramInfo.Name}-v{ProgramInfo.Version}"))
+                    .UseStopwatch()
+                    .UseScalar(new Timestamp<DateTimeUtc>())
+                    .UseLambda()
+                    .UseCorrelation()
+                    .UseBuilder(n => n.Names.Add(nameof(Abstraction)))
+                    .UseOneToMany()
+                    //.UseMapper(MapperNode.Mapping.For())
+                    .UseSerializer()
+                    .UseRename(
+                        (LogEntry.Names.Scope, "Scope"),
+                        (LogEntry.Names.Object, "Identifier"),
+                        (LogEntry.Names.Snapshot, "Snapshot"))
+                    .UseFallback((LogEntry.Names.Level, LogLevel.Information))
+                    .UseBuffer()
+                    .UseEcho(new NLogRx())
             );
 
             services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
@@ -152,10 +165,22 @@ namespace Mailr
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime appLifetime, ILoggerFactory loggerFactory)
         {
             //app.UseMiddleware<LogScopeMiddleware>();
-            app.UseSemanticLogger(config => { config.ConfigureScope = (scope, context) => scope.AttachUserCorrelationId(context).AttachUserAgent(context); });
+            app.UseOmniLog(context => context.GetCorrelationId());
+
+            var startupLogger = loggerFactory.CreateLogger<Startup>();
+
+            appLifetime.ApplicationStarted.Register(() =>
+            {
+                startupLogger.Log(Abstraction.Layer.Service().Routine("Start").Completed(), l => l.Message("Here's Mailr!"));
+            });
+
+            appLifetime.ApplicationStopped.Register(() =>
+            {
+                startupLogger.Log(Abstraction.Layer.Service().Routine("Stop").Completed(), l => l.Message("Good bye!"));
+            });
 
             if (env.IsDevelopment() || env.IsDevelopmentExt())
             {

@@ -20,6 +20,7 @@ using Reusable.IOnymous.Mail;
 using Reusable.IOnymous.Mail.Smtp;
 using Reusable.OmniLog;
 using Reusable.OmniLog.Abstractions;
+using Reusable.OmniLog.Nodes;
 using Reusable.OmniLog.SemanticExtensions;
 using Reusable.Quickey;
 
@@ -100,7 +101,7 @@ namespace Mailr.Middleware
                 _workItemQueue.Enqueue(async cancellationToken =>
                 {
                     // We need to rebuild the scope here because it'll be executed outside the request pipeline.
-                    var scope = _logger.BeginScope().AttachElapsed().AttachUserCorrelationId(context).AttachUserAgent(context);
+                    var scope = _logger.UseScope(); //.AttachElapsed().AttachUserCorrelationId(context).AttachUserAgent(context);
 
                     try
                     {
