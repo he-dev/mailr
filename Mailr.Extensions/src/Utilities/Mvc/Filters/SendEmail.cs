@@ -36,27 +36,11 @@ namespace Mailr.Extensions.Utilities.Mvc.Filters
 
                 if (bool.TryParse(context.HttpContext.Request.Query[QueryStringNames.IsDesignMode].FirstOrDefault(), out var isDesignMode))
                 {
-                    //email.CanSend = !isDesignMode;
-                    if (isDesignMode)
+                    if (!isDesignMode)
                     {
-                        _featureToggle.With(Features.SendEmail.Index(email.Id), f => f
-                            .Remove(FeatureOption.Enabled)
-                            .Set(FeatureOption.Toggle)
-                            .Set(FeatureOption.ToggleOnce)
-                            .Set(FeatureOption.ToggleReset));
+                        _featureToggle.Update(Features.SendEmail, f => f.Set(FeatureOption.Enabled));
                     }
                 }
-            }
-            else
-            {
-                //_logger.Log(Abstraction.Layer.Service().Routine("GetEmailMetadata").Faulted(), "EmailMetadata is null.");
-                //throw DynamicException.Create
-                //(
-                //    $"{((ControllerActionDescriptor)context.ActionDescriptor).ActionName}ActionArgument",
-                //    $"Could not read the email metadata for '{context.HttpContext.Request.Path.Value}'. " +
-                //    $"This might be due to an invalid model. " +
-                //    $"Try using the '[ServiceFilter(typeof(ValidateModel))]' filter to avoid this and to validate the model."
-                //);
             }
         }
     }

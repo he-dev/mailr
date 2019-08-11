@@ -34,7 +34,6 @@ namespace Mailr.Middleware
         private readonly IWorkItemQueue _workItemQueue;
         private readonly IResourceProvider _mailProvider;
         private readonly IConfiguration _configuration;
-        private readonly IFeatureToggle _featureToggle;
 
         public EmailMiddleware
         (
@@ -42,8 +41,7 @@ namespace Mailr.Middleware
             ILoggerFactory loggerFactory,
             IWorkItemQueue workItemQueue,
             IResourceProvider mailProvider,
-            IConfiguration configuration,
-            IFeatureToggle featureToggle
+            IConfiguration configuration
         )
         {
             _next = next;
@@ -51,10 +49,9 @@ namespace Mailr.Middleware
             _workItemQueue = workItemQueue;
             _mailProvider = mailProvider;
             _configuration = configuration;
-            _featureToggle = featureToggle;
         }
 
-        public async Task Invoke(HttpContext context)
+        public async Task Invoke(HttpContext context, IFeatureToggle featureToggle)
         {
             var originalResponseBody = context.Response.Body;
 
@@ -69,14 +66,14 @@ namespace Mailr.Middleware
                     if (context.Items.TryGetItem(HttpContextItems.Email, out var email))
                     {
                         // Selecting interface properties because otherwise the body will be dumped too.
-                        _logger.Log(Abstraction.Layer.Business().Meta(new { EmailMetadata = new { email.From, email.To, email.Subject, email.IsHtml } }));
+                        _logger.Log(Abstraction.Layer.Business().Meta(new {EmailMetadata = new {email.From, email.To, email.Subject, email.IsHtml}}));
 
                         using (var responseBodyCopy = new MemoryStream())
                         {
                             // We need a copy of this because the internal handler might close it and we won't able to restore it.
                             responseBody.Rewind();
                             await responseBody.CopyToAsync(responseBodyCopy);
-                            await SendEmailAsync(context, responseBodyCopy, email);
+                            await SendEmailAsync(context, responseBodyCopy, email, featureToggle);
                         }
 
                         // Restore Response.Body
@@ -92,7 +89,7 @@ namespace Mailr.Middleware
             }
         }
 
-        private async Task SendEmailAsync(HttpContext context, Stream responseBody, IEmail email)
+        private async Task SendEmailAsync(HttpContext context, Stream responseBody, IEmail email, IFeatureToggle featureToggle)
         {
             //responseBody.Rewind();
             using (var reader = new StreamReader(responseBody.Rewind()))
@@ -105,41 +102,30 @@ namespace Mailr.Middleware
 
                     try
                     {
-                        //if (email.CanSend)
+                        var smtpEmail = new Email<EmailSubject, EmailBody>
                         {
-                            //_logger.Log(Abstraction.Layer.Service().Decision("Send email.").Because("Sending emails is enabled."));
+                            From = email.From ?? _configuration["Smtp:From"] ?? "unknown@email.com",
+                            To = email.To,
+                            CC = email.CC,
+                            Subject = new EmailSubject {Value = email.Subject},
+                            Body = new EmailBody {Value = body},
+                            IsHtml = email.IsHtml,
+                            Attachments = email.Attachments
+                        };
 
-                            var smtpEmail = new Email<EmailSubject, EmailBody>
-                            {
-                                From = email.From ?? _configuration["Smtp:From"] ?? "unknown@email.com",
-                                To = email.To,
-                                CC = email.CC,
-                                Subject = new EmailSubject { Value = email.Subject },
-                                Body = new EmailBody { Value = body },
-                                IsHtml = email.IsHtml,
-                                Attachments = email.Attachments
-                            };
+                        var requestContext =
+                            ImmutableContainer
+                                .Empty
+                                .SetItem(SmtpRequestContext.Host, _configuration["Smtp:Host"])
+                                .SetItem(SmtpRequestContext.Port, int.Parse(_configuration["Smtp:Port"]));
 
-                            var requestContext =
-                                ImmutableContainer
-                                    .Empty
-                                    .SetItem(SmtpRequestContext.Host, _configuration["Smtp:Host"])
-                                    .SetItem(SmtpRequestContext.Port, int.Parse(_configuration["Smtp:Port"]));
+                        await featureToggle.ExecuteAsync<IResource>
+                        (
+                            name: Features.SendEmail,
+                            body: async () => await _mailProvider.SendEmailAsync(smtpEmail, requestContext)
+                        );
 
-                            //await _mailProvider.SendEmailAsync(smtpEmail, requestContext);
-
-                            await _featureToggle.ExecuteAsync<IResource>
-                            (
-                               name: Features.SendEmail.Index(email.Id),
-                               body: async () => await _mailProvider.SendEmailAsync(smtpEmail, requestContext)
-                            );
-
-                            //_logger.Log(Abstraction.Layer.Network().Routine(nameof(MailProviderExtensions.SendEmailAsync)).Completed());
-                        }
-                        //else
-                        {
-                            //_logger.Log(Abstraction.Layer.Service().Decision("Don't send email.").Because("Sending emails is disabled.").Warning());
-                        }
+                        //_logger.Log(Abstraction.Layer.Network().Routine(nameof(MailProviderExtensions.SendEmailAsync)).Completed());
                     }
                     catch (Exception ex)
                     {

@@ -44,6 +44,7 @@ using Reusable.OmniLog.Rx;
 using Reusable.OmniLog.Scalars;
 using Reusable.OmniLog.SemanticExtensions;
 using Reusable.OmniLog.SemanticExtensions.AspNetCore;
+using Reusable.OmniLog.SemanticExtensions.AspNetCore.Mvc.Filters;
 using Reusable.Utilities.AspNetCore.ActionFilters;
 using Reusable.Utilities.AspNetCore.DependencyInjection;
 using Reusable.Utilities.NLog.LayoutRenderers;
@@ -114,14 +115,14 @@ namespace Mailr
                 options.DefaultApiVersion = new ApiVersion(1, 0);
             });
 
-            services.AddScoped<ICssProvider, CssProvider>();
             services.AddRelativeViewLocationExpander();
             services.AddSingleton<IResourceProvider, SmtpProvider>();
             services.AddSingleton<IHostedService, WorkItemQueueService>();
             services.AddSingleton<IWorkItemQueue, WorkItemQueue>();
-            //services.AddSingleton<IFeatureToggle, FeatureToggle>();
+            services.AddScoped<ICssProvider, CssProvider>();
             services.AddScoped<ValidateModel>();
             services.AddScoped<SendEmail>();
+            services.AddScoped<LogResponseBody>();
 
             //var runtimeId = RuntimeEnvironment.GetRuntimeIdentifier();
             //var assemblyNames = DependencyContext.Default.GetRuntimeAssemblyNames(runtimeId);
@@ -148,14 +149,15 @@ namespace Mailr
                         builder
                             .RegisterType<FeatureOptionRepository>()
                             .As<IFeatureOptionRepository>()
-                            .SingleInstance();
+                            .InstancePerLifetimeScope();
                         builder
-                            .RegisterDecorator<IFeatureOptionRepository>(
-                                (context, parameters, repository) => new FeatureOptionFallback.Enabled(repository, FeatureOption.Telemetry));
+                            .RegisterDecorator<IFeatureOptionRepository>((context, parameters, repository) => 
+                                new FeatureOptionFallback(repository, FeatureOption.Telemetry));
+
                         builder
                             .RegisterType<FeatureToggle>()
                             .As<IFeatureToggle>()
-                            .SingleInstance();
+                            .InstancePerLifetimeScope();
                         builder
                             .RegisterDecorator<FeatureToggler, IFeatureToggle>();
                         builder

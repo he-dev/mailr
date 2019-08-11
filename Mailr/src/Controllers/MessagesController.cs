@@ -29,7 +29,7 @@ namespace Mailr.Controllers
         //}
 
         [HttpPost("[action]")]
-        [LogResponseBody]
+        [ServiceFilter(typeof(LogResponseBody))]
         [ServiceFilter(typeof(ValidateModel))]
         [ServiceFilter(typeof(SendEmail))]
         public IActionResult PlainText([FromBody] Email<string> email, [ModelBinder(typeof(EmailViewBinder))] EmailView view)
@@ -45,7 +45,7 @@ namespace Mailr.Controllers
         //}
 
         [HttpPost("[action]")]
-        [LogResponseBody]
+        [ServiceFilter(typeof(LogResponseBody))]
         [ServiceFilter(typeof(ValidateModel))]
         [ServiceFilter(typeof(SendEmail))]
         public IActionResult Test([FromBody] Email<TestBody> email, [ModelBinder(typeof(EmailViewBinder))] EmailView view)
