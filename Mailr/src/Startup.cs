@@ -34,8 +34,6 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Reusable;
 using Reusable.Beaver;
-using Reusable.IOnymous;
-using Reusable.IOnymous.Mail.Smtp;
 using Reusable.OmniLog;
 using Reusable.OmniLog.Abstractions;
 using Reusable.OmniLog.Abstractions.Data;
@@ -45,8 +43,11 @@ using Reusable.OmniLog.Scalars;
 using Reusable.OmniLog.SemanticExtensions;
 using Reusable.OmniLog.SemanticExtensions.AspNetCore;
 using Reusable.OmniLog.SemanticExtensions.AspNetCore.Mvc.Filters;
+using Reusable.Translucent;
+using Reusable.Translucent.Middleware;
 using Reusable.Utilities.AspNetCore.ActionFilters;
 using Reusable.Utilities.AspNetCore.DependencyInjection;
+using Reusable.Utilities.Autofac;
 using Reusable.Utilities.NLog.LayoutRenderers;
 using IApplicationLifetime = Microsoft.AspNetCore.Hosting.IApplicationLifetime;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
@@ -116,7 +117,6 @@ namespace Mailr
             });
 
             services.AddRelativeViewLocationExpander();
-            services.AddSingleton<IResourceProvider, SmtpProvider>();
             services.AddSingleton<IHostedService, WorkItemQueueService>();
             services.AddSingleton<IWorkItemQueue, WorkItemQueue>();
             services.AddScoped<ICssProvider, CssProvider>();
@@ -151,7 +151,7 @@ namespace Mailr
                             .As<IFeatureOptionRepository>()
                             .InstancePerLifetimeScope();
                         builder
-                            .RegisterDecorator<IFeatureOptionRepository>((context, parameters, repository) => 
+                            .RegisterDecorator<IFeatureOptionRepository>((context, parameters, repository) =>
                                 new FeatureOptionFallback(repository, FeatureOption.Telemetry));
 
                         builder
@@ -162,6 +162,14 @@ namespace Mailr
                             .RegisterDecorator<FeatureToggler, IFeatureToggle>();
                         builder
                             .RegisterDecorator<FeatureTelemetry, IFeatureToggle>();
+
+                        builder
+                            .RegisterType<AutofacServiceProvider>()
+                            .As<IServiceProvider>();
+
+                        builder
+                            .RegisterType<ResourceRepository<MailrResourceSetup>>()
+                            .As<IResourceRepository>();
                     })
                     .ToServiceProvider();
         }
@@ -174,15 +182,9 @@ namespace Mailr
 
             var startupLogger = loggerFactory.CreateLogger<Startup>();
 
-            appLifetime.ApplicationStarted.Register(() =>
-            {
-                startupLogger.Log(Abstraction.Layer.Service().Routine("Start").Completed(), l => l.Message("Here's Mailr!"));
-            });
+            appLifetime.ApplicationStarted.Register(() => { startupLogger.Log(Abstraction.Layer.Service().Routine("Start").Completed(), l => l.Message("Here's Mailr!")); });
 
-            appLifetime.ApplicationStopped.Register(() =>
-            {
-                startupLogger.Log(Abstraction.Layer.Service().Routine("Stop").Completed(), l => l.Message("Good bye!"));
-            });
+            appLifetime.ApplicationStopped.Register(() => { startupLogger.Log(Abstraction.Layer.Service().Routine("Stop").Completed(), l => l.Message("Good bye!")); });
 
             if (env.IsDevelopment() || env.IsDevelopmentExt())
             {
@@ -212,6 +214,16 @@ namespace Mailr
                     template: "wwwroot/css/{area}/{controller}/{action}/{theme}.css");
             });
         }
+    }
+
+    internal class MailrResourceSetup
+    {
+        public void ConfigureServices(IResourceControllerBuilder controller)
+        {
+            controller.AddSmtp();
+        }
+
+        //public void Configure(IResourceRepositoryBuilder repository) { }
     }
 
     internal static class ServiceCollectionExtensions

@@ -15,14 +15,14 @@ using Microsoft.Extensions.Configuration;
 using Reusable.Beaver;
 using Reusable.Data;
 using Reusable.Extensions;
-using Reusable.IOnymous;
-using Reusable.IOnymous.Mail;
-using Reusable.IOnymous.Mail.Smtp;
 using Reusable.OmniLog;
 using Reusable.OmniLog.Abstractions;
 using Reusable.OmniLog.Nodes;
 using Reusable.OmniLog.SemanticExtensions;
 using Reusable.Quickey;
+using Reusable.Translucent;
+using Reusable.Translucent.Controllers;
+using Reusable.Translucent.Models;
 
 namespace Mailr.Middleware
 {
@@ -32,7 +32,7 @@ namespace Mailr.Middleware
         private readonly RequestDelegate _next;
         private readonly ILogger _logger;
         private readonly IWorkItemQueue _workItemQueue;
-        private readonly IResourceProvider _mailProvider;
+        private readonly IResourceRepository _resources;
         private readonly IConfiguration _configuration;
 
         public EmailMiddleware
@@ -40,14 +40,14 @@ namespace Mailr.Middleware
             RequestDelegate next,
             ILoggerFactory loggerFactory,
             IWorkItemQueue workItemQueue,
-            IResourceProvider mailProvider,
+            IResourceRepository resources,
             IConfiguration configuration
         )
         {
             _next = next;
             _logger = loggerFactory.CreateLogger<EmailMiddleware>();
             _workItemQueue = workItemQueue;
-            _mailProvider = mailProvider;
+            _resources = resources;
             _configuration = configuration;
         }
 
@@ -66,7 +66,7 @@ namespace Mailr.Middleware
                     if (context.Items.TryGetItem(HttpContextItems.Email, out var email))
                     {
                         // Selecting interface properties because otherwise the body will be dumped too.
-                        _logger.Log(Abstraction.Layer.Business().Meta(new {EmailMetadata = new {email.From, email.To, email.Subject, email.IsHtml}}));
+                        _logger.Log(Abstraction.Layer.Business().Meta(new { EmailMetadata = new { email.From, email.To, email.Subject, email.IsHtml } }));
 
                         using (var responseBodyCopy = new MemoryStream())
                         {
@@ -107,8 +107,8 @@ namespace Mailr.Middleware
                             From = email.From ?? _configuration["Smtp:From"] ?? "unknown@email.com",
                             To = email.To,
                             CC = email.CC,
-                            Subject = new EmailSubject {Value = email.Subject},
-                            Body = new EmailBody {Value = body},
+                            Subject = new EmailSubject { Value = email.Subject },
+                            Body = new EmailBody { Value = body },
                             IsHtml = email.IsHtml,
                             Attachments = email.Attachments
                         };
@@ -116,20 +116,16 @@ namespace Mailr.Middleware
                         var requestContext =
                             ImmutableContainer
                                 .Empty
-                                .SetItem(SmtpRequestContext.Host, _configuration["Smtp:Host"])
-                                .SetItem(SmtpRequestContext.Port, int.Parse(_configuration["Smtp:Port"]));
+                                .SetItem(SmtpRequest.Host, _configuration["Smtp:Host"])
+                                .SetItem(SmtpRequest.Port, int.Parse(_configuration["Smtp:Port"]));
 
-                        await featureToggle.ExecuteAsync<IResource>
-                        (
-                            name: Features.SendEmail,
-                            body: async () => await _mailProvider.SendEmailAsync(smtpEmail, requestContext)
-                        );
+                        using (await featureToggle.ExecuteAsync(name: Features.SendEmail, body: async () => await _resources.SendEmailAsync(smtpEmail, requestContext))) { }
 
                         //_logger.Log(Abstraction.Layer.Network().Routine(nameof(MailProviderExtensions.SendEmailAsync)).Completed());
                     }
                     catch (Exception ex)
                     {
-                        _logger.Log(Abstraction.Layer.Network().Routine(nameof(MailProviderExtensions.SendEmailAsync)).Faulted(), ex);
+                        _logger.Log(Abstraction.Layer.Network().Routine("SendEmailAsync").Faulted(), ex);
                     }
                     finally
                     {

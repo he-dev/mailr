@@ -68,9 +68,6 @@
 
   <ItemGroup Condition="'$(Configuration)'=='Debug.nuget' OR '$(Configuration)'=='Release'">
     <PackageReference Include="Reusable.Core" Version="12.0.0" />
-    <PackageReference Include="Reusable.IOnymous" Version="12.0.0" />
-    <PackageReference Include="Reusable.IOnymous.Mail" Version="12.0.0" />
-    <PackageReference Include="Reusable.IOnymous.Mail.Smtp" Version="12.0.0" />
     <PackageReference Include="Reusable.OmniLog.NLogRx" Version="12.0.0" />
     <PackageReference Include="Reusable.OmniLog.SemanticMiddleware" Version="12.0.0" />
     <PackageReference Include="Reusable.Utilities.AspNetCore" Version="12.0.0" />
@@ -89,9 +86,8 @@
     <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.NLogRx\Reusable.OmniLog.NLogRx.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.SemanticExtensions\Reusable.OmniLog.SemanticExtensions.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.SemanticExtensions.AspNetCore\Reusable.OmniLog.SemanticExtensions.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\Reusable\Reusable.IOnymous\Reusable.IOnymous.csproj" />
-    <ProjectReference Include="..\..\Reusable\Reusable.IOnymous.Mail\Reusable.IOnymous.Mail.csproj" />
-    <ProjectReference Include="..\..\Reusable\Reusable.IOnymous.Mail.Smtp\Reusable.IOnymous.Mail.Smtp.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Translucent\Reusable.Translucent.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Translucent.mailto\Reusable.Translucent.mailto.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.Utilities.JsonNet\Reusable.Utilities.JsonNet.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.Utilities.NLog\Reusable.Utilities.NLog.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.Utilities.SqlClient\Reusable.Utilities.SqlClient.csproj" />
