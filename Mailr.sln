@@ -56,9 +56,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reusable.OmniLog.Abstractio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reusable.Flawless", "..\Reusable\Reusable.Flawless\Reusable.Flawless.csproj", "{0C8AB1B9-B022-40E3-86DE-FB81AAC3E255}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reusable.Translucent", "..\Reusable\Reusable.Translucent\Reusable.Translucent.csproj", "{E57D38EF-0548-4902-AA03-9BFC68C913E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reusable.Translucent", "..\Reusable\Reusable.Translucent\Reusable.Translucent.csproj", "{E57D38EF-0548-4902-AA03-9BFC68C913E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reusable.Translucent.mailto", "..\Reusable\Reusable.Translucent.mailto\Reusable.Translucent.mailto.csproj", "{9BEF5951-0652-4296-AFCC-9AA92B5AEEC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reusable.Translucent.mailto", "..\Reusable\Reusable.Translucent.mailto\Reusable.Translucent.mailto.csproj", "{9BEF5951-0652-4296-AFCC-9AA92B5AEEC8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reusable.Utilities.Autofac", "..\Reusable\Reusable.Utilities.Autofac\Reusable.Utilities.Autofac.csproj", "{41A3F6C0-1878-4101-B145-CF4E587BAF18}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reusable.Translucent.file", "..\Reusable\Reusable.Translucent.file\Reusable.Translucent.file.csproj", "{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -573,6 +577,54 @@ Global
 		{9BEF5951-0652-4296-AFCC-9AA92B5AEEC8}.Release|x64.Build.0 = Release|x64
 		{9BEF5951-0652-4296-AFCC-9AA92B5AEEC8}.Release|x86.ActiveCfg = Release|Any CPU
 		{9BEF5951-0652-4296-AFCC-9AA92B5AEEC8}.Release|x86.Build.0 = Release|Any CPU
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Debug.csproj|Any CPU.ActiveCfg = Debug.csproj|Any CPU
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Debug.csproj|Any CPU.Build.0 = Debug.csproj|Any CPU
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Debug.csproj|x64.ActiveCfg = Debug.csproj|x64
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Debug.csproj|x64.Build.0 = Debug.csproj|x64
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Debug.csproj|x86.ActiveCfg = Debug.csproj|Any CPU
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Debug.csproj|x86.Build.0 = Debug.csproj|Any CPU
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Debug.nuget|Any CPU.ActiveCfg = Debug.csproj|Any CPU
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Debug.nuget|Any CPU.Build.0 = Debug.csproj|Any CPU
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Debug.nuget|x64.ActiveCfg = Debug.csproj|x64
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Debug.nuget|x64.Build.0 = Debug.csproj|x64
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Debug.nuget|x86.ActiveCfg = Debug.csproj|Any CPU
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Debug.nuget|x86.Build.0 = Debug.csproj|Any CPU
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Debug|x64.ActiveCfg = Debug|x64
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Debug|x64.Build.0 = Debug|x64
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Debug|x86.Build.0 = Debug|Any CPU
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Release|x64.ActiveCfg = Release|x64
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Release|x64.Build.0 = Release|x64
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Release|x86.ActiveCfg = Release|Any CPU
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18}.Release|x86.Build.0 = Release|Any CPU
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Debug.csproj|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Debug.csproj|Any CPU.Build.0 = Debug|Any CPU
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Debug.csproj|x64.ActiveCfg = Debug|x64
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Debug.csproj|x64.Build.0 = Debug|x64
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Debug.csproj|x86.ActiveCfg = Debug|Any CPU
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Debug.csproj|x86.Build.0 = Debug|Any CPU
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Debug.nuget|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Debug.nuget|Any CPU.Build.0 = Debug|Any CPU
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Debug.nuget|x64.ActiveCfg = Debug|x64
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Debug.nuget|x64.Build.0 = Debug|x64
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Debug.nuget|x86.ActiveCfg = Debug|Any CPU
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Debug.nuget|x86.Build.0 = Debug|Any CPU
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Debug|x64.ActiveCfg = Debug|x64
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Debug|x64.Build.0 = Debug|x64
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Debug|x86.Build.0 = Debug|Any CPU
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Release|x64.ActiveCfg = Release|x64
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Release|x64.Build.0 = Release|x64
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Release|x86.ActiveCfg = Release|Any CPU
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -601,6 +653,8 @@ Global
 		{0C8AB1B9-B022-40E3-86DE-FB81AAC3E255} = {8D28BF6B-93D5-42B5-ADAB-8CE9BDE403D5}
 		{E57D38EF-0548-4902-AA03-9BFC68C913E2} = {8D28BF6B-93D5-42B5-ADAB-8CE9BDE403D5}
 		{9BEF5951-0652-4296-AFCC-9AA92B5AEEC8} = {8D28BF6B-93D5-42B5-ADAB-8CE9BDE403D5}
+		{41A3F6C0-1878-4101-B145-CF4E587BAF18} = {8D28BF6B-93D5-42B5-ADAB-8CE9BDE403D5}
+		{DC8FADBE-D368-49EC-BA14-B24EDC44B80B} = {8D28BF6B-93D5-42B5-ADAB-8CE9BDE403D5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5346371C-0C45-402F-8187-7C1FDCB7CEFA}

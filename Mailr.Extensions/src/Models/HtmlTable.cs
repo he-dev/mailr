@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
+using Reusable;
 
 namespace Mailr.Extensions.Models
 {
@@ -30,8 +31,11 @@ namespace Mailr.Extensions.Models
     {
         [CanBeNull]
         public object Value { get; set; }
-        
+
         [CanBeNull]
-        public IList<string> Styles { get; set; }
+        public ISet<string> Styles { get; set; } = new HashSet<string>(SoftString.Comparer);
+
+        [CanBeNull]
+        public ISet<string> Tags { get; set; } = new HashSet<string>(SoftString.Comparer);
     }
 }
