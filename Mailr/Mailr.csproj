@@ -67,13 +67,19 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug.nuget' OR '$(Configuration)'=='Release'">
-    <PackageReference Include="Reusable.Core" Version="12.0.0" />
-    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="12.0.0" />
-    <PackageReference Include="Reusable.OmniLog.SemanticMiddleware" Version="12.0.0" />
-    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="12.0.0" />
-    <PackageReference Include="Reusable.Utilities.JsonNet" Version="12.0.0" />
-    <PackageReference Include="Reusable.Utilities.NLog" Version="12.0.0" />
-    <PackageReference Include="Reusable.Utilities.SqlClient" Version="12.0.0" />
+    <PackageReference Include="Reusable.Core" Version="14.0.0" />
+    <PackageReference Include="Reusable.Flexo" Version="14.0.0" />
+    <PackageReference Include="Reusable.Beaver" Version="14.0.0" />
+    <PackageReference Include="Reusable.Data" Version="14.0.0" />
+    <PackageReference Include="Reusable.Quickey" Version="14.0.0" />
+    <PackageReference Include="Reusable.Translucent" Version="14.0.0" />
+    <PackageReference Include="Reusable.Translucent.mailto" Version="14.0.0" />
+    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="14.0.0" />
+    <PackageReference Include="Reusable.OmniLog.SemanticExtensions.AspNetCore" Version="14.0.0" />
+    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="14.0.0" />
+    <PackageReference Include="Reusable.Utilities.JsonNet" Version="14.0.0" />
+    <PackageReference Include="Reusable.Utilities.NLog" Version="14.0.0" />
+    <PackageReference Include="Reusable.Utilities.SqlClient" Version="14.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug.csproj'">

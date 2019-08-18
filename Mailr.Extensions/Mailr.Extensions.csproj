@@ -27,10 +27,10 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug.nuget' OR '$(Configuration)'=='Release'">
-    <PackageReference Include="Reusable.Core" Version="12.0.0" />
-    <PackageReference Include="Reusable.OmniLog" Version="12.0.0" />
-    <PackageReference Include="Reusable.OmniLog.Abstractions" Version="12.0.0" />
-    <PackageReference Include="Reusable.OmniLog.SemanticExtensions" Version="12.0.0" />
+    <PackageReference Include="Reusable.Core" Version="14.0.0" />
+    <PackageReference Include="Reusable.Beaver" Version="14.0.0" />
+    <PackageReference Include="Reusable.Quickey" Version="14.0.0" />
+    <PackageReference Include="Reusable.OmniLog.SemanticExtensions.AspNetCore" Version="14.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug.csproj'">
