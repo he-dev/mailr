@@ -12,9 +12,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
-using Reusable.Quickey;
 
 namespace Mailr.Extensions.Mvc.TagHelpers
 {

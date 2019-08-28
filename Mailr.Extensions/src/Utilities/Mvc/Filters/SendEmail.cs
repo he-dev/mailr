@@ -1,15 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Mailr.Extensions.Abstractions;
-using Mailr.Extensions.Utilities.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Reusable.Beaver;
-using Reusable.OmniLog;
 using Reusable.OmniLog.Abstractions;
-using Reusable.OmniLog.SemanticExtensions;
-using Reusable.Quickey;
-using Reusable.Reflection;
 
 namespace Mailr.Extensions.Utilities.Mvc.Filters
 {
@@ -38,7 +31,7 @@ namespace Mailr.Extensions.Utilities.Mvc.Filters
                 {
                     if (!isDesignMode)
                     {
-                        _featureToggle.Update(Features.SendEmail, f => f.Set(FeatureOption.Enabled));
+                        _featureToggle.Update(Features.SendEmail, f => f.Set(Feature.Options.Enabled));
                     }
                 }
             }

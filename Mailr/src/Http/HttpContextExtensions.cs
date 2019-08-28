@@ -1,8 +1,5 @@
 ﻿using System.Linq;
-using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
-using Reusable.OmniLog;
-using Reusable.OmniLog.Abstractions;
 
 namespace Mailr.Http
 {

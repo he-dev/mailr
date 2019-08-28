@@ -29,11 +29,13 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
-  <PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <PlatformTarget>x64</PlatformTarget>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -50,25 +52,36 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
     <PackageReference Include="NLog" Version="4.6.7" />
-    <PackageReference Include="Reusable.Beaver" Version="14.0.11" />
-    <PackageReference Include="Reusable.Core" Version="14.0.11" />
-    <PackageReference Include="Reusable.Data" Version="14.0.11" />
-    <PackageReference Include="Reusable.Flexo" Version="14.0.11" />
-    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="14.0.11" />
-    <PackageReference Include="Reusable.OmniLog.SemanticExtensions.AspNetCore" Version="14.0.11" />
-    <PackageReference Include="Reusable.Quickey" Version="14.0.11" />
-    <PackageReference Include="Reusable.Translucent" Version="14.0.11" />
-    <PackageReference Include="Reusable.Translucent.mailto" Version="14.0.11" />
-    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="14.0.11" />
-    <PackageReference Include="Reusable.Utilities.JsonNet" Version="14.0.11" />
-    <PackageReference Include="Reusable.Utilities.NLog" Version="14.0.11" />
-    <PackageReference Include="Reusable.Utilities.SqlClient" Version="14.0.11" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\mailr-extensions-native\Mailr.Extensions.Gunter\Mailr.Extensions.Gunter.csproj" />
     <ProjectReference Include="..\Mailr.Extensions\Mailr.Extensions.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Reusable\Reusable.Core\Reusable.Core.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Flexo\Reusable.Flexo.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Data\Reusable.Data.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Quickey\Reusable.Quickey.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Beaver\Reusable.Beaver.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog\Reusable.OmniLog.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.NLogRx\Reusable.OmniLog.NLogRx.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.SemanticExtensions\Reusable.OmniLog.SemanticExtensions.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.SemanticExtensions.AspNetCore\Reusable.OmniLog.SemanticExtensions.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Translucent\Reusable.Translucent.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Translucent.mailto\Reusable.Translucent.mailto.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Utilities.JsonNet\Reusable.Utilities.JsonNet.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Utilities.NLog\Reusable.Utilities.NLog.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Utilities.SqlClient\Reusable.Utilities.SqlClient.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Utilities.AspNetCore\Reusable.Utilities.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OneTo1\Reusable.OneTo1.csproj" />
+    <ProjectReference Include="..\..\mailr-extensions-native\Mailr.Extensions.Gunter\Mailr.Extensions.Gunter.csproj" />
+  </ItemGroup>
+
+  <!--<ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.4" />
+  </ItemGroup>-->
+
 
   <ItemGroup>
     <None Update="NLog.tt">
@@ -81,6 +94,11 @@
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
+  <!--<ItemGroup>
+    <None Remove="appsettings.Development.json" CopyToPublishDirectory="Never" />
+    <None Remove="appsettings.DevelopmentExt.json" CopyToPublishDirectory="Never" />
+  </ItemGroup>-->
+
   <ItemGroup>
     <Content Update="NLog.config">
       <DesignTime>True</DesignTime>
@@ -91,10 +109,6 @@
     <Content Update="appsettings.json">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="src\Mvc\TagHelpers" />
   </ItemGroup>
 
   <Target Name="DisplayMessages" AfterTargets="AfterBuild">

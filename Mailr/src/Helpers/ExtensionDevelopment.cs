@@ -5,9 +5,7 @@ using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using Mailr.Mvc;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 
 namespace Mailr.Helpers
 {

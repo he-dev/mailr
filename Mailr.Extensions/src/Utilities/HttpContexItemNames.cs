@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Mailr.Extensions.Abstractions;
 using Reusable.Quickey;
 

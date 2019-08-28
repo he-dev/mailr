@@ -1,18 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Linq.Custom;
 using System.Runtime.CompilerServices;
-using System.Runtime.Loader;
-using System.Text.RegularExpressions;
-using System.Xml.Linq;
 using Autofac;
-using Autofac.Core;
 using JetBrains.Annotations;
 using Mailr.Extensions;
 using Mailr.Extensions.Helpers;
-using Mailr.Extensions.Mvc.TagHelpers;
 using Mailr.Extensions.Utilities.Mvc.Filters;
 using Mailr.Helpers;
 using Mailr.Http;
@@ -24,12 +17,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Razor.Language.Intermediate;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.DotNet.PlatformAbstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Reusable;
@@ -37,14 +26,11 @@ using Reusable.Beaver;
 using Reusable.OmniLog;
 using Reusable.OmniLog.Abstractions;
 using Reusable.OmniLog.Abstractions.Data;
-using Reusable.OmniLog.Nodes;
-using Reusable.OmniLog.Rx;
 using Reusable.OmniLog.Scalars;
 using Reusable.OmniLog.SemanticExtensions;
 using Reusable.OmniLog.SemanticExtensions.AspNetCore;
 using Reusable.OmniLog.SemanticExtensions.AspNetCore.Mvc.Filters;
 using Reusable.Translucent;
-using Reusable.Translucent.Middleware;
 using Reusable.Utilities.AspNetCore.ActionFilters;
 using Reusable.Utilities.AspNetCore.DependencyInjection;
 using Reusable.Utilities.Autofac;
@@ -152,7 +138,7 @@ namespace Mailr
                             .InstancePerLifetimeScope();
                         builder
                             .RegisterDecorator<IFeatureOptionRepository>((context, parameters, repository) =>
-                                new FeatureOptionFallback(repository, FeatureOption.Telemetry));
+                                new FeatureOptionFallback(repository, Feature.Options.Telemetry));
 
                         builder
                             .RegisterType<FeatureToggle>()
