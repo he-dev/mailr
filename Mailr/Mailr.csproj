@@ -65,8 +65,8 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
     <PackageReference Include="NLog" Version="4.6.7" />
   </ItemGroup>
-  
-  <ItemGroup Condition="'$(Configuration)'=='Release'">
+
+  <ItemGroup Condition="'$(Configuration)'=='Debug.nuget' OR '$(Configuration)'=='Release'">
     <PackageReference Include="Reusable.Beaver" Version="14.0.9" />
     <PackageReference Include="Reusable.Core" Version="14.0.9" />
     <PackageReference Include="Reusable.Data" Version="14.0.9" />

@@ -26,7 +26,7 @@
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(Configuration)'=='Release'">
+  <ItemGroup Condition="'$(Configuration)'=='Debug.nuget' OR '$(Configuration)'=='Release'">
     <PackageReference Include="Reusable.Beaver" Version="14.0.9" />
     <PackageReference Include="Reusable.Core" Version="14.0.9" />
     <PackageReference Include="Reusable.OmniLog.SemanticExtensions.AspNetCore" Version="14.0.9" />
