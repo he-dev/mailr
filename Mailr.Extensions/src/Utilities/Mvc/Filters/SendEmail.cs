@@ -27,12 +27,11 @@ namespace Mailr.Extensions.Utilities.Mvc.Filters
                 context.HttpContext.Items.SetItem(HttpContextItems.Email, email);
                 context.HttpContext.Items.SetItem(HttpContextItems.EmailTheme, email.Theme);
 
-                if (bool.TryParse(context.HttpContext.Request.Query[QueryStringNames.IsDesignMode].FirstOrDefault(), out var isDesignMode))
+                var sendEmailEnabled = !bool.TryParse(context.HttpContext.Request.Query[QueryStringNames.IsDesignMode].FirstOrDefault(), out var isDesignMode) || !isDesignMode;
+
+                if (sendEmailEnabled)
                 {
-                    if (!isDesignMode)
-                    {
-                        _featureToggle.Update(Features.SendEmail, f => f.Set(Feature.Options.Enabled));
-                    }
+                    _featureToggle.Update(Features.SendEmail, f => f.Set(Feature.Options.Enabled));
                 }
             }
         }
