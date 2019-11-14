@@ -29,6 +29,7 @@ using Reusable.OmniLog.Abstractions.Data;
 using Reusable.OmniLog.Scalars;
 using Reusable.OmniLog.SemanticExtensions;
 using Reusable.OmniLog.SemanticExtensions.AspNetCore;
+using Reusable.OmniLog.SemanticExtensions.AspNetCore.Extensions;
 using Reusable.OmniLog.SemanticExtensions.AspNetCore.Mvc.Filters;
 using Reusable.Translucent;
 using Reusable.Utilities.AspNetCore.ActionFilters;
@@ -71,17 +72,17 @@ namespace Mailr
                     .UseStopwatch()
                     .UseScalar(new Timestamp<DateTimeUtc>())
                     .UseLambda()
-                    .UseCorrelation()
-                    .UseBuilder(n => n.Names.Add(nameof(Abstraction)))
+                    .UseScope()
+                    .UseBuilder() //n => n.Names.Add(nameof(Abstraction)))
                     .UseOneToMany()
                     //.UseMapper(MapperNode.Mapping.For())
                     .UseSerializer()
                     .UseRename(
                         (LogEntry.Names.Scope, "Scope"),
-                        (LogEntry.Names.Object, "Identifier"),
+                        (LogEntry.Names.SnapshotName, "Identifier"),
                         (LogEntry.Names.Snapshot, "Snapshot"))
                     .UseFallback((LogEntry.Names.Level, LogLevel.Information))
-                    .UseBuffer()
+                    //.UseBuffer()
                     .UseEcho(new NLogRx())
             );
 
@@ -164,7 +165,7 @@ namespace Mailr
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime appLifetime, ILoggerFactory loggerFactory)
         {
             //app.UseMiddleware<LogScopeMiddleware>();
-            app.UseOmniLog(context => context.GetCorrelationId());
+            app.UseOmniLog();
 
             var startupLogger = loggerFactory.CreateLogger<Startup>();
 

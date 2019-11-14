@@ -31,4 +31,57 @@
     <ProjectReference Include="..\..\Reusable\Reusable.Quickey\Reusable.Quickey.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <_UnmanagedRegistrationCache Remove="obj\Mailr.Extensions-dev.csproj.UnmanagedRegistration.cache" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ResolveComReferenceCache Remove="obj\Debug\Mailr.Extensions-dev.csproj.ResolveComReference.cache" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <IntermediateAssembly Remove="obj\Debug\Mailr.Extensions.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_DebugSymbolsIntermediatePath Remove="obj\Debug\Mailr.Extensions.pdb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_DeploymentManifestEntryPoint Remove="obj\Debug\Mailr.Extensions.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ApplicationManifest Remove="obj\Debug\Native.Mailr.Extensions.manifest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DeployManifest Remove="obj\Debug\Mailr.Extensions.application" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Clean Remove="obj\Debug\\TempCA\Mailr.Extensions.pdb" />
+    <Clean Remove="obj\Debug\\TempCA\Mailr.Extensions.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ClsidMap Remove="obj\Debug\Mailr.Extensions.clsidmap" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <RegFreeComManifest Remove="obj\Debug\Mailr.Extensions.X.manifest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <RazorIntermediateAssembly Remove="obj\Debug\Mailr.Extensions.Razor.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_RazorDebugSymbolsIntermediatePath Remove="obj\Debug\Mailr.Extensions.Razor.pdb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckBuilt Remove="obj\Debug\Mailr.Extensions.Razor.dll" />
+  </ItemGroup>
+
 </Project>

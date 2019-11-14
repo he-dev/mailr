@@ -17,7 +17,7 @@ namespace Mailr
             //args = new[] { "-console" };
             var isService = IsService(args);
             var contentRootPath = GetContentRootPath(isService);
-            Console.WriteLine(contentRootPath);
+            Console.WriteLine($"Content root path: {contentRootPath}");
 
             var configuration =
                 new ConfigurationBuilder()

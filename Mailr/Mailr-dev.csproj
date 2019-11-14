@@ -51,11 +51,11 @@
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
-    <PackageReference Include="NLog" Version="4.6.7" />
+    <PackageReference Include="NLog" Version="4.6.8" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Mailr.Extensions\Mailr.Extensions.csproj" />
+    <ProjectReference Include="..\Mailr.Extensions\Mailr.Extensions-dev.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -109,6 +109,55 @@
     <Content Update="appsettings.json">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ResolveComReferenceCache Remove="obj\x64\Release\Mailr-dev.csproj.ResolveComReference.cache" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <IntermediateAssembly Remove="obj\x64\Release\Mailr.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_DebugSymbolsIntermediatePath Remove="obj\x64\Release\Mailr.pdb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_DeploymentManifestEntryPoint Remove="obj\x64\Release\Mailr.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ApplicationManifest Remove="obj\x64\Release\Mailr.dll.manifest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DeployManifest Remove="obj\x64\Release\Mailr.application" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Clean Remove="obj\x64\Release\\TempCA\Mailr.pdb" />
+    <Clean Remove="obj\x64\Release\\TempCA\Mailr.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ClsidMap Remove="obj\x64\Release\Mailr.clsidmap" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <RegFreeComManifest Remove="obj\x64\Release\Mailr.X.manifest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <RazorIntermediateAssembly Remove="obj\x64\Release\Mailr.Razor.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_RazorDebugSymbolsIntermediatePath Remove="obj\x64\Release\Mailr.Razor.pdb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckBuilt Remove="obj\x64\Release\Mailr.Razor.dll" />
   </ItemGroup>
 
   <Target Name="DisplayMessages" AfterTargets="AfterBuild">

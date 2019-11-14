@@ -94,7 +94,7 @@ namespace Mailr.Middleware
                 _workItemQueue.Enqueue(async cancellationToken =>
                 {
                     // We need to rebuild the scope here because it'll be executed outside the request pipeline.
-                    var scope = _logger.UseScope(); //.AttachElapsed().AttachUserCorrelationId(context).AttachUserAgent(context);
+                    using var scope = _logger.BeginScope().WithCorrelationHandle("SendEmail").UseStopwatch();
 
                     try
                     {
@@ -117,11 +117,11 @@ namespace Mailr.Middleware
 
                         using (await featureToggle.ExecuteAsync(name: Features.SendEmail, body: async () => await _resources.SendEmailAsync(smtpEmail, requestContext))) { }
 
-                        //_logger.Log(Abstraction.Layer.Network().Routine(nameof(MailProviderExtensions.SendEmailAsync)).Completed());
+                        _logger.Log(Abstraction.Layer.Network().Routine("SendEmail").Completed());
                     }
                     catch (Exception ex)
                     {
-                        _logger.Log(Abstraction.Layer.Network().Routine("SendEmailAsync").Faulted(), ex);
+                        _logger.Log(Abstraction.Layer.Network().Routine("SendEmail").Faulted(), ex);
                     }
                     finally
                     {
