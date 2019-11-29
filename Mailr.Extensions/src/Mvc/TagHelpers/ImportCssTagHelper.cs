@@ -53,11 +53,9 @@ namespace Mailr.Extensions.Mvc.TagHelpers
 
             foreach (var cssFile in css)
             {
-                using (var readStream = cssFile.CreateReadStream())
-                using (var reader = new StreamReader(readStream))
-                {
-                    styles.Add(await reader.ReadToEndAsync());
-                }
+                using var readStream = cssFile.CreateReadStream();
+                using var reader = new StreamReader(readStream);
+                styles.Add(await reader.ReadToEndAsync());
             }
 
             output.Content.SetHtmlContent(Environment.NewLine + styles.Join(Environment.NewLine));

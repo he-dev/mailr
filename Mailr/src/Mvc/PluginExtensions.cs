@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 using Mailr.Data;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -42,51 +43,54 @@ namespace Mailr.Mvc
 
             var extensionDirectoriesWithoutRoot = extensionDirectories.Skip(1);
 
-            mvc
-                .ConfigureApplicationPartManager(apm =>
-                {
-                    //apm.FeatureProviders.Insert(0, new test());
-                    var binDirectory = extensibility.Bin;
-
-                    // Skip the first directory which is the root and does not contain any extensions.
-                    foreach (var extensionDirectory in extensionDirectoriesWithoutRoot)
-                    {
-                        // Mailr.Extensions.Example
-                        var extensionName = Path.GetFileName(extensionDirectory) + ".dll";
-
-                        // Extension assemblies are located in the {Extensibility:Ext}: ..\ext\Foo\bin\Foo.dll
-                        var extensionFullName = Path.Combine
-                        (
-                            extensionDirectory,
-                            binDirectory,
-                            extensionName
-                        );
-
-                        //if (TryLoadAssembly(serviceProvider, extensionFullName, out var extensionAssembly))
-                        //{
-                        //    //var parts = new CompiledRazorAssemblyApplicationPartFactory().GetApplicationParts(extensionAssembly);
-                        //    //foreach (var applicationPart in parts)
-                        //    //{
-                        //    //    apm.ApplicationParts.Add(applicationPart);
-                        //    //}
-
-                        //    apm.ApplicationParts.Add(new AssemblyPart(extensionAssembly));
-                        //    //apm.ApplicationParts.Add(new CompiledRazorAssemblyPart(extensionAssembly));
-
-                        //    //mvc.Services.Configure<RazorViewEngineOptions>(o => o.FileProviders.Add(new EmbeddedFileProvider(extensionAssembly)));
-                        //}
-                    }
-                });
+//            mvc
+//                .ConfigureApplicationPartManager(apm =>
+//                {
+//                    //apm.FeatureProviders.Insert(0, new test());
+//                    var binDirectory = extensibility.Bin;
+//
+//                    // Skip the first directory which is the root and does not contain any extensions.
+//                    foreach (var extensionDirectory in extensionDirectoriesWithoutRoot)
+//                    {
+//                        // Mailr.Extensions.Example
+//                        var extensionName = Path.GetFileName(extensionDirectory) + ".dll";
+//
+//                        // Extension assemblies are located in the {Extensibility:Ext}: ..\ext\Foo\bin\Foo.dll
+//                        var extensionFullName = Path.Combine
+//                        (
+//                            extensionDirectory,
+//                            binDirectory,
+//                            extensionName
+//                        );
+//
+//                        //if (TryLoadAssembly(serviceProvider, extensionFullName, out var extensionAssembly))
+//                        //{
+//                        //    //var parts = new CompiledRazorAssemblyApplicationPartFactory().GetApplicationParts(extensionAssembly);
+//                        //    //foreach (var applicationPart in parts)
+//                        //    //{
+//                        //    //    apm.ApplicationParts.Add(applicationPart);
+//                        //    //}
+//
+//                        //    apm.ApplicationParts.Add(new AssemblyPart(extensionAssembly));
+//                        //    //apm.ApplicationParts.Add(new CompiledRazorAssemblyPart(extensionAssembly));
+//
+//                        //    //mvc.Services.Configure<RazorViewEngineOptions>(o => o.FileProviders.Add(new EmbeddedFileProvider(extensionAssembly)));
+//                        //}
+//                    }
+//                });
 
             //ConfigureAssemblyResolve(serviceProvider, extensionDirectoriesWithoutRoot);
 
             var staticFileProviders =
                 extensionDirectories
                     .Select(path => new PhysicalFileProvider(path))
+                    .Prepend(hostingEnvironment.ContentRootFileProvider)
                     .ToList();
 
+            
+
             // ContentRootFileProvider is the default one and is always available.
-            var fileProvider = new CompositeFileProvider(staticFileProviders.Prepend(hostingEnvironment.ContentRootFileProvider));
+            var fileProvider = new CompositeFileProvider(staticFileProviders);
 
             mvc
                 .Services
@@ -99,6 +103,17 @@ namespace Mailr.Mvc
                 });
 
             return mvc;
+        }
+
+        public static IEnumerable<string> EnumerateExtensionDirectories(this IApplicationBuilder app)
+        {
+            var serviceProvider = app.ApplicationServices;
+            var hostingEnvironment = serviceProvider.GetService<IHostingEnvironment>();
+
+            return
+                hostingEnvironment.IsDevelopmentExt()
+                    ? EnumerateExtensionProjectDirectories(serviceProvider)
+                    : EnumerateExtensionInstallationDirectories(serviceProvider);
         }
 
         private static IEnumerable<string> EnumerateExtensionInstallationDirectories(IServiceProvider serviceProvider)

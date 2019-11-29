@@ -26,7 +26,7 @@ namespace Mailr.Helpers
                         .Elements("ItemGroup")
                         .SelectMany(x => x.Elements("ProjectReference"))
                         .Select(x => x.Attribute("Include").Value)
-                        .Where(x => Regex.IsMatch(x, @"Mailr\.Extensions\.\w+\.csproj"))
+                        .Where(x => Regex.IsMatch(x, @"Mailr\.Extensions\.\w+(-dev)?\.csproj"))
                         .Select(Path.GetDirectoryName);
             }
             else

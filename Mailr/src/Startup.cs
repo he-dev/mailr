@@ -32,6 +32,7 @@ using Reusable.OmniLog.SemanticExtensions.AspNetCore;
 using Reusable.OmniLog.SemanticExtensions.AspNetCore.Extensions;
 using Reusable.OmniLog.SemanticExtensions.AspNetCore.Mvc.Filters;
 using Reusable.Translucent;
+using Reusable.Translucent.Controllers;
 using Reusable.Utilities.AspNetCore.ActionFilters;
 using Reusable.Utilities.AspNetCore.DependencyInjection;
 using Reusable.Utilities.Autofac;
@@ -90,7 +91,7 @@ namespace Mailr
 
             services
                 .AddMvc()
-                //.AddExtensions()
+                .AddExtensions()
                 ;
 
             services.Configure<RazorViewEngineOptions>(options => { options.AllowRecompilingViewsOnFileChange = true; });
@@ -124,7 +125,7 @@ namespace Mailr
                 services
                     .EnumerateExtensionDirectories()
                     .Select(n => new PhysicalFileProvider(Path.Combine(HostingEnvironment.ContentRootPath, n)))
-                    .Append(HostingEnvironment.ContentRootFileProvider);
+                    .Prepend(HostingEnvironment.ContentRootFileProvider);
 
             services.AddSingleton<IFileProvider>(new CompositeFileProvider(wwwrootFileProviders));
 
@@ -134,21 +135,12 @@ namespace Mailr
                     .Configure(builder =>
                     {
                         builder
-                            .RegisterType<FeatureOptionRepository>()
-                            .As<IFeatureOptionRepository>()
-                            .InstancePerLifetimeScope();
-                        builder
-                            .RegisterDecorator<IFeatureOptionRepository>((context, parameters, repository) =>
-                                new FeatureOptionFallback(repository, Feature.Options.Telemetry));
-
-                        builder
                             .RegisterType<FeatureToggle>()
                             .As<IFeatureToggle>()
                             .InstancePerLifetimeScope();
+
                         builder
-                            .RegisterDecorator<FeatureToggler, IFeatureToggle>();
-                        builder
-                            .RegisterDecorator<FeatureTelemetry, IFeatureToggle>();
+                            .RegisterDecorator<FeatureToggleTelemetry, IFeatureToggle>();
 
                         builder
                             .RegisterType<AutofacServiceProvider>()
@@ -186,7 +178,13 @@ namespace Mailr
             //app.UseWhen(httpContext => !httpContext.Request.Method.In(new[] { "GET" }, StringComparer.OrdinalIgnoreCase), UseHeaderValidator());
 
             app.UseEmail();
+
+            //var staticFileProviders = app.EnumerateExtensionDirectories().Select(path => new PhysicalFileProvider(path)).Prepend(env.ContentRootFileProvider);
             app.UseStaticFiles();
+            //(new StaticFileOptions
+            //{
+            //    FileProvider = new CompositeFileProvider(staticFileProviders.ToList()),
+            //});
 
             app.UseMvc(routes =>
             {
@@ -205,12 +203,12 @@ namespace Mailr
 
     internal class MailrResourceSetup
     {
-        public void ConfigureServices(IResourceControllerBuilder controller)
+        public void ConfigureResources(IResourceCollection resources)
         {
-            controller.AddSmtp();
+            resources.AddSmtp();
         }
 
-        //public void Configure(IResourceRepositoryBuilder repository) { }
+        public void ConfigurePipeline(IPipelineBuilder<ResourceContext> repository) { }
     }
 
     internal static class ServiceCollectionExtensions

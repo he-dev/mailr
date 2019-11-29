@@ -26,6 +26,7 @@
     "Mailr.DevelopmentExt": {
       "commandName": "Project",
       "launchBrowser": false,
+      "commandLineArgs": "-console",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "DevelopmentExt"
       },

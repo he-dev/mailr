@@ -31,7 +31,7 @@ namespace Mailr.Extensions.Utilities.Mvc.Filters
 
                 if (sendEmailEnabled)
                 {
-                    _featureToggle.Update(Features.SendEmail, f => f.Set(Feature.Options.Enabled));
+                    _featureToggle.AddOrUpdate(new Once(Features.SendEmail.ToString()));
                 }
             }
         }

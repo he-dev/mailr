@@ -109,13 +109,11 @@ namespace Mailr.Middleware
                             Attachments = email.Attachments
                         };
 
-                        var requestContext =
-                            ImmutableContainer
-                                .Empty
-                                .SetItem(SmtpRequest.Host, _configuration["Smtp:Host"])
-                                .SetItem(SmtpRequest.Port, int.Parse(_configuration["Smtp:Port"]));
-
-                        using (await featureToggle.ExecuteAsync(name: Features.SendEmail, body: async () => await _resources.SendEmailAsync(smtpEmail, requestContext))) { }
+                        using var response = await featureToggle.IIf(Features.SendEmail, async () => await _resources.SendEmailAsync(smtpEmail, request =>
+                        {
+                            request.Host = _configuration["Smtp:Host"];
+                            request.Port = int.Parse(_configuration["Smtp:Port"]);
+                        }));
 
                         _logger.Log(Abstraction.Layer.Network().Routine("SendEmail").Completed());
                     }
