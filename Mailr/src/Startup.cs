@@ -140,7 +140,7 @@ namespace Mailr
                             .InstancePerLifetimeScope();
 
                         builder
-                            .RegisterDecorator<FeatureToggleTelemetry, IFeatureToggle>();
+                            .RegisterDecorator<FeatureTelemetry, IFeatureToggle>();
 
                         builder
                             .RegisterType<AutofacServiceProvider>()
