@@ -32,7 +32,7 @@ namespace Mailr.Extensions.Utilities.Mvc.Filters
 
                 if (sendEmailEnabled)
                 {
-                    _featureToggle.AddOrUpdate(new Once(Features.SendEmail.ToString()));
+                    _featureToggle.Enable(Features.SendEmail.ToString());
                 }
             }
         }

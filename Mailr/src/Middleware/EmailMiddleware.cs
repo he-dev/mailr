@@ -109,7 +109,7 @@ namespace Mailr.Middleware
                             Attachments = email.Attachments
                         };
 
-                        using var response = await featureToggle.IIf(Features.SendEmail, async () => await _resources.SendEmailAsync(smtpEmail, request =>
+                        using var response = await featureToggle.Use(Features.SendEmail, async () => await _resources.SendEmailAsync(smtpEmail, request =>
                         {
                             request.Host = _configuration["Smtp:Host"];
                             request.Port = int.Parse(_configuration["Smtp:Port"]);

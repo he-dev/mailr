@@ -49,20 +49,19 @@
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
-    <PackageReference Include="NLog" Version="4.6.7" />
-    <PackageReference Include="Reusable.Beaver" Version="14.0.11" />
-    <PackageReference Include="Reusable.Core" Version="14.0.11" />
-    <PackageReference Include="Reusable.Data" Version="14.0.11" />
-    <PackageReference Include="Reusable.Flexo" Version="14.0.11" />
-    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="14.0.11" />
-    <PackageReference Include="Reusable.OmniLog.SemanticExtensions.AspNetCore" Version="14.0.11" />
-    <PackageReference Include="Reusable.Quickey" Version="14.0.11" />
-    <PackageReference Include="Reusable.Translucent" Version="14.0.11" />
-    <PackageReference Include="Reusable.Translucent.mailto" Version="14.0.11" />
-    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="14.0.11" />
-    <PackageReference Include="Reusable.Utilities.JsonNet" Version="14.0.11" />
-    <PackageReference Include="Reusable.Utilities.NLog" Version="14.0.11" />
-    <PackageReference Include="Reusable.Utilities.SqlClient" Version="14.0.11" />
+    <PackageReference Include="Reusable.Beaver" Version="16.2.3" />
+    <PackageReference Include="Reusable.Core" Version="16.2.3" />
+    <PackageReference Include="Reusable.Data" Version="16.2.3" />
+    <PackageReference Include="Reusable.Flexo" Version="16.2.3" />
+    <PackageReference Include="Reusable.OmniLog.NLogRx" Version="16.2.3" />
+    <PackageReference Include="Reusable.OmniLog.SemanticExtensions.AspNetCore" Version="16.2.3" />
+    <PackageReference Include="Reusable.Quickey" Version="16.2.3" />
+    <PackageReference Include="Reusable.Translucent" Version="16.2.3" />
+    <PackageReference Include="Reusable.Translucent.mailto" Version="16.2.3" />
+    <PackageReference Include="Reusable.Utilities.AspNetCore" Version="16.2.3" />
+    <PackageReference Include="Reusable.Utilities.JsonNet" Version="16.2.3" />
+    <PackageReference Include="Reusable.Utilities.NLog" Version="16.2.3" />
+    <PackageReference Include="Reusable.Utilities.SqlClient" Version="16.2.3" />
   </ItemGroup>
 
   <ItemGroup>

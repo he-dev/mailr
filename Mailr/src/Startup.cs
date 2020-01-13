@@ -23,6 +23,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Reusable;
 using Reusable.Beaver;
+using Reusable.Beaver.Policies;
 using Reusable.OmniLog;
 using Reusable.OmniLog.Abstractions;
 using Reusable.OmniLog.Abstractions.Data;
@@ -135,12 +136,16 @@ namespace Mailr
                     .Configure(builder =>
                     {
                         builder
+                            .RegisterInstance(new FeaturePolicyContainer { { FeaturePolicy.Fallback, FeaturePolicy.AlwaysOff } })
+                            .As<Reusable.Data.IContainer<Feature, IFeaturePolicy>>();
+
+                        builder
                             .RegisterType<FeatureToggle>()
                             .As<IFeatureToggle>()
                             .InstancePerLifetimeScope();
 
-                        builder
-                            .RegisterDecorator<FeatureTelemetry, IFeatureToggle>();
+                        //builder
+                        //  .RegisterDecorator<FeatureTelemetry, IFeatureToggle>();
 
                         builder
                             .RegisterType<AutofacServiceProvider>()
