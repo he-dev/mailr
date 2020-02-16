@@ -2,6 +2,6 @@
 {
     public static class QueryStringNames
     {
-        public const string IsDesignMode = nameof(IsDesignMode);
+        public const string Design = nameof(Design);
     }
 }

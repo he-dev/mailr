@@ -3,7 +3,7 @@
   <PropertyGroup>
     <!--    <TargetFrameworks>netcoreapp2.2;net47</TargetFrameworks>-->
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <RuntimeIdentifier>win81-x64</RuntimeIdentifier>
+<!--    <RuntimeIdentifier>win81-x64</RuntimeIdentifier>-->
     <AssemblyName>Mailr</AssemblyName>
     <RootNamespace>Mailr</RootNamespace>
     <Platforms>x64;AnyCPU</Platforms>
@@ -60,7 +60,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Reusable\Reusable.Core\Reusable.Core.csproj" />
-    <ProjectReference Include="..\..\Reusable\Reusable.Flexo\Reusable.Flexo.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.Data\Reusable.Data.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.Quickey\Reusable.Quickey.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.Beaver\Reusable.Beaver.csproj" />

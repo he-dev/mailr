@@ -26,18 +26,18 @@ using Reusable.Beaver;
 using Reusable.Beaver.Policies;
 using Reusable.OmniLog;
 using Reusable.OmniLog.Abstractions;
-using Reusable.OmniLog.Abstractions.Data;
-using Reusable.OmniLog.Scalars;
 using Reusable.OmniLog.SemanticExtensions;
 using Reusable.OmniLog.SemanticExtensions.AspNetCore;
 using Reusable.OmniLog.SemanticExtensions.AspNetCore.Extensions;
 using Reusable.OmniLog.SemanticExtensions.AspNetCore.Mvc.Filters;
+using Reusable.OmniLog.Services;
 using Reusable.Translucent;
 using Reusable.Translucent.Controllers;
 using Reusable.Utilities.AspNetCore.ActionFilters;
 using Reusable.Utilities.AspNetCore.DependencyInjection;
 using Reusable.Utilities.Autofac;
 using Reusable.Utilities.NLog.LayoutRenderers;
+using Features = Mailr.Extensions.Features;
 using IApplicationLifetime = Microsoft.AspNetCore.Hosting.IApplicationLifetime;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using PhysicalFileProvider = Microsoft.Extensions.FileProviders.PhysicalFileProvider;
@@ -68,22 +68,26 @@ namespace Mailr
 
             services.AddOmniLog(loggerFactory =>
                 loggerFactory
-                    .UseConstant(
-                        ("Environment", HostingEnvironment.EnvironmentName),
-                        ("Product", $"{ProgramInfo.Name}-v{ProgramInfo.Version}"))
+                    .UseService
+                    (
+                        new Constant("Environment", HostingEnvironment.EnvironmentName),
+                        new Constant("Product", $"{ProgramInfo.Name}-v{ProgramInfo.Version}"),
+                        new Timestamp<DateTimeUtc>()
+                    )
                     .UseStopwatch()
-                    .UseScalar(new Timestamp<DateTimeUtc>())
-                    .UseLambda()
+                    .UseDelegate()
                     .UseScope()
                     .UseBuilder() //n => n.Names.Add(nameof(Abstraction)))
-                    .UseOneToMany()
+                    .UseDestructure()
                     //.UseMapper(MapperNode.Mapping.For())
                     .UseSerializer()
-                    .UseRename(
-                        (LogEntry.Names.Scope, "Scope"),
-                        (LogEntry.Names.SnapshotName, "Identifier"),
-                        (LogEntry.Names.Snapshot, "Snapshot"))
-                    .UseFallback((LogEntry.Names.Level, LogLevel.Information))
+                    .UsePropertyMapper
+                    (
+                        (LogProperty.Names.Scope, "Scope"),
+                        (LogProperty.Names.SnapshotName, "Identifier"),
+                        (LogProperty.Names.Snapshot, "Snapshot")
+                    )
+                    .UseFallback((LogProperty.Names.Level, LogLevel.Information))
                     //.UseBuffer()
                     .UseEcho(new NLogRx())
             );
@@ -136,24 +140,35 @@ namespace Mailr
                     .Configure(builder =>
                     {
                         builder
-                            .RegisterInstance(new FeaturePolicyContainer { { FeaturePolicy.Fallback, FeaturePolicy.AlwaysOff } })
-                            .As<Reusable.Data.IContainer<Feature, IFeaturePolicy>>();
+                            .Register(_ => new FeatureCollection
+                            {
+                                { new Feature(Features.SendEmail.ToString(), FeaturePolicy.AlwaysOn) },
+                                { new Feature.Telemetry(Features.SendEmail.ToString(), FeaturePolicy.AlwaysOn) }
+                            })
+                            .As<IFeatureCollection>()
+                            .InstancePerLifetimeScope();
 
                         builder
                             .RegisterType<FeatureToggle>()
+                            .WithParameter(new TypedParameter(typeof(IFeaturePolicy), FeaturePolicy.AlwaysOff))
                             .As<IFeatureToggle>()
                             .InstancePerLifetimeScope();
 
-                        //builder
-                        //  .RegisterDecorator<FeatureTelemetry, IFeatureToggle>();
+                        builder
+                            .RegisterType<FeatureController>()
+                            .As<IFeatureController>()
+                            .InstancePerLifetimeScope();
 
+                        builder
+                            .RegisterDecorator<FeatureControllerTelemetry, IFeatureController>();
+                        
                         builder
                             .RegisterType<AutofacServiceProvider>()
                             .As<IServiceProvider>();
 
                         builder
-                            .RegisterType<ResourceRepository<MailrResourceSetup>>()
-                            .As<IResourceRepository>();
+                            .Register(ctx => Resource.Builder().UseController(new SmtpController()).Build())
+                            .As<IResource>();
                     })
                     .ToServiceProvider();
         }
@@ -206,15 +221,6 @@ namespace Mailr
         }
     }
 
-    internal class MailrResourceSetup
-    {
-        public void ConfigureResources(IResourceCollection resources)
-        {
-            resources.AddSmtp();
-        }
-
-        public void ConfigurePipeline(IPipelineBuilder<ResourceContext> repository) { }
-    }
 
     internal static class ServiceCollectionExtensions
     {

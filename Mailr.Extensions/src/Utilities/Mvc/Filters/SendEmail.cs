@@ -23,16 +23,14 @@ namespace Mailr.Extensions.Utilities.Mvc.Filters
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            if (context.ActionArguments.Values.OfType<IEmail>().SingleOrDefault() is var email && !(email is null))
+            if (context.ActionArguments.Values.OfType<IEmail>().SingleOrDefault() is {} email)
             {
                 context.HttpContext.Items.SetItem(HttpContextItems.Email, email);
                 context.HttpContext.Items.SetItem(HttpContextItems.EmailTheme, email.Theme);
 
-                var sendEmailEnabled = !bool.TryParse(context.HttpContext.Request.Query[QueryStringNames.IsDesignMode].FirstOrDefault(), out var isDesignMode) || !isDesignMode;
-
-                if (sendEmailEnabled)
+                if (bool.TryParse(context.HttpContext.Request.Query[QueryStringNames.Design].FirstOrDefault(), out var design) && design)
                 {
-                    _featureToggle.Enable(Features.SendEmail.ToString());
+                    _featureToggle.Disable(Features.SendEmail.ToString());
                 }
             }
         }
