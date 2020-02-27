@@ -30,7 +30,7 @@ namespace Mailr.Extensions.Utilities.Mvc.Filters
 
                 if (bool.TryParse(context.HttpContext.Request.Query[QueryStringNames.Design].FirstOrDefault(), out var design) && design)
                 {
-                    _featureToggle.Disable(Features.SendEmail.ToString());
+                    _featureToggle.Disable(Features.SendEmail);
                 }
             }
         }

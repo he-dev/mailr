@@ -12,7 +12,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
+using Reusable;
 
 namespace Mailr.Extensions.Mvc.TagHelpers
 {
@@ -23,18 +25,18 @@ namespace Mailr.Extensions.Mvc.TagHelpers
     {
         private readonly IUrlHelperFactory _urlHelperFactory;
 
-        //private readonly IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
         private readonly IFileProvider _fileProvider;
 
         public ImportCssTagHelper
         (
             IUrlHelperFactory urlHelperFactoryHelperFactory,
-            //IConfiguration configuration,
+            IConfiguration configuration,
             IFileProvider fileProvider
         )
         {
             _urlHelperFactory = urlHelperFactoryHelperFactory;
-            //_configuration = configuration;
+            _configuration = configuration;
             _fileProvider = fileProvider;
         }
 
@@ -46,7 +48,7 @@ namespace Mailr.Extensions.Mvc.TagHelpers
             var styles = new List<string>();
 
             var css =
-                from cssFileName in CssFileNames()
+                from cssFileName in CssFileNames().Distinct(SoftString.Comparer)
                 let fileInfo = _fileProvider.GetFileInfo(cssFileName)
                 where fileInfo.Exists
                 select fileInfo;
@@ -65,12 +67,11 @@ namespace Mailr.Extensions.Mvc.TagHelpers
         {
             var urlHelper = _urlHelperFactory.GetUrlHelper(ViewContext);
 
-            yield return urlHelper.RouteUrl(RouteNames.Css.Global, new { theme = "default" });
-            yield return urlHelper.RouteUrl(RouteNames.Css.Extension, new { theme = "default" });
+            yield return urlHelper.RouteUrl(RouteNames.Css.Global, new { theme = _configuration["email:theme"] });
+            yield return urlHelper.RouteUrl(RouteNames.Css.Extension, new { theme = _configuration["email:theme"] });
 
             if (ViewContext.HttpContext.Items.TryGetItem(HttpContextItems.EmailTheme, out var theme))
             {
-                yield return urlHelper.RouteUrl(RouteNames.Css.Global, new { theme });
                 yield return urlHelper.RouteUrl(RouteNames.Css.Extension, new { theme });
             }
         }

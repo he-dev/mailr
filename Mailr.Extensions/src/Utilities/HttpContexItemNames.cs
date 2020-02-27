@@ -5,7 +5,6 @@ using Reusable.Quickey;
 namespace Mailr.Extensions.Utilities
 {
     [UseMember]
-    [PlainSelectorFormatter]
     public class HttpContextItems : SelectorBuilder<HttpContextItems>
     {
         public static Selector<IEmail> Email { get; } = Select(() => Email);

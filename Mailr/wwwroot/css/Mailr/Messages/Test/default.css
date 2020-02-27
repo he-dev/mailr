@@ -1,10 +1,14 @@
-﻿.title {
+﻿/* test */
+
+.title {
     color: blueviolet;
 }
+
 .footer {
     font-family: sans-serif;
     font-size: 0.8em;
 }
+
 .greeting {
     color: steelblue;
 }

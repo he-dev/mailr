@@ -55,7 +55,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Mailr.Extensions\Mailr.Extensions-dev.csproj" />
+    <ProjectReference Include="..\..\mailr-extensions-native\Mailr.Extensions.Gunter\Mailr.Extensions.Gunter-with-Projects.csproj" />
+    <ProjectReference Include="..\Mailr.Extensions\Mailr.Extensions-with-Projects.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -74,7 +75,6 @@
     <ProjectReference Include="..\..\Reusable\Reusable.Utilities.SqlClient\Reusable.Utilities.SqlClient.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.Utilities.AspNetCore\Reusable.Utilities.AspNetCore.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.OneTo1\Reusable.OneTo1.csproj" />
-    <ProjectReference Include="..\..\mailr-extensions-native\Mailr.Extensions.Gunter\Mailr.Extensions.Gunter-dev.csproj" />
   </ItemGroup>
 
   <!--<ItemGroup>

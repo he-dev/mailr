@@ -18,7 +18,7 @@ namespace Mailr.Helpers
             
             if (hostingEnvironment.IsDevelopmentExt())
             {
-                var xMailr = XDocument.Load(Path.Combine(hostingEnvironment.ContentRootPath, "Mailr-dev.csproj"));
+                var xMailr = XDocument.Load(Path.Combine(hostingEnvironment.ContentRootPath, "Mailr-with-.csproj"));
 
                 return 
                     xMailr

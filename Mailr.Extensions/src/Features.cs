@@ -3,9 +3,8 @@ using Reusable.Quickey;
 namespace Mailr.Extensions
 {
     [UseType, UseMember]
-    [PlainSelectorFormatter]
-    public class Features : SelectorBuilder<Features>
+    public static class Features
     {
-        public static Selector<object> SendEmail { get; } = Select(() => SendEmail);
+        public static string SendEmail { get; } = Selector.For(() => SendEmail).ToString();
     }
 }

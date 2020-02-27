@@ -32,6 +32,7 @@ using Reusable.OmniLog.SemanticExtensions.AspNetCore.Extensions;
 using Reusable.OmniLog.SemanticExtensions.AspNetCore.Mvc.Filters;
 using Reusable.OmniLog.Services;
 using Reusable.Translucent;
+using Reusable.Translucent.Abstractions;
 using Reusable.Translucent.Controllers;
 using Reusable.Utilities.AspNetCore.ActionFilters;
 using Reusable.Utilities.AspNetCore.DependencyInjection;
@@ -142,8 +143,8 @@ namespace Mailr
                         builder
                             .Register(_ => new FeatureCollection
                             {
-                                { new Feature(Features.SendEmail.ToString(), FeaturePolicy.AlwaysOn) },
-                                { new Feature.Telemetry(Features.SendEmail.ToString(), FeaturePolicy.AlwaysOn) }
+                                { Features.SendEmail, FeaturePolicy.AlwaysOn },
+                                { Feature.Telemetry.CreateName(Features.SendEmail), FeaturePolicy.AlwaysOn }
                             })
                             .As<IFeatureCollection>()
                             .InstancePerLifetimeScope();
@@ -161,13 +162,13 @@ namespace Mailr
 
                         builder
                             .RegisterDecorator<FeatureControllerTelemetry, IFeatureController>();
-                        
+
                         builder
                             .RegisterType<AutofacServiceProvider>()
                             .As<IServiceProvider>();
 
                         builder
-                            .Register(ctx => Resource.Builder().UseController(new SmtpController()).Build())
+                            .Register(ctx => new Resource(new IResourceController[] { new SmtpController() }))
                             .As<IResource>();
                     })
                     .ToServiceProvider();

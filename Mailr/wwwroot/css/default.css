@@ -1,20 +1,11 @@
-﻿
-.m-title {
-    font-family: "Segoe UI", sans-serif;
-    color: dimgray;
-}
+﻿/* default */
 
-.m-text {
-    font-family: "Segoe UI", sans-serif;
-    color: #46466e;
-}
-
-.m-footer {
+.footer-author {
     font-family: Arial, sans-serif;
     font-size: 12px;
     color: #A0A0A0;
 }
 
-.m-footer-product {
+.footer-product {
     color: steelblue;
 }
