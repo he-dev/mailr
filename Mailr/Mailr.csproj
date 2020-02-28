@@ -3,13 +3,13 @@
   <PropertyGroup>
     <!--    <TargetFrameworks>netcoreapp2.2;net47</TargetFrameworks>-->
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <RuntimeIdentifier>win81-x64</RuntimeIdentifier>
+<!--    <RuntimeIdentifier>win81-x64</RuntimeIdentifier>-->
     <AssemblyName>Mailr</AssemblyName>
     <RootNamespace>Mailr</RootNamespace>
-    <Platforms>x64;AnyCPU</Platforms>
     <!--<MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>-->
     <LangVersion>latest</LangVersion>
-    <Configurations>Debug;Release</Configurations>
+    <Configurations>Debug.csproj;Debug.nuget;Release.nuget</Configurations>
+    <Platforms>AnyCPU</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <!--<StartupObject>Mailr.Program</StartupObject>-->
@@ -22,20 +22,22 @@
     
     <!--<RazorCompileOnBuild>false</RazorCompileOnBuild>-->
     
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <PlatformTarget>x64</PlatformTarget>
     <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug</OutputPath>
   </PropertyGroup>
 
+  <PropertyGroup Condition="$(Configuration.StartsWith('Release'))">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(Configuration.StartsWith('Debug'))">
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
+  
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.4" />
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" />
@@ -49,6 +51,33 @@
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+    <PackageReference Include="NLog" Version="4.6.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\mailr-extensions-native\Mailr.Extensions.Gunter\Mailr.Extensions.Gunter.csproj" />
+    <ProjectReference Include="..\Mailr.Extensions\Mailr.Extensions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(Configuration)' == 'Debug.csproj' ">
+    <ProjectReference Include="..\..\Reusable\Reusable.Core\Reusable.Core.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Data\Reusable.Data.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Quickey\Reusable.Quickey.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Beaver\Reusable.Beaver.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog\Reusable.OmniLog.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.NLogRx\Reusable.OmniLog.NLogRx.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.SemanticExtensions\Reusable.OmniLog.SemanticExtensions.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.SemanticExtensions.AspNetCore\Reusable.OmniLog.SemanticExtensions.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Translucent\Reusable.Translucent.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Translucent.mailto\Reusable.Translucent.mailto.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Utilities.JsonNet\Reusable.Utilities.JsonNet.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Utilities.NLog\Reusable.Utilities.NLog.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Utilities.SqlClient\Reusable.Utilities.SqlClient.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Utilities.AspNetCore\Reusable.Utilities.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OneTo1\Reusable.OneTo1.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(Configuration)' == 'Debug.nuget' ">
     <PackageReference Include="Reusable.Beaver" Version="16.2.3" />
     <PackageReference Include="Reusable.Core" Version="16.2.3" />
     <PackageReference Include="Reusable.Data" Version="16.2.3" />
@@ -64,10 +93,10 @@
     <PackageReference Include="Reusable.Utilities.SqlClient" Version="16.2.3" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\mailr-extensions-native\Mailr.Extensions.Gunter\Mailr.Extensions.Gunter.csproj" />
-    <ProjectReference Include="..\Mailr.Extensions\Mailr.Extensions.csproj" />
-  </ItemGroup>
+  <!--<ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.4" />
+  </ItemGroup>-->
+
 
   <ItemGroup>
     <None Update="NLog.tt">
@@ -80,6 +109,11 @@
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
+  <!--<ItemGroup>
+    <None Remove="appsettings.Development.json" CopyToPublishDirectory="Never" />
+    <None Remove="appsettings.DevelopmentExt.json" CopyToPublishDirectory="Never" />
+  </ItemGroup>-->
+
   <ItemGroup>
     <Content Update="NLog.config">
       <DesignTime>True</DesignTime>
@@ -91,11 +125,7 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="src\Mvc\TagHelpers" />
-  </ItemGroup>
-
+  
   <Target Name="DisplayMessages" AfterTargets="AfterBuild">
     <Message Text="Project File Name = $(MSBuildProjectFile)" Importance="High" />
     <Message Text="Project Extension = $(MSBuildProjectExtension)" />
