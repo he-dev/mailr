@@ -1,7 +1,7 @@
-﻿using JetBrains.Annotations;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 
-namespace Mailr.Data
+namespace Mailr.Configuration
 {
     [UsedImplicitly]
     public class Extensibility

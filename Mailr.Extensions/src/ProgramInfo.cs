@@ -1,4 +1,5 @@
-namespace Mailr.Extensions {
+namespace Mailr.Extensions
+{
     public class ProgramInfo
     {
         public const string Name = "Mailr";

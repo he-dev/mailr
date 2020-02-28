@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Linq.Custom;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Mailr.Extensions;
@@ -122,7 +124,7 @@ namespace Mailr.Middleware
                 {
                     scope.Dispose();
                 }
-            });
+            }, $"Subject: '{email.Subject}', To: {email.To.Join(", ")}");
         }
     }
 

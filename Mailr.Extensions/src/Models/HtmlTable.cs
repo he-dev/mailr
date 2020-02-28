@@ -7,14 +7,11 @@ namespace Mailr.Extensions.Models
     [UsedImplicitly]
     public class HtmlTable
     {
-        [CanBeNull]
-        public HtmlTableRowGroup Head { get; set; }
+        public HtmlTableRowGroup? Head { get; set; }
 
-        [CanBeNull]
-        public HtmlTableRowGroup Body { get; set; }
+        public HtmlTableRowGroup? Body { get; set; }
 
-        [CanBeNull]
-        public HtmlTableRowGroup Foot { get; set; }
+        public HtmlTableRowGroup? Foot { get; set; }
     }
 
     public class HtmlTableRow : List<HtmlTableCell>
@@ -29,13 +26,10 @@ namespace Mailr.Extensions.Models
 
     public class HtmlTableCell
     {
-        [CanBeNull]
-        public object Value { get; set; }
+        public object? Value { get; set; }
 
-        [CanBeNull]
-        public ISet<string> Styles { get; set; } = new HashSet<string>(SoftString.Comparer);
+        public ISet<string>? Styles { get; set; } = new HashSet<string>(SoftString.Comparer);
 
-        [CanBeNull]
-        public ISet<string> Tags { get; set; } = new HashSet<string>(SoftString.Comparer);
+        public ISet<string>? Tags { get; set; } = new HashSet<string>(SoftString.Comparer);
     }
 }

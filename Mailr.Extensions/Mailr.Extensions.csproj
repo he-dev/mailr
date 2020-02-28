@@ -32,12 +32,23 @@
   <ItemGroup Condition=" '$(Configuration)' == 'Debug.csproj' ">
     <ProjectReference Include="..\..\Reusable\Reusable.Core\Reusable.Core.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.Data\Reusable.Data.csproj" />
-    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.Abstractions\Reusable.OmniLog.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Quickey\Reusable.Quickey.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Beaver\Reusable.Beaver.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.MarkupBuilder\Reusable.MarkupBuilder.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.OmniLog\Reusable.OmniLog.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.Abstractions\Reusable.OmniLog.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.NLogRx\Reusable.OmniLog.NLogRx.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.SemanticExtensions\Reusable.OmniLog.SemanticExtensions.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.SemanticExtensions.AspNetCore\Reusable.OmniLog.SemanticExtensions.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\Reusable\Reusable.Beaver\Reusable.Beaver.csproj" />
-    <ProjectReference Include="..\..\Reusable\Reusable.Quickey\Reusable.Quickey.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Translucent\Reusable.Translucent.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Translucent.file\Reusable.Translucent.file.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Translucent.mailto\Reusable.Translucent.mailto.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Utilities.JsonNet\Reusable.Utilities.JsonNet.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Utilities.Autofac\Reusable.Utilities.Autofac.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Utilities.NLog\Reusable.Utilities.NLog.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Utilities.SqlClient\Reusable.Utilities.SqlClient.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Utilities.AspNetCore\Reusable.Utilities.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OneTo1\Reusable.OneTo1.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(Configuration)' == 'Debug.nuget' OR '$(Configuration)' == 'Release.nuget'">
