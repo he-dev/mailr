@@ -1,0 +1,27 @@
+﻿{
+  "Logging": {
+    "IncludeScopes": false,
+    "LogLevel": {
+      "Default": "Debug",
+      "System": "Information",
+      "Microsoft": "Information"
+    }
+  },
+  "Extensibility": {
+    "Ext": "ext",
+    "Bin": "bin\\Debug",
+    "Development": {
+      "Bins": [
+        "bin\\Debug"
+      ],
+      "Extensions": [
+        {
+          "SolutionDirectory": "C:\\.stuff\\a\\dev\\mailr-extensions-native",
+          "Projects": [
+            "Mailr.Extensions.Gunter"
+          ]
+        }
+      ]
+    }
+  }
+}

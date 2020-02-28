@@ -4,7 +4,8 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <RootNamespace>Mailr.Extensions</RootNamespace>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <LangVersion>8</LangVersion>
     <Configurations>Debug.csproj;Debug.nuget;Release.nuget</Configurations>
     <Platforms>AnyCPU</Platforms>
     <AssemblyName>Mailr.Extensions</AssemblyName>
@@ -30,6 +31,8 @@
 
   <ItemGroup Condition=" '$(Configuration)' == 'Debug.csproj' ">
     <ProjectReference Include="..\..\Reusable\Reusable.Core\Reusable.Core.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.Data\Reusable.Data.csproj" />
+    <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.Abstractions\Reusable.OmniLog.Abstractions.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.OmniLog\Reusable.OmniLog.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.SemanticExtensions\Reusable.OmniLog.SemanticExtensions.csproj" />
     <ProjectReference Include="..\..\Reusable\Reusable.OmniLog.SemanticExtensions.AspNetCore\Reusable.OmniLog.SemanticExtensions.AspNetCore.csproj" />
@@ -37,11 +40,11 @@
     <ProjectReference Include="..\..\Reusable\Reusable.Quickey\Reusable.Quickey.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(Configuration)' == 'Debug.nuget' ">
-    <PackageReference Include="Reusable.Beaver" Version="16.2.3" />
-    <PackageReference Include="Reusable.Core" Version="16.2.3" />
-    <PackageReference Include="Reusable.OmniLog.SemanticExtensions.AspNetCore" Version="16.2.3" />
-    <PackageReference Include="Reusable.Quickey" Version="16.2.3" />
+  <ItemGroup Condition=" '$(Configuration)' == 'Debug.nuget' OR '$(Configuration)' == 'Release.nuget'">
+    <PackageReference Include="Reusable.Beaver" Version="17.4.3" />
+    <PackageReference Include="Reusable.Core" Version="17.4.3" />
+    <PackageReference Include="Reusable.OmniLog.SemanticExtensions.AspNetCore" Version="17.4.3" />
+    <PackageReference Include="Reusable.Quickey" Version="17.4.3" />
   </ItemGroup>
   
 </Project>

@@ -16,9 +16,9 @@ namespace Mailr.Helpers
             var serviceProvider = services.BuildServiceProvider();
             var hostingEnvironment = serviceProvider.GetService<IHostingEnvironment>();
             
-            if (hostingEnvironment.IsDevelopmentExt())
+            if (hostingEnvironment.IsDevelopment())
             {
-                var xMailr = XDocument.Load(Path.Combine(hostingEnvironment.ContentRootPath, "Mailr-with-.csproj"));
+                var xMailr = XDocument.Load(Path.Combine(hostingEnvironment.ContentRootPath, "Mailr.csproj"));
 
                 return 
                     xMailr
@@ -26,7 +26,7 @@ namespace Mailr.Helpers
                         .Elements("ItemGroup")
                         .SelectMany(x => x.Elements("ProjectReference"))
                         .Select(x => x.Attribute("Include").Value)
-                        .Where(x => Regex.IsMatch(x, @"Mailr\.Extensions\.\w+(-dev)?\.csproj"))
+                        .Where(x => Regex.IsMatch(x, @"Mailr\.Extensions\.\w+\.csproj"))
                         .Select(Path.GetDirectoryName);
             }
             else
