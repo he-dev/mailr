@@ -26,11 +26,12 @@ using Reusable.Beaver;
 using Reusable.Beaver.Policies;
 using Reusable.OmniLog;
 using Reusable.OmniLog.Abstractions;
-using Reusable.OmniLog.SemanticExtensions;
-using Reusable.OmniLog.SemanticExtensions.AspNetCore;
-using Reusable.OmniLog.SemanticExtensions.AspNetCore.Extensions;
-using Reusable.OmniLog.SemanticExtensions.AspNetCore.Mvc.Filters;
-using Reusable.OmniLog.Services;
+using Reusable.OmniLog.Connectors;
+using Reusable.OmniLog.Extensions;
+using Reusable.OmniLog.Nodes;
+using Reusable.OmniLog.Properties;
+using Reusable.OmniLog.Utilities.AspNetCore;
+using Reusable.OmniLog.Utilities.AspNetCore.Mvc.Filters;
 using Reusable.Translucent;
 using Reusable.Translucent.Abstractions;
 using Reusable.Translucent.Controllers;
@@ -67,30 +68,23 @@ namespace Mailr
         {
             SmartPropertiesLayoutRenderer.Register();
 
-            services.AddOmniLog(loggerFactory =>
-                loggerFactory
-                    .UseService
-                    (
-                        new Constant("Environment", HostingEnvironment.EnvironmentName),
-                        new Constant("Product", $"{ProgramInfo.Name}-v{ProgramInfo.Version}"),
-                        new Timestamp<DateTimeUtc>()
-                    )
-                    .UseStopwatch()
-                    .UseDelegate()
-                    .UseScope()
-                    .UseBuilder() //n => n.Names.Add(nameof(Abstraction)))
-                    .UseDestructure()
-                    //.UseMapper(MapperNode.Mapping.For())
-                    .UseSerializer()
-                    .UsePropertyMapper
-                    (
-                        (LogProperty.Names.Scope, "Scope"),
-                        (LogProperty.Names.SnapshotName, "Identifier"),
-                        (LogProperty.Names.Snapshot, "Snapshot")
-                    )
-                    .UseFallback((LogProperty.Names.Level, LogLevel.Information))
-                    //.UseBuffer()
-                    .UseEcho(new NLogRx())
+            services.AddOmniLog(
+                LoggerPipelines
+                    .Default
+                    .Configure<AttachProperty>(node =>
+                    {
+                        node.Properties.Add(new Constant("Environment", HostingEnvironment.EnvironmentName));
+                        node.Properties.Add(new Constant("Product", $"{ProgramInfo.Name}-v{ProgramInfo.Version}"));
+                        node.Properties.Add(new Timestamp<DateTimeUtc>());
+                    })
+                    .Configure<RenameProperty>(node =>
+                    {
+                        node.Mappings.Add(Names.Properties.Correlation, "Scope");
+                        node.Mappings.Add(Names.Properties.Unit, "Identifier");
+                        node.Mappings.Add(Names.Properties.Snapshot, "Snapshot");
+                    })
+                    .Configure<Echo>(node => { node.Connectors.Add(new NLogConnector()); })
+                    .ToLoggerFactory()
             );
 
             services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
@@ -182,9 +176,9 @@ namespace Mailr
 
             var startupLogger = loggerFactory.CreateLogger<Startup>();
 
-            appLifetime.ApplicationStarted.Register(() => { startupLogger.Log(Abstraction.Layer.Service().Routine("Start").Completed(), l => l.Message("Here's Mailr!")); });
+            //appLifetime.ApplicationStarted.Register(() => { startupLogger.Log(Abstraction.Layer.Service().Routine("Start").Completed(), l => l.Message("Here's Mailr!")); });
 
-            appLifetime.ApplicationStopped.Register(() => { startupLogger.Log(Abstraction.Layer.Service().Routine("Stop").Completed(), l => l.Message("Good bye!")); });
+            //appLifetime.ApplicationStopped.Register(() => { startupLogger.Log(Abstraction.Layer.Service().Routine("Stop").Completed(), l => l.Message("Good bye!")); });
 
             if (env.IsDevelopment() || env.IsDevelopmentExt())
             {

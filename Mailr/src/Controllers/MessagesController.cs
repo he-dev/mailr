@@ -4,7 +4,7 @@ using Mailr.Extensions.Utilities.Mvc.Filters;
 using Mailr.Extensions.Utilities.Mvc.ModelBinding;
 using Mailr.Models.Test;
 using Microsoft.AspNetCore.Mvc;
-using Reusable.OmniLog.SemanticExtensions.AspNetCore.Mvc.Filters;
+using Reusable.OmniLog.Utilities.AspNetCore.Mvc.Filters;
 using Reusable.Utilities.AspNetCore.ActionFilters;
 
 namespace Mailr.Controllers

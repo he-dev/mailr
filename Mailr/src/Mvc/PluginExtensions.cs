@@ -18,7 +18,7 @@ using Microsoft.Extensions.FileProviders;
 using Reusable.OmniLog;
 using Reusable.OmniLog.Abstractions;
 using Reusable.OmniLog.Nodes;
-using Reusable.OmniLog.SemanticExtensions;
+using Reusable.OmniLog.Extensions;
 
 namespace Mailr.Mvc
 {
@@ -245,23 +245,23 @@ namespace Mailr.Mvc
                         return default;
                     };
 
-                    logger.Log(Abstraction.Layer.Service().Routine(nameof(TryLoadAssembly)).Completed());
+                    //logger.Log(Abstraction.Layer.Service().Routine(nameof(TryLoadAssembly)).Completed());
                     return true;
                 }
                 else
                 {
-                    logger.Log(Abstraction.Layer.Service().Routine(nameof(TryLoadAssembly)).Canceled(), "File not found.");
+                    //logger.Log(Abstraction.Layer.Service().Routine(nameof(TryLoadAssembly)).Canceled(), "File not found.");
                 }
             }
             catch (Exception ex)
             {
-                logger.Log(Abstraction.Layer.Service().Routine(nameof(TryLoadAssembly)).Faulted(), ex);
+                //logger.Log(Abstraction.Layer.Service().Routine(nameof(TryLoadAssembly)).Faulted(), ex);
 
                 if (ex is ReflectionTypeLoadException inner)
                 {
                     foreach (var loaderException in inner.LoaderExceptions)
                     {
-                        logger.Log(Abstraction.Layer.Service().Routine(nameof(TryLoadAssembly)).Faulted(), nameof(ReflectionTypeLoadException), loaderException);
+                        //logger.Log(Abstraction.Layer.Service().Routine(nameof(TryLoadAssembly)).Faulted(), nameof(ReflectionTypeLoadException), loaderException);
                     }
                 }
             }

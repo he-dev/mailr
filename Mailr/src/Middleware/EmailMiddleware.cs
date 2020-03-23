@@ -16,9 +16,9 @@ using Reusable.Beaver;
 using Reusable.Data;
 using Reusable.Extensions;
 using Reusable.OmniLog;
+using Reusable.OmniLog.Extensions;
 using Reusable.OmniLog.Abstractions;
 using Reusable.OmniLog.Nodes;
-using Reusable.OmniLog.SemanticExtensions;
 using Reusable.Translucent;
 using Reusable.Translucent.Controllers;
 using Reusable.Translucent.Models;
@@ -53,76 +53,63 @@ namespace Mailr.Middleware
 
         public async Task Invoke(HttpContext context, IFeatureController featureController)
         {
-            try
+            var originalResponseBody = context.Response.Body;
+            using var responseBody = new MemoryStream();
+            context.Response.Body = responseBody;
+
+            await _next(context);
+
+            if (context.Items.TryGetItem(HttpContextItems.Email, out var email))
             {
-                var originalResponseBody = context.Response.Body;
-                using var responseBody = new MemoryStream();
-                context.Response.Body = responseBody;
+                // Selecting interface properties because otherwise the body will be dumped too.
 
-                await _next(context);
-
-                if (context.Items.TryGetItem(HttpContextItems.Email, out var email))
+                using (var responseBodyCopy = new MemoryStream())
                 {
-                    // Selecting interface properties because otherwise the body will be dumped too.
-                    _logger.Log(Abstraction.Layer.Business().Meta(new { EmailMetadata = new { email.From, email.To, email.Subject, email.IsHtml } }));
-
-                    using (var responseBodyCopy = new MemoryStream())
-                    {
-                        // We need a copy of this because the internal handler might close it and we won't able to restore it.
-                        responseBody.Rewind();
-                        await responseBody.CopyToAsync(responseBodyCopy);
-                        await SendEmailAsync(context, responseBodyCopy, email, featureController);
-                    }
-
-                    // Restore Response.Body
+                    // We need a copy of this because the internal handler might close it and we won't able to restore it.
                     responseBody.Rewind();
-                    await responseBody.CopyToAsync(originalResponseBody);
-                    context.Response.Body = originalResponseBody;
+                    await responseBody.CopyToAsync(responseBodyCopy);
+                    await SendEmailAsync(responseBodyCopy, email, featureController);
                 }
-            }
-            catch (Exception inner)
-            {
-                _logger.Log(Abstraction.Layer.Network().Routine("next").Faulted(), inner);
+
+                // Restore Response.Body
+                responseBody.Rewind();
+                await responseBody.CopyToAsync(originalResponseBody);
+                context.Response.Body = originalResponseBody;
             }
         }
 
-        private async Task SendEmailAsync(HttpContext context, Stream responseBody, IEmail email, IFeatureController featureController)
+        private async Task SendEmailAsync(Stream responseBody, IEmail email, IFeatureController featureController)
         {
             using var reader = new StreamReader(responseBody.Rewind());
             var body = await reader.ReadToEndAsync();
             _workItemQueue.Enqueue(async cancellationToken =>
             {
+                var smtpEmail = new Email<EmailSubject, EmailBody>
+                {
+                    From = email.From ?? _configuration["Smtp:From"] ?? "unknown@email.com",
+                    To = email.To,
+                    CC = email.CC ?? new List<string>(),
+                    Subject = new EmailSubject { Value = email.Subject },
+                    Body = new EmailBody { Value = body },
+                    IsHtml = email.IsHtml,
+                    Attachments = email.Attachments ?? new Dictionary<string, byte[]>()
+                };
+
                 // We need to rebuild the scope here because it'll be executed outside the request pipeline.
-                using var scope = _logger.BeginScope().WithCorrelationHandle("SendEmail").UseStopwatch();
+                using var scope = _logger.BeginScope().WithCorrelationHandle("SendEmail");
+                _logger.Log(Execution.Context.WorkItem("email", new { email.From, email.To, email.CC, email.Subject }));
 
                 try
                 {
-                    var smtpEmail = new Email<EmailSubject, EmailBody>
-                    {
-                        From = email.From ?? _configuration["Smtp:From"] ?? "unknown@email.com",
-                        To = email.To,
-                        CC = email.CC ?? new List<string>(),
-                        Subject = new EmailSubject { Value = email.Subject },
-                        Body = new EmailBody { Value = body },
-                        IsHtml = email.IsHtml,
-                        Attachments = email.Attachments ?? new Dictionary<string, byte[]>()
-                    };
-
                     using var response = await featureController.Use(Features.SendEmail, async () => await _resource.SendEmailAsync(smtpEmail, request =>
                     {
                         request.Host = _configuration["Smtp:Host"];
                         request.Port = int.Parse(_configuration["Smtp:Port"]);
                     }));
-
-                    _logger.Log(Abstraction.Layer.Network().Routine("SendEmail").Completed());
                 }
                 catch (Exception ex)
                 {
-                    _logger.Log(Abstraction.Layer.Network().Routine("SendEmail").Faulted(), ex);
-                }
-                finally
-                {
-                    scope.Dispose();
+                    _logger.Scope().Flow().Push(ex);
                 }
             }, $"Subject: '{email.Subject}', To: {email.To.Join(", ")}");
         }

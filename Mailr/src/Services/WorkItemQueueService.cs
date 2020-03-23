@@ -3,8 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Reusable.OmniLog;
+using Reusable.OmniLog.Extensions;
 using Reusable.OmniLog.Abstractions;
-using Reusable.OmniLog.SemanticExtensions;
+using Reusable.OmniLog.Nodes;
 
 namespace Mailr.Services
 {
@@ -46,14 +47,17 @@ namespace Mailr.Services
             while (!_shutdown.IsCancellationRequested)
             {
                 var workItem = await _workItemQueue.DequeueAsync(_shutdown.Token);
-
+                
+                using var scope = _logger.BeginScope().WithCorrelationHandle("ProcessBackgroundQueueItem");
+                _logger.Log(Execution.Context.WorkItem("backgroundQueueItem", new { workItem.Tag }));
+                
                 try
                 {
                     await workItem.Job(_shutdown.Token);
                 }
                 catch (Exception inner)
                 {
-                    _logger.Log(Abstraction.Layer.Service().Routine("InvokeWorkItem").Faulted(inner), l => l.Message($"Tag: '{workItem.Tag}'."));
+                    _logger.Scope().Flow().Push(inner);
                 }
             }
         }
