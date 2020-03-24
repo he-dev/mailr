@@ -70,7 +70,7 @@ namespace Mailr
 
             services.AddOmniLog(
                 LoggerPipelines
-                    .Default
+                    .Complete
                     .Configure<AttachProperty>(node =>
                     {
                         node.Properties.Add(new Constant("Environment", HostingEnvironment.EnvironmentName));
@@ -155,7 +155,7 @@ namespace Mailr
                             .InstancePerLifetimeScope();
 
                         builder
-                            .RegisterDecorator<FeatureControllerTelemetry, IFeatureController>();
+                            .RegisterDecorator<FeatureTelemetry, IFeatureController>();
 
                         builder
                             .RegisterType<AutofacServiceProvider>()

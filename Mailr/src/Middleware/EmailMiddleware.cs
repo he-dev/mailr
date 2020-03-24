@@ -96,8 +96,8 @@ namespace Mailr.Middleware
                 };
 
                 // We need to rebuild the scope here because it'll be executed outside the request pipeline.
-                using var scope = _logger.BeginScope().WithCorrelationHandle("SendEmail");
-                _logger.Log(Execution.Context.WorkItem("email", new { email.From, email.To, email.CC, email.Subject }));
+                using var scope = _logger.BeginScope("SendEmail");
+                _logger.Log(Execution.Context.Service().WorkItem("email", new { email.From, email.To, email.CC, email.Subject }));
 
                 try
                 {
@@ -109,7 +109,7 @@ namespace Mailr.Middleware
                 }
                 catch (Exception ex)
                 {
-                    _logger.Scope().Flow().Push(ex);
+                    _logger.Scope().Exceptions.Push(ex);
                 }
             }, $"Subject: '{email.Subject}', To: {email.To.Join(", ")}");
         }
