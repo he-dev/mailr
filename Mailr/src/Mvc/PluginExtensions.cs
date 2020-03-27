@@ -194,7 +194,7 @@ namespace Mailr.Mvc
         private static bool TryLoadAssembly(IServiceProvider serviceProvider, string fileName, out Assembly assembly)
         {
             var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Startup>();
-            logger.Log(Abstraction.Layer.Service().Meta(new { fileName }));
+            //logger.Log(Telemetry.Collect.Application().Metadata(nameof()).Layer.Service().Meta(new { fileName }));
 
             try
             {

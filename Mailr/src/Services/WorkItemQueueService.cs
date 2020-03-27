@@ -48,8 +48,7 @@ namespace Mailr.Services
             {
                 var workItem = await _workItemQueue.DequeueAsync(_shutdown.Token);
                 
-                using var scope = _logger.BeginScope("ProcessBackgroundQueueItem");
-                _logger.Log(Execution.Context.WorkItem("backgroundQueueItem", new { workItem.Tag }));
+                using var scope = _logger.BeginScope("ProcessBackgroundQueueItem", new { workItem.Tag });
                 
                 try
                 {

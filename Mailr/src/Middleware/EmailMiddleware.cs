@@ -96,8 +96,7 @@ namespace Mailr.Middleware
                 };
 
                 // We need to rebuild the scope here because it'll be executed outside the request pipeline.
-                using var scope = _logger.BeginScope("SendEmail");
-                _logger.Log(Execution.Context.Service().WorkItem("email", new { email.From, email.To, email.CC, email.Subject }));
+                using var scope = _logger.BeginScope("SendEmail", new { email.From, email.To, email.CC, email.Subject });
 
                 try
                 {
