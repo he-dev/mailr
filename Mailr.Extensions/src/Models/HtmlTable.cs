@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
+using Mailr.Extensions.Abstractions;
 using Reusable;
 
 namespace Mailr.Extensions.Models
@@ -24,12 +25,12 @@ namespace Mailr.Extensions.Models
         public static HtmlTableRowGroup Empty => new HtmlTableRowGroup();
     }
 
-    public class HtmlTableCell
+    public class HtmlTableCell : ITaggable
     {
         public object? Value { get; set; }
 
-        public ISet<string>? Styles { get; set; } = new HashSet<string>(SoftString.Comparer);
+        public HashSet<string>? Styles { get; set; } = new HashSet<string>(SoftString.Comparer);
 
-        public ISet<string>? Tags { get; set; } = new HashSet<string>(SoftString.Comparer);
+        public HashSet<string>? Tags { get; set; } = new HashSet<string>(SoftString.Comparer);
     }
 }

@@ -40,7 +40,11 @@ using Reusable.Utilities.AspNetCore.ActionFilters;
 using Reusable.Utilities.AspNetCore.DependencyInjection;
 using Reusable.Utilities.AspNetCore.Middleware;
 using Reusable.Utilities.Autofac;
+using Reusable.Utilities.JsonNet;
+using Reusable.Utilities.JsonNet.Abstractions;
 using Reusable.Utilities.JsonNet.Converters;
+using Reusable.Utilities.JsonNet.Services;
+using Reusable.Utilities.JsonNet.TypeDictionaries;
 using Reusable.Utilities.NLog.LayoutRenderers;
 using Features = Mailr.Extensions.Features;
 using IApplicationLifetime = Microsoft.AspNetCore.Hosting.IApplicationLifetime;
@@ -91,6 +95,7 @@ namespace Mailr
             );
 
             services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
+            services.AddScoped(_ => BuildInTypeDictionary.Default.Add(new CurrentDomainTypeDictionary()));
 
             services
                 .AddMvc()
@@ -123,6 +128,7 @@ namespace Mailr
             services.AddScoped<ValidateModel>();
             services.AddScoped<SendEmail>();
             services.AddScoped<LogResponseBody>();
+            //services.AddSingleton<IGetJsonTypes>(new GetJsonTypesInCurrentDomain());
 
             //var runtimeId = RuntimeEnvironment.GetRuntimeIdentifier();
             //var assemblyNames = DependencyContext.Default.GetRuntimeAssemblyNames(runtimeId);
@@ -185,7 +191,7 @@ namespace Mailr
         {
             //app.UseMiddleware<LogScopeMiddleware>();
             app.UseOmniLog();
-            app.UseMiddleware<NormalizeJsonTypeMiddleware>();
+            app.UseMiddleware<NormalizeJsonTypePropertyMiddleware>();
 
             var startupLogger = loggerFactory.CreateLogger<Startup>();
 

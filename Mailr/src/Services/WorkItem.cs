@@ -6,7 +6,7 @@ namespace Mailr.Services
 {
     public class WorkItem
     {
-        public Func<CancellationToken, Task> Job { get; set; } = _ => Task.CompletedTask;
+        public Func<CancellationToken, Task> Task { get; set; } = _ => System.Threading.Tasks.Task.CompletedTask;
 
         public string? Tag { get; set; }
 

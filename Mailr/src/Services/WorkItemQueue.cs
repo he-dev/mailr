@@ -7,7 +7,7 @@ namespace Mailr.Services
 {
     public interface IWorkItemQueue
     {
-        void Enqueue(Func<CancellationToken, Task> job, string? tag = default);
+        void Enqueue(WorkItem workItem);
 
         Task<WorkItem> DequeueAsync(CancellationToken cancellationToken);
     }
@@ -18,9 +18,9 @@ namespace Mailr.Services
 
         private readonly SemaphoreSlim _signal = new SemaphoreSlim(0);
 
-        public void Enqueue(Func<CancellationToken, Task> job, string? tag = default)
+        public void Enqueue(WorkItem workItem)
         {
-            _workItemQueue.Enqueue(new WorkItem { Job = job, Tag = tag });
+            _workItemQueue.Enqueue(workItem);
             _signal.Release();
         }
 

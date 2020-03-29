@@ -2,10 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <RootNamespace>Mailr.Extensions</RootNamespace>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <Nullable>enable</Nullable>
-    <LangVersion>8</LangVersion>
+    <LangVersion>latest</LangVersion>
     <Configurations>Debug.csproj;Debug.nuget;Release.nuget</Configurations>
     <Platforms>AnyCPU</Platforms>
     <AssemblyName>Mailr.Extensions</AssemblyName>

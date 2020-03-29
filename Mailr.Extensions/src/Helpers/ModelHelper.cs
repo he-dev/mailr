@@ -1,23 +1,24 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Custom;
 using Mailr.Extensions.Abstractions;
+using Reusable.Collections.Generic;
 
 namespace Mailr.Extensions.Helpers
 {
     public static class ModelHelper
     {
-        public static IEnumerable<string> ToStyles(this ITaggable taggable)
+        public static IEnumerable<string> Classes(this ITaggable taggable, Func<string, string> mapTagToClass)
         {
-            return taggable.Tags.Select(GetStyle);
+            return taggable.Tags.Select(mapTagToClass);
         }
 
-        private static string GetStyle(string tag)
+        public static string Concat(this IEnumerable<string> values) => values.Join(" ");
+
+        public static string ToClassString(this ITaggable taggable, Func<string, string> mapTagToClass)
         {
-            return tag.ToLower() switch
-            {
-                "level-error" => "level-error",
-                _ => string.Empty
-            };
+            return taggable.Classes(mapTagToClass).Concat();
         }
     }
 }

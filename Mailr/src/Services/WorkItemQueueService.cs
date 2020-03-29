@@ -52,7 +52,7 @@ namespace Mailr.Services
                 
                 try
                 {
-                    await workItem.Job(_shutdown.Token);
+                    await workItem.Task(_shutdown.Token);
                 }
                 catch (Exception inner)
                 {

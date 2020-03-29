@@ -95,6 +95,12 @@ namespace Mailr.Mvc
             mvc
                 .Services
                 .AddSingleton<IFileProvider>(fileProvider)
+                .Configure<MvcRazorRuntimeCompilationOptions>(options =>
+                {
+                    options
+                        .FileProviders
+                        .Add(fileProvider);
+                })
                 .Configure<RazorViewEngineOptions>(options =>
                 {
                     options

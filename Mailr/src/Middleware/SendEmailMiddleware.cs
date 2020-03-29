@@ -27,7 +27,7 @@ using RequestDelegate = Microsoft.AspNetCore.Http.RequestDelegate;
 namespace Mailr.Middleware
 {
     [UsedImplicitly]
-    public class EmailMiddleware
+    public class SendEmailMiddleware
     {
         private readonly RequestDelegate _next;
         private readonly ILogger _logger;
@@ -35,7 +35,7 @@ namespace Mailr.Middleware
         private readonly IResource _resource;
         private readonly IConfiguration _configuration;
 
-        public EmailMiddleware
+        public SendEmailMiddleware
         (
             RequestDelegate next,
             ILoggerFactory loggerFactory,
@@ -45,7 +45,7 @@ namespace Mailr.Middleware
         )
         {
             _next = next;
-            _logger = loggerFactory.CreateLogger<EmailMiddleware>();
+            _logger = loggerFactory.CreateLogger<SendEmailMiddleware>();
             _workItemQueue = workItemQueue;
             _resource = resource;
             _configuration = configuration;
@@ -82,35 +82,39 @@ namespace Mailr.Middleware
         {
             using var reader = new StreamReader(responseBody.Rewind());
             var body = await reader.ReadToEndAsync();
-            _workItemQueue.Enqueue(async cancellationToken =>
+            _workItemQueue.Enqueue(new WorkItem
             {
-                var smtpEmail = new Email<EmailSubject, EmailBody>
+                Task = async token =>
                 {
-                    From = email.From ?? _configuration["Smtp:From"] ?? "unknown@email.com",
-                    To = email.To,
-                    CC = email.CC ?? new List<string>(),
-                    Subject = new EmailSubject { Value = email.Subject },
-                    Body = new EmailBody { Value = body },
-                    IsHtml = email.IsHtml,
-                    Attachments = email.Attachments ?? new Dictionary<string, byte[]>()
-                };
-
-                // We need to rebuild the scope here because it'll be executed outside the request pipeline.
-                using var scope = _logger.BeginScope("SendEmail", new { email.From, email.To, email.CC, email.Subject });
-
-                try
-                {
-                    using var response = await featureController.Use(Features.SendEmail, async () => await _resource.SendEmailAsync(smtpEmail, request =>
+                    var smtpEmail = new Email<EmailSubject, EmailBody>
                     {
-                        request.Host = _configuration["Smtp:Host"];
-                        request.Port = int.Parse(_configuration["Smtp:Port"]);
-                    }));
-                }
-                catch (Exception ex)
-                {
-                    _logger.Scope().Exceptions.Push(ex);
-                }
-            }, $"Subject: '{email.Subject}', To: {email.To.Join(", ")}");
+                        From = email.From ?? _configuration["Smtp:From"] ?? "unknown@email.com",
+                        To = email.To,
+                        CC = email.CC ?? new List<string>(),
+                        Subject = new EmailSubject { Value = email.Subject },
+                        Body = new EmailBody { Value = body },
+                        IsHtml = email.IsHtml,
+                        Attachments = email.Attachments ?? new Dictionary<string, byte[]>()
+                    };
+
+                    // We need to rebuild the scope here because it'll be executed outside the request pipeline.
+                    using var scope = _logger.BeginScope("SendEmail", new { email.From, email.To, email.CC, email.Subject });
+
+                    try
+                    {
+                        using var response = await featureController.Use(Features.SendEmail, async () => await _resource.SendEmailAsync(smtpEmail, request =>
+                        {
+                            request.Host = _configuration["Smtp:Host"];
+                            request.Port = int.Parse(_configuration["Smtp:Port"]);
+                        }));
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Scope().Exceptions.Push(ex);
+                    }
+                },
+                Tag = $"{email.Subject}"
+            });
         }
     }
 
@@ -118,7 +122,7 @@ namespace Mailr.Middleware
     {
         public static IApplicationBuilder UseEmail(this IApplicationBuilder builder)
         {
-            return builder.UseMiddleware<EmailMiddleware>();
+            return builder.UseMiddleware<SendEmailMiddleware>();
         }
     }
 }
