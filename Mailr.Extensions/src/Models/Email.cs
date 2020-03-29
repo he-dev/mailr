@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using Mailr.Extensions.Abstractions;
 
 namespace Mailr.Extensions.Models

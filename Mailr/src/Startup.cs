@@ -21,6 +21,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using Reusable;
 using Reusable.Beaver;
 using Reusable.Beaver.Policies;
@@ -37,7 +38,9 @@ using Reusable.Translucent.Abstractions;
 using Reusable.Translucent.Controllers;
 using Reusable.Utilities.AspNetCore.ActionFilters;
 using Reusable.Utilities.AspNetCore.DependencyInjection;
+using Reusable.Utilities.AspNetCore.Middleware;
 using Reusable.Utilities.Autofac;
+using Reusable.Utilities.JsonNet.Converters;
 using Reusable.Utilities.NLog.LayoutRenderers;
 using Features = Mailr.Extensions.Features;
 using IApplicationLifetime = Microsoft.AspNetCore.Hosting.IApplicationLifetime;
@@ -91,8 +94,17 @@ namespace Mailr
 
             services
                 .AddMvc()
+                .AddJsonOptions(options => { options.SerializerSettings.TypeNameHandling = TypeNameHandling.Auto; })
                 .AddExtensions()
                 ;
+            
+            services.Configure<ApiBehaviorOptions>(o =>
+            {
+                o.InvalidModelStateResponseFactory = actionContext =>
+                {
+                    return new BadRequestObjectResult(actionContext.ModelState);
+                };
+            });
 
             services.Configure<RazorViewEngineOptions>(options => { options.AllowRecompilingViewsOnFileChange = true; });
 
@@ -173,6 +185,7 @@ namespace Mailr
         {
             //app.UseMiddleware<LogScopeMiddleware>();
             app.UseOmniLog();
+            app.UseMiddleware<NormalizeJsonTypeMiddleware>();
 
             var startupLogger = loggerFactory.CreateLogger<Startup>();
 
